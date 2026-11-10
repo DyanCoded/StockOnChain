@@ -13,8 +13,18 @@ not a real attestor, custodian, or proof of reserve, and is not authorized by
 the Soroban pot contract.
 
 <!-- BOOTSTRAP-ACCOUNTS:START -->
-Not bootstrapped. Run `pnpm chain:bootstrap` to generate and fund the role accounts.
+| Role | Public Key |
+|---|---|
+| Admin | `GAXLZKWGKXFLKLSNYBL3CDXWJKHTPPDFUBX2I6ZRA4V5UBI2HJMFPSEH` |
+| Issuer | `GBJKWAAGQEWMTR6JHCBTYFNCCBNQYWE5M6UKN2ZP3SWJ5GEXA2CTUAHL` |
+| Dealer | `GATM4LFVO4DYXGIKKAUYNHSVQ6M7FTS3FPZSMNWEGKB7Q6XNOMXIPYVR` |
+| Custodian | `GAP6QC2WHE37IY47WLPG7G375DCFLHAKP5RQLTF3LXZGC75STTBVLA2K` |
+| Sponsor | `GBURYH5MNA3O7YIT2OHYFIJ2DRTNFZ4AFWDUQ3BCMZISD5IWYMTTBIEN` |
+| Anchor-sim | `GATQHV3NU6EQWLGSZ5X6VM4BEOGDBEQWUEZZ3AY7VPJZVJIR7UEZOG3H` |
 <!-- BOOTSTRAP-ACCOUNTS:END -->
+
+These public keys were supplied for documentation. Testnet funding and account
+ownership have not been independently verified.
 
 ## Team setup
 
