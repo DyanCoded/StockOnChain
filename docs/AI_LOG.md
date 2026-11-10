@@ -30,3 +30,12 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
   - Removed unverified demo, deployment, partner, rate, and regulatory claims from the README.
   - Replaced secret-shaped example values in `.env.example` with empty values and clarified local-only secret handling.
   - Added shared ESLint configuration and made the web lint command usable before the app scaffold exists.
+
+### [2026-11-10] Testnet Bootstrap (S-02)
+* **Prompt / Task:** Implement the testnet-only Stellar account, mock-asset, and hello-contract bootstrap workflow.
+* **Changes:**
+  - Added an explicit testnet/passphrase guard, exact Soroban SDK and Stellar JS SDK pins, and a `pnpm chain:bootstrap` command.
+  - Added local key generation, Friendbot funding, idempotent trustlines and MOCK asset balances, deterministic contract deployment, and hello invocation.
+  - Updated account documentation to contain generated public keys only; secret keys remain in ignored `.env`.
+  - Added the Soroban hello entry point and automated Node network-guard tests.
+  - Added the Anchor-sim testnet account as a separate simulated role.

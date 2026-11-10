@@ -28,3 +28,15 @@ fn test_initialize_and_get_roles() {
         String::from_str(&env, "0.1.0-stokvel-pot")
     );
 }
+
+#[test]
+fn test_hello() {
+    let env = Env::default();
+    let contract_id = env.register(StokvelPotContract, ());
+    let client = StokvelPotContractClient::new(&env, &contract_id);
+
+    let greeting = client.hello(&String::from_str(&env, "world"));
+    assert_eq!(greeting.len(), 2);
+    assert_eq!(greeting.get(0), Some(String::from_str(&env, "Hello")));
+    assert_eq!(greeting.get(1), Some(String::from_str(&env, "world")));
+}

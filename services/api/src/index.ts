@@ -3,12 +3,18 @@
  * Backend service for verification, transaction fee sponsorship (Sponsor role), and simulation.
  */
 
-import { STELLAR_NETWORKS } from '@stockonchain/chain';
+import { config } from 'dotenv';
+import {
+  assertTestnetConfiguration,
+  STELLAR_NETWORKS,
+} from '@stockonchain/chain';
+
+config({ quiet: true });
+assertTestnetConfiguration();
 
 export function getNetworkConfig() {
-  const network = (process.env.STELLAR_NETWORK as keyof typeof STELLAR_NETWORKS) || 'testnet';
-  return STELLAR_NETWORKS[network];
+  assertTestnetConfiguration();
+  return STELLAR_NETWORKS.testnet;
 }
 
 console.log('StockOnChain API service initialized.');
-

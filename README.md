@@ -70,9 +70,14 @@ pnpm test
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
-stellar contract build
+pnpm chain:bootstrap
 ```
 
-The Node workspace does not define package test scripts yet, so `pnpm test` currently runs no Node tests. Rust contract tests are run separately with `cargo test --workspace`.
+`pnpm chain:bootstrap` is testnet-only. It generates role keys in the ignored
+`.env`, funds them with Friendbot as needed, creates the MOCK asset trustlines,
+and deploys and invokes the contract. It updates public keys in
+[docs/ACCOUNTS.md](./docs/ACCOUNTS.md); never share or commit `.env`.
+`pnpm test` runs Node network-guard tests. Rust contract tests are run separately
+with `cargo test --workspace`.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidance and [AI_GUIDELINES.md](./AI_GUIDELINES.md) for G1–G10.

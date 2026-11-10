@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@stockonchain/chain": "workspace:*",
-    "@stellar/stellar-sdk": "^12.3.0",
+    "@stellar/stellar-sdk": "12.3.0",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
@@ -19,4 +19,3 @@
     "typescript": "^5.7.0"
   }
 }
-

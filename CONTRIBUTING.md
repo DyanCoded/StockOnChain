@@ -37,11 +37,14 @@ Copy-Item .env.example .env
 # Install pnpm workspace dependencies
 pnpm install
 
-# Build Soroban smart contracts
-stellar contract build
+# Bootstrap Stellar Testnet accounts, MOCK assets, and the hello contract
+pnpm chain:bootstrap
 
 # Run Rust unit tests
 cargo test
+
+# Run Node network-guard tests
+pnpm test
 ```
 
 ---
@@ -60,6 +63,7 @@ cargo test
    - `cargo clippy -- -D warnings`
    - `cargo test`
    - `pnpm lint`
+   - `pnpm test`
 
 ---
 
@@ -69,4 +73,3 @@ cargo test
 * Complete the Pull Request template checklist, including the Definition of Done (DoD) and the AI Usage disclosure section.
 * Ensure all continuous integration checks pass.
 * At least one approving review is required before merging.
-

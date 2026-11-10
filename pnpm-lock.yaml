@@ -8,12 +8,24 @@ importers:
 
   .:
     devDependencies:
+      '@stellar/stellar-sdk':
+        specifier: 12.3.0
+        version: 12.3.0
+      '@types/node':
+        specifier: 20.19.43
+        version: 20.19.43
+      dotenv:
+        specifier: 16.6.1
+        version: 16.6.1
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
       eslint-config-next:
         specifier: ^14.2.0
         version: 14.2.35(eslint@8.57.1)(typescript@5.9.3)
+      tsx:
+        specifier: 4.23.15
+        version: 4.23.15
       typescript:
         specifier: ^5.7.0
         version: 5.9.3
@@ -49,7 +61,7 @@ importers:
   packages/chain:
     dependencies:
       '@stellar/stellar-sdk':
-        specifier: ^12.3.0
+        specifier: 12.3.0
         version: 12.3.0
     devDependencies:
       '@types/node':
@@ -62,7 +74,7 @@ importers:
   services/api:
     dependencies:
       '@stellar/stellar-sdk':
-        specifier: ^12.3.0
+        specifier: 12.3.0
         version: 12.3.0
       '@stockonchain/chain':
         specifier: workspace:*

@@ -17,6 +17,14 @@ pub struct StokvelPotContract;
 
 #[contractimpl]
 impl StokvelPotContract {
+    /// Return a greeting for the supplied name.
+    pub fn hello(env: Env, to: String) -> soroban_sdk::Vec<String> {
+        let mut result = soroban_sdk::Vec::new(&env);
+        result.push_back(String::from_str(&env, "Hello"));
+        result.push_back(to);
+        result
+    }
+
     /// Initialize the Stokvel Pot contract with ecosystem roles.
     pub fn initialize(
         env: Env,

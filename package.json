@@ -7,14 +7,19 @@
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" --filter \"./services/**\" build",
     "lint": "pnpm -r lint",
-    "test": "pnpm -r --if-present test",
+    "test": "tsx --test scripts/*.test.ts",
+    "chain:bootstrap": "tsx scripts/bootstrap.ts",
     "contract:build": "stellar contract build",
     "contract:test": "cargo test"
   },
   "packageManager": "pnpm@9.15.9",
   "devDependencies": {
+    "@types/node": "20.19.43",
+    "@stellar/stellar-sdk": "12.3.0",
+    "dotenv": "16.6.1",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.0",
+    "tsx": "4.23.15",
     "typescript": "^5.7.0"
   }
 }
