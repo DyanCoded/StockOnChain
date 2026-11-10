@@ -1,0 +1,38 @@
+# Environment variables & secrets (CRITICAL: Never commit secrets)
+.env
+.env.local
+.env.*.local
+*.secret
+*.key
+*.pem
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Rust / Cargo
+target/
+**/*.rs.bk
+Cargo.lock
+
+# Stellar / Soroban
+.soroban/
+.stellar/
+
+# IDE & Editor
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS files
+Thumbs.db
+[Dd]esktop.ini
+$RECYCLE.BIN/
+.DS_Store
+

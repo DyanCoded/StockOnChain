@@ -1,0 +1,20 @@
+{
+  "name": "stockonchain-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "StockOnChain: Stokvel-pot tokenization and savings on Stellar Soroban",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" --filter \"./services/**\" build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r --if-present test",
+    "contract:build": "stellar contract build",
+    "contract:test": "cargo test"
+  },
+  "packageManager": "pnpm@9.15.9",
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^14.2.0",
+    "typescript": "^5.7.0"
+  }
+}

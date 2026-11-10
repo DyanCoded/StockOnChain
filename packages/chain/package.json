@@ -1,0 +1,19 @@
+{
+  "name": "@stockonchain/chain",
+  "version": "0.1.0",
+  "description": "Stellar SDK bindings and Soroban client for StockOnChain",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@stellar/stellar-sdk": "^12.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.7.0"
+  }
+}
+
