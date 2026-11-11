@@ -34,11 +34,8 @@ cd StockOnChain
 # Copy environment template (do not commit .env)
 Copy-Item .env.example .env
 
-# Install pnpm workspace dependencies
-pnpm install
-
-# Bootstrap Stellar Testnet accounts, MOCK assets, and the hello contract
-pnpm chain:bootstrap
+# Install dependencies and bootstrap Stellar Testnet accounts, MOCK assets, and the hello contract
+pnpm quickstart
 
 # Run Rust unit tests
 cargo test

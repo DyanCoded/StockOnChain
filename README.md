@@ -42,7 +42,7 @@ services/api/             API service
 Setup checklist — replace the placeholders with the teammates' names and have each person check off their own setup:
 
 - [x] **Ntsika:** cloned the repository and completed the quickstart below.
-- [ ] **Kea:** setup completion not yet confirmed.
+- [x] **Kea:** confirmed setup completion.
 
 ## 5. Mocked vs. real
 
@@ -58,22 +58,24 @@ This is a placeholder status matrix, not a claim that a component is deployed or
 
 ## 6. Quickstart
 
-Prerequisites: Node.js 20, pnpm 9.15.9, Rust 1.84 or newer with the `wasm32v1-none` target, and Stellar CLI for contract builds. Never commit `.env` or put secret keys, API keys, or wallet encryption keys into an AI tool.
+Prerequisites (install once per machine): Node.js 20 or newer, pnpm 9.15.9, Rust 1.84 or newer with the `wasm32v1-none` target, and Stellar CLI for contract builds. The quickstart command installs Node dependencies and bootstraps Stellar Testnet. Never commit `.env` or put secret keys, API keys, or wallet encryption keys into an AI tool.
 
 ```powershell
 git clone https://github.com/DyanCoded/StockOnChain.git
 Set-Location StockOnChain
 Copy-Item .env.example .env
-pnpm install
+pnpm quickstart
+
+# Optional local validation
 pnpm lint
 pnpm test
 cargo fmt --all -- --check
 cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
-pnpm chain:bootstrap
 ```
 
-`pnpm chain:bootstrap` is testnet-only. It generates role keys in the ignored
+`pnpm quickstart` installs dependencies from the lockfile and runs the
+testnet-only `pnpm chain:bootstrap` command. Bootstrap generates role keys in the ignored
 `.env`, funds them with Friendbot as needed, creates the MOCK asset trustlines,
 and deploys and invokes the contract. It updates public keys in
 [docs/ACCOUNTS.md](./docs/ACCOUNTS.md); never share or commit `.env`.

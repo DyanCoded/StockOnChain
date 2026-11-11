@@ -9,6 +9,7 @@
     "lint": "pnpm -r lint",
     "test": "tsx --test scripts/*.test.ts",
     "chain:bootstrap": "tsx scripts/bootstrap.ts",
+    "quickstart": "node scripts/quickstart.mjs",
     "contract:build": "stellar contract build",
     "contract:test": "cargo test"
   },

@@ -23,16 +23,17 @@ the Soroban pot contract.
 | Anchor-sim | `GATQHV3NU6EQWLGSZ5X6VM4BEOGDBEQWUEZZ3AY7VPJZVJIR7UEZOG3H` |
 <!-- BOOTSTRAP-ACCOUNTS:END -->
 
-These public keys were supplied for documentation. Testnet funding and account
-ownership have not been independently verified.
+Both teammates confirmed they can fund testnet accounts and inspect accounts in
+Stellar Laboratory. Share only public keys; each person must keep their own
+secret keys private.
 
 ## Team setup
 
-After bootstrap, share only the public keys from this document with teammates.
-They can inspect testnet accounts in [Stellar Laboratory](https://lab.stellar.org/)
-by selecting Testnet and entering a public key. Each teammate should keep their
-own secret keys in a private local `.env`; do not send secrets through chat or
-commit them.
+Both teammates confirmed they can fund testnet accounts and inspect accounts in
+[Stellar Laboratory](https://lab.stellar.org/) by selecting Testnet and entering
+a public key. Share only the public keys from this document. Each teammate
+should keep their own secret keys in a private local `.env`; do not send secrets
+through chat or commit them.
 
 To fund a separate testnet account, generate a local identity and fund it using
 the Stellar CLI:
