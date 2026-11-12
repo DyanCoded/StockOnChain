@@ -7,6 +7,7 @@
 - **Problem:** Shared savings groups need clear records of contributions, balances, and payout rules. StockOnChain explores how software can help make those records easier for members to inspect.
 - **Track / focus:** Stellar and Soroban; financial inclusion and tokenization. Confirm the official event track before describing this as an official track entry.
 - **Team:** Ntsika and Kea.
+- **Owner split:** Kea = product, UX, frontend, market and pitch; Ntsika = Stellar assets, Soroban contract, backend, integrations and deployment. Every issue is reviewed by the other person.
 - **Status:** Work in progress. This repository does not claim a production service, live deployment, financial licence, partnership, or real-world backing.
 
 ## 2. Scope
@@ -44,7 +45,16 @@ Setup checklist — replace the placeholders with the teammates' names and have 
 - [x] **Ntsika:** cloned the repository and completed the quickstart below.
 - [x] **Kea:** confirmed setup completion.
 
-## 5. Mocked vs. real
+## 5. Architecture Decisions
+
+The project records architecture decisions in the decision log and keeps them aligned with the Educate & Recommend quality standard.
+
+- [ADR-001 — Stellar core approach and contract architecture](./docs/decisions/ADR-001-stellar-core-and-contract-architecture.md)
+- [ADR-002 — Wallet and onboarding experience](./docs/decisions/ADR-002-wallet-and-onboarding-experience.md)
+- [ADR-003 — Asset and backing design](./docs/decisions/ADR-003-asset-and-backing-design.md)
+- [ADR-004 — Cash-out simulation and local payment rails](./docs/decisions/ADR-004-cash-out-simulation-and-local-payment-rails.md)
+
+## 6. Mocked vs. real
 
 This is a placeholder status matrix, not a claim that a component is deployed or backed by a real-world service. Verify each entry against the implementation and authoritative sources before changing its status.
 
@@ -57,7 +67,7 @@ This is a placeholder status matrix, not a claim that a component is deployed or
 | Identity checks, fiat rails, custody, and payouts | To verify / mock | Do not imply a real provider, licence, reserve, or payout without evidence. |
 | Yield or investment returns | Not asserted | No rate or return claim is made in this README. |
 
-## 6. Quickstart
+## 7. Quickstart
 
 Prerequisites (install once per machine): Node.js 20 or newer, pnpm 9.15.9, Rust 1.84 or newer with the `wasm32v1-none` target, and Stellar CLI for contract builds. The quickstart command installs Node dependencies and bootstraps Stellar Testnet. Never commit `.env` or put secret keys, API keys, or wallet encryption keys into an AI tool.
 
