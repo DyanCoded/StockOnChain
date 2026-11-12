@@ -19,11 +19,7 @@ const walletText = {
   },
 } as const;
 
-export default function AdvancedWallet({
-  locale,
-}: {
-  locale: "en" | "zu";
-}) {
+export default function AdvancedWallet({ locale }: { locale: "en" | "zu" }) {
   const [address, setAddress] = useState<string | null>(null);
   const [walletError, setWalletError] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
