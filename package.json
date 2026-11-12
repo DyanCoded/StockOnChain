@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" --filter \"./services/**\" build",
+    "start": "pnpm --filter web start",
     "lint": "pnpm -r lint",
     "format": "prettier --write \"apps/web/**/*.{ts,tsx,css,js,json,webmanifest,html}\"",
     "format:check": "prettier --check \"apps/web/**/*.{ts,tsx,css,js,json,webmanifest,html}\"",

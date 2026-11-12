@@ -23,7 +23,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en-ZA">
-      <body>{children}</body>
+      <body>
+        {children}
+        <script src="/app.js" defer />
+      </body>
     </html>
   );
 }

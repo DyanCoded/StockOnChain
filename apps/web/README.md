@@ -19,4 +19,3 @@ There is no verified live URL yet. Connect the repository to Vercel with `apps/w
 ## Scope and security
 
 The default login must follow I-01 when that issue's contract is available. An Advanced section exposes only an optional Freighter/Varial address connection, fixed to Stellar Testnet; it does not sign or submit transactions. Stellar Wallets Kit 2.8.0 is MIT-licensed. Do not treat this shell as a financial service or use it to enter real personal or financial data.
-

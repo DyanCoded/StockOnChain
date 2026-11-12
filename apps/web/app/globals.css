@@ -178,6 +178,20 @@ h1 {
   outline-offset: 3px;
 }
 
+.login-placeholder {
+  margin-top: 24px;
+}
+
+.login-placeholder button {
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--muted);
+  background: #e9eee9;
+  font-weight: 700;
+}
+
 .advanced-wallet {
   max-width: 470px;
   margin-top: 32px;
