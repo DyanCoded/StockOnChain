@@ -96,3 +96,7 @@ To provision the separate ZATBILL Testnet demo asset, deploy the web app to its 
 with `cargo test --workspace`.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidance and [AI_GUIDELINES.md](./AI_GUIDELINES.md) for G1–G10.
+
+## Live URL
+
+https://stock-on-chain-gmu2.vercel.app/
