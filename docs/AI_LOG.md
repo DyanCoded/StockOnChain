@@ -39,3 +39,11 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
   - Updated account documentation to contain generated public keys only; secret keys remain in ignored `.env`.
   - Added the Soroban hello entry point and automated Node network-guard tests.
   - Added the Anchor-sim testnet account as a separate simulated role.
+
+### [2026-11-12] Web App Scaffold (S-03)
+* **Prompt / Task:** Implement the S-03 web app scaffold with design tokens, i18n scaffolding, PWA support, and security considerations.
+* **Changes:**
+  - Added a responsive Next.js App Router shell with English/isiZulu text switching, Tailwind configuration, and repository formatting commands.
+  - Added a web manifest, original SVG app icon, and a service worker limited to same-origin page navigation with an offline fallback; API and account data are not cached.
+  - Added Stellar Wallets Kit 2.8.0 (MIT), lazy-loaded only for the optional Freighter/Varial connection, explicitly set to Testnet and limited to address display.
+  - Documented deployment, I-01 login, wallet-kit licensing, and device-verification status without claiming unverified results.

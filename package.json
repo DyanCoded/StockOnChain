@@ -7,6 +7,8 @@
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" --filter \"./services/**\" build",
     "lint": "pnpm -r lint",
+    "format": "prettier --write \"apps/web/**/*.{ts,tsx,css,js,json,webmanifest,html}\"",
+    "format:check": "prettier --check \"apps/web/**/*.{ts,tsx,css,js,json,webmanifest,html}\"",
     "test": "tsx --test scripts/*.test.ts",
     "chain:bootstrap": "tsx scripts/bootstrap.ts",
     "quickstart": "node scripts/quickstart.mjs",
@@ -15,11 +17,12 @@
   },
   "packageManager": "pnpm@9.15.9",
   "devDependencies": {
-    "@types/node": "20.19.43",
     "@stellar/stellar-sdk": "12.3.0",
+    "@types/node": "20.19.43",
     "dotenv": "16.6.1",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.0",
+    "prettier": "^3.10.1",
     "tsx": "4.23.15",
     "typescript": "^5.7.0"
   }

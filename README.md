@@ -50,7 +50,8 @@ This is a placeholder status matrix, not a claim that a component is deployed or
 
 | Component | Status | Notes |
 |---|---|---|
-| Web app, API, and chain client | To verify | Source folders exist; integration status is not asserted here. |
+| Web app | Local scaffold | Next.js shell is implemented; no live deployment or real-device install has been verified. See [apps/web/README.md](./apps/web/README.md). |
+| API and chain client | To verify | Source folders exist; integration status is not asserted here. |
 | Soroban pot contract | To verify | Contract source is in `contracts/stokvel-pot`; deployment status is unverified. |
 | Stellar network | To verify | Confirm the configured network and passphrase before use. |
 | Identity checks, fiat rails, custody, and payouts | To verify / mock | Do not imply a real provider, licence, reserve, or payout without evidence. |

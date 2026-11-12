@@ -61,6 +61,12 @@ jobs:
       - name: Run linter
         run: pnpm run lint
 
+      - name: Check web formatting
+        run: pnpm format:check
+
+      - name: Build web app
+        run: pnpm --filter web build
+
       - name: Run tests
         run: pnpm test
 
