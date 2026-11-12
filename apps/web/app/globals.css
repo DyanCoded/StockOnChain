@@ -164,6 +164,20 @@ h1 {
   line-height: 1.6;
 }
 
+.asset-link {
+  display: inline-block;
+  margin-top: 12px;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.asset-link:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
 .advanced-wallet {
   max-width: 470px;
   margin-top: 32px;

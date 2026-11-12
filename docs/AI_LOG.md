@@ -47,3 +47,12 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
   - Added a web manifest, original SVG app icon, and a service worker limited to same-origin page navigation with an offline fallback; API and account data are not cached.
   - Added Stellar Wallets Kit 2.8.0 (MIT), lazy-loaded only for the optional Freighter/Varial connection, explicitly set to Testnet and limited to address display.
   - Documented deployment, I-01 login, wallet-kit licensing, and device-verification status without claiming unverified results.
+
+### [2026-11-12] ZATBILL Compliance Asset (T-01)
+* **Prompt / Task:** Implement the Testnet-only ZATBILL classic asset, issuer controls, SAC integration, transparent metadata, and verification commands.
+* **Changes:**
+  - Added a dedicated issuer role and set `AUTH_REQUIRED`, `AUTH_REVOCABLE`, `AUTH_CLAWBACK_ENABLED`, and the Testnet home domain before creating ZATBILL trustlines; left `AUTH_IMMUTABLE` disabled.
+  - Added an authorized dealer trustline, issuer-only initial dealer issuance, deterministic SAC deployment, and pot-contract SAC authorization.
+  - Added authorize, freeze, clawback, and end-to-end Testnet verification commands with Testnet Horizon transaction links.
+  - Added a CORS-enabled SEP-1 `stellar.toml`, a transparency disclosure explicitly marked not an attestation, `docs/ASSET.md`, and a localized home-page link.
+  - Verified implementation details against official Stellar asset flags, clawback, SAC, issue-asset, SEP-1, and CLI documentation. No live Testnet deployment was run because no local `.env` or public home domain was configured.

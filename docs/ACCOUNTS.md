@@ -1,8 +1,10 @@
 # Stellar Testnet Accounts
 
 The bootstrap command generates role keypairs locally, funds new accounts with
-Friendbot, creates the demo trustlines and MOCK assets, and deploys the hello
-contract. It writes public keys here and stores secret keys only in the
+Friendbot, creates the demo trustlines and MOCK assets, and deploys and initializes
+the Stokvel Pot contract. It also creates a dedicated ZATBILL issuer identity,
+but does not create its trustlines or issue ZATBILL until `pnpm chain:zatbill setup`
+is run. It writes public keys here and stores secret keys only in the
 git-ignored `.env` file.
 
 Never commit `.env` or share secret keys with an AI tool. Use testnet accounts
@@ -13,14 +15,17 @@ not a real attestor, custodian, or proof of reserve, and is not authorized by
 the Soroban pot contract.
 
 <!-- BOOTSTRAP-ACCOUNTS:START -->
-| Role | Public Key |
+| Role | Testnet Public Key |
 |---|---|
 | Admin | `GAXLZKWGKXFLKLSNYBL3CDXWJKHTPPDFUBX2I6ZRA4V5UBI2HJMFPSEH` |
 | Issuer | `GBJKWAAGQEWMTR6JHCBTYFNCCBNQYWE5M6UKN2ZP3SWJ5GEXA2CTUAHL` |
+| ZATBILL Issuer | `GDEPFK6O3UCEFBDWHIFXYHVNW2SG5OTHTLE3GSHJFKSKVS5JGV6M5EIU` |
 | Dealer | `GATM4LFVO4DYXGIKKAUYNHSVQ6M7FTS3FPZSMNWEGKB7Q6XNOMXIPYVR` |
 | Custodian | `GAP6QC2WHE37IY47WLPG7G375DCFLHAKP5RQLTF3LXZGC75STTBVLA2K` |
 | Sponsor | `GBURYH5MNA3O7YIT2OHYFIJ2DRTNFZ4AFWDUQ3BCMZISD5IWYMTTBIEN` |
-| Anchor-sim | `GATQHV3NU6EQWLGSZ5X6VM4BEOGDBEQWUEZZ3AY7VPJZVJIR7UEZOG3H` |
+| Anchor-sim | `GBUMFXTI3RP6TGUPUTO7DHRWNSG2R3TIKVDRHG3PTKVD2JNRQFVDXE4T` |
+| Stokvel Pot contract | `CDSSSFXOC2CVEBSS7PAOBP264MW5C3ZTLZINJYVGDXDOEOZJITUG25PT` |
+| ZATBILL SAC | `CDALMH56TPGL37P4AIELC4FBISERZDRIJZIMIGRGCUNFPW7WLPS27GUR` |
 <!-- BOOTSTRAP-ACCOUNTS:END -->
 
 Both teammates confirmed they can fund testnet accounts and inspect accounts in

@@ -22,13 +22,15 @@ const envPath = path.join(root, '.env');
 const accountsPath = path.join(root, 'docs', 'ACCOUNTS.md');
 const contractAlias = 'stockonchain-pot';
 const friendbotUrl = 'https://friendbot.stellar.org';
-const contractSalt = '53544f434b4f4e434841494e2d504f542d56312d544553544e45540000000000';
+const contractSalt =
+  '53544f434b4f4e434841494e2d504f542d56322d544553544e45540000000000';
 const assetCodes = ['MOCKZAR', 'MOCKTBL'] as const;
 const seedAmount = '1000';
 
 type RoleName =
   | 'ADMIN'
   | 'ISSUER'
+  | 'ZATBILL_ISSUER'
   | 'DEALER'
   | 'CUSTODIAN'
   | 'SPONSOR'
@@ -47,6 +49,7 @@ type StellarOperation =
 const roleDefinitions: ReadonlyArray<{ name: RoleName; title: string }> = [
   { name: 'ADMIN', title: 'Admin' },
   { name: 'ISSUER', title: 'Issuer' },
+  { name: 'ZATBILL_ISSUER', title: 'ZATBILL Issuer' },
   { name: 'DEALER', title: 'Dealer' },
   { name: 'CUSTODIAN', title: 'Custodian' },
   { name: 'SPONSOR', title: 'Sponsor' },
@@ -130,10 +133,7 @@ function isNotFound(error: unknown): boolean {
   );
 }
 
-async function ensureFunded(
-  server: Horizon.Server,
-  role: Role,
-): Promise<void> {
+async function ensureFunded(server: Horizon.Server, role: Role): Promise<void> {
   try {
     await server.loadAccount(role.publicKey);
     return;
@@ -220,7 +220,7 @@ async function ensureAssets(
 
   const assets = assetCodes.map((code) => new Asset(code, issuer.publicKey));
   for (const role of roles) {
-    if (role.name === 'ISSUER') {
+    if (role.name === 'ISSUER' || role.name === 'ZATBILL_ISSUER') {
       continue;
     }
     const account = await server.loadAccount(role.publicKey);
@@ -239,7 +239,7 @@ async function ensureAssets(
   }
 
   for (const role of roles) {
-    if (role.name === 'ISSUER') {
+    if (role.name === 'ISSUER' || role.name === 'ZATBILL_ISSUER') {
       continue;
     }
     for (const asset of assets) {
@@ -257,7 +257,9 @@ async function ensureAssets(
       await submitOperations(server, issuer, [payment]);
     }
   }
-  console.log(`Created trustlines and seeded ${assetCodes.join(', ')} MOCK assets.`);
+  console.log(
+    `Created trustlines and seeded ${assetCodes.join(', ')} MOCK assets.`,
+  );
 }
 
 function runStellar(args: string[], sourceSecret?: string): string {
@@ -277,7 +279,11 @@ function runStellar(args: string[], sourceSecret?: string): string {
 function stellarCliEnvironment(sourceSecret?: string): NodeJS.ProcessEnv {
   const env = { ...process.env };
   for (const key of Object.keys(env)) {
-    if (/^STELLAR_.*_SECRET_KEY$/.test(key) || key === 'STELLAR_ACCOUNT') {
+    if (
+      /^STELLAR_.*_SECRET_KEY$/.test(key) ||
+      key === 'STELLAR_ACCOUNT' ||
+      key === 'STELLAR_SIGN_WITH_KEY'
+    ) {
       delete env[key];
     }
   }
@@ -310,7 +316,10 @@ function saveAccounts(roles: Role[], contractId: string): void {
   updateEnv({ STELLAR_CONTRACT_ID: contractId });
 }
 
-async function deployAndInvokeHello(admin: Role): Promise<string> {
+async function deployAndInvokeHello(
+  admin: Role,
+  roles: Role[],
+): Promise<string> {
   execFileSync('stellar', ['contract', 'build', '--package', 'stokvel-pot'], {
     cwd: root,
     stdio: 'inherit',
@@ -359,7 +368,11 @@ async function deployAndInvokeHello(admin: Role): Promise<string> {
       'json',
       ...commonNetworkArgs,
     ],
-    { encoding: 'utf8', windowsHide: true },
+    {
+      encoding: 'utf8',
+      windowsHide: true,
+      env: stellarCliEnvironment(),
+    },
   );
   if (fetched.error) {
     throw new Error('Could not check for an existing testnet contract.');
@@ -378,6 +391,52 @@ async function deployAndInvokeHello(admin: Role): Promise<string> {
         '--alias',
         contractAlias,
         ...commonNetworkArgs,
+      ],
+      admin.secretKey,
+    );
+  }
+
+  const initialization = runStellar(
+    [
+      'contract',
+      'invoke',
+      '--contract-id',
+      contractId,
+      '--send',
+      'no',
+      ...commonNetworkArgs,
+      '--',
+      'is_initialized',
+    ],
+    admin.secretKey,
+  );
+  if (!/\btrue\b/i.test(initialization)) {
+    const roleKey = (name: RoleName): string => {
+      const role = roles.find((item) => item.name === name);
+      if (!role) {
+        throw new Error(`The ${name} role is required to initialize the pot.`);
+      }
+      return role.publicKey;
+    };
+    runStellar(
+      [
+        'contract',
+        'invoke',
+        '--contract-id',
+        contractId,
+        ...commonNetworkArgs,
+        '--',
+        'initialize',
+        '--admin',
+        admin.publicKey,
+        '--issuer',
+        roleKey('ZATBILL_ISSUER'),
+        '--dealer',
+        roleKey('DEALER'),
+        '--custodian',
+        roleKey('CUSTODIAN'),
+        '--sponsor',
+        roleKey('SPONSOR'),
       ],
       admin.secretKey,
     );
@@ -419,7 +478,7 @@ async function main(): Promise<void> {
   if (!admin) {
     throw new Error('Admin role is required to deploy the contract.');
   }
-  const contractId = await deployAndInvokeHello(admin);
+  const contractId = await deployAndInvokeHello(admin, roles);
   saveAccounts(roles, contractId);
   console.log(
     `Bootstrap complete. Public account keys are recorded in ${path.relative(root, accountsPath)}.`,

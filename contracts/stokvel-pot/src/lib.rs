@@ -9,6 +9,7 @@ pub enum DataKey {
     Dealer,
     Custodian,
     Sponsor,
+    ZatbillToken,
     Initialized,
 }
 
@@ -49,6 +50,11 @@ impl StokvelPotContract {
         env.storage().instance().set(&DataKey::Initialized, &true);
     }
 
+    /// Return whether the role configuration has been initialized.
+    pub fn is_initialized(env: Env) -> bool {
+        env.storage().instance().has(&DataKey::Initialized)
+    }
+
     /// Retrieve the designated Admin address
     pub fn get_admin(env: Env) -> Address {
         env.storage().instance().get(&DataKey::Admin).unwrap()
@@ -72,6 +78,47 @@ impl StokvelPotContract {
     /// Retrieve the designated Sponsor address
     pub fn get_sponsor(env: Env) -> Address {
         env.storage().instance().get(&DataKey::Sponsor).unwrap()
+    }
+
+    /// Configure the deployed ZATBILL Stellar Asset Contract.
+    pub fn set_zatbill_token(env: Env, admin: Address, token: Address) {
+        admin.require_auth();
+        let configured_admin: Address = env.storage().instance().get(&DataKey::Admin).unwrap();
+        if admin != configured_admin {
+            panic!("unauthorized");
+        }
+        if env.storage().instance().has(&DataKey::ZatbillToken) {
+            let existing: Address = env
+                .storage()
+                .instance()
+                .get(&DataKey::ZatbillToken)
+                .unwrap();
+            if existing != token {
+                panic!("ZATBILL token is already configured");
+            }
+            return;
+        }
+        env.storage().instance().set(&DataKey::ZatbillToken, &token);
+    }
+
+    /// Release ZATBILL held by this pot to a member under custodian approval.
+    pub fn release_zatbill(env: Env, custodian: Address, to: Address, amount: i128) {
+        custodian.require_auth();
+        let configured_custodian: Address =
+            env.storage().instance().get(&DataKey::Custodian).unwrap();
+        if custodian != configured_custodian {
+            panic!("unauthorized");
+        }
+        if amount <= 0 {
+            panic!("amount must be positive");
+        }
+        let token: Address = env
+            .storage()
+            .instance()
+            .get(&DataKey::ZatbillToken)
+            .unwrap();
+        let client = soroban_sdk::token::TokenClient::new(&env, &token);
+        client.transfer(&env.current_contract_address(), &to, &amount);
     }
 
     /// Status check function

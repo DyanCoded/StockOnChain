@@ -63,6 +63,7 @@ This is a placeholder status matrix, not a claim that a component is deployed or
 | Web app | Local scaffold | Next.js shell is implemented; no live deployment or real-device install has been verified. See [apps/web/README.md](./apps/web/README.md). |
 | API and chain client | To verify | Source folders exist; integration status is not asserted here. |
 | Soroban pot contract | To verify | Contract source is in `contracts/stokvel-pot`; deployment status is unverified. |
+| MOCK ZATBILL | Testnet demo token | No real T-bills, reserves, securities, yield, or payout are represented. See [docs/ASSET.md](./docs/ASSET.md). |
 | Stellar network | To verify | Confirm the configured network and passphrase before use. |
 | Identity checks, fiat rails, custody, and payouts | To verify / mock | Do not imply a real provider, licence, reserve, or payout without evidence. |
 | Yield or investment returns | Not asserted | No rate or return claim is made in this README. |
@@ -90,6 +91,7 @@ testnet-only `pnpm chain:bootstrap` command. Bootstrap generates role keys in th
 `.env`, funds them with Friendbot as needed, creates the MOCK asset trustlines,
 and deploys and invokes the contract. It updates public keys in
 [docs/ACCOUNTS.md](./docs/ACCOUNTS.md); never share or commit `.env`.
+To provision the separate ZATBILL Testnet demo asset, deploy the web app to its public HTTPS host, set `STELLAR_HOME_DOMAIN` in `.env` to that host (domain only), then run `pnpm chain:zatbill setup`. Use `pnpm chain:zatbill verify` to exercise authorization, freeze, and clawback. See [docs/ASSET.md](./docs/ASSET.md) for scope and limits.
 `pnpm test` runs Node network-guard tests. Rust contract tests are run separately
 with `cargo test --workspace`.
 

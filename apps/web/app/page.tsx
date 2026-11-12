@@ -9,6 +9,7 @@ const copy = {
     title: "StockOnChain",
     tagline: "A clearer view of your stokvel.",
     note: "No funds or investments are connected to this prototype.",
+    assetInfo: "MOCK ZATBILL is a Testnet demo token with no real backing.",
     advanced: "Advanced",
     testnet: "Freighter connection is optional and limited to Stellar Testnet.",
     connect: "Connect Freighter",
@@ -23,6 +24,8 @@ const copy = {
     title: "StockOnChain",
     tagline: "Bona kangcono iqembu lakho lokonga.",
     note: "Lesi sivivinyo asixhunyiwe emalini noma ekutshalweni kwezimali.",
+    assetInfo:
+      "I-MOCK ZATBILL iyithokheni yesivivinyo se-Testnet, ayisekelwe yizimpahla zangempela.",
     advanced: "Okuthuthukile",
     testnet:
       "Ukuxhuma kuFreighter akuphoqelekile futhi kusebenzisa iStellar Testnet kuphela.",
@@ -122,6 +125,9 @@ export default function Home() {
           <h1 id="page-title">{text.title}</h1>
           <p className="tagline">{text.tagline}</p>
           <p className="disclaimer">{text.note}</p>
+          <a className="asset-link" href="/assets">
+            {text.assetInfo}
+          </a>
           <details className="advanced-wallet">
             <summary>{text.advanced}</summary>
             <p>{text.testnet}</p>
