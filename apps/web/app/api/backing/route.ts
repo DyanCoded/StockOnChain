@@ -28,7 +28,8 @@ export function OPTIONS() {
 export async function GET(request: Request | NextRequest) {
   const custodianSecret = process.env.STELLAR_CUSTODIAN_SECRET_KEY?.trim();
   const issuerPub = process.env.STELLAR_ZATBILL_ISSUER_PUBLIC_KEY?.trim();
-  const homeDomain = process.env.STELLAR_HOME_DOMAIN?.trim() || "stockonchain.app";
+  const homeDomain =
+    process.env.STELLAR_HOME_DOMAIN?.trim() || "stockonchain.app";
 
   if (!custodianSecret || !issuerPub) {
     return Response.json(
@@ -47,7 +48,14 @@ export async function GET(request: Request | NextRequest) {
 
   // Attempt to load PDF from possible project locations, fallback to deterministic generation
   const candidatePdfPaths = [
-    path.join(process.cwd(), "apps", "web", "public", "assets", "mock-custody-statement.pdf"),
+    path.join(
+      process.cwd(),
+      "apps",
+      "web",
+      "public",
+      "assets",
+      "mock-custody-statement.pdf",
+    ),
     path.join(process.cwd(), "public", "assets", "mock-custody-statement.pdf"),
   ];
 

@@ -23,7 +23,8 @@ export function OPTIONS() {
 export function GET() {
   const custodianSecret = process.env.STELLAR_CUSTODIAN_SECRET_KEY?.trim();
   const issuerPub = process.env.STELLAR_ZATBILL_ISSUER_PUBLIC_KEY?.trim();
-  const homeDomain = process.env.STELLAR_HOME_DOMAIN?.trim() || "stockonchain.app";
+  const homeDomain =
+    process.env.STELLAR_HOME_DOMAIN?.trim() || "stockonchain.app";
 
   if (!custodianSecret || !issuerPub) {
     return Response.json(
