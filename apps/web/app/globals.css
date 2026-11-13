@@ -12,6 +12,7 @@
   --green: #17684d;
   --mint: #d8eee0;
   --gold: #d39a2f;
+  --focus: #704800;
   --display: Georgia, "Times New Roman", serif;
   --interface: "Aptos", "Segoe UI", sans-serif;
 }
@@ -30,6 +31,8 @@ body {
   margin: 0;
   color: var(--ink);
   font-family: var(--interface);
+  font-size: 16px;
+  line-height: 1.5;
   background:
     radial-gradient(
       ellipse at 82% 18%,
@@ -61,10 +64,11 @@ select {
 
 .brand {
   display: inline-flex;
+  min-height: 44px;
   align-items: center;
   gap: 11px;
   color: inherit;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   text-decoration: none;
 }
@@ -79,19 +83,16 @@ select {
   background: var(--green);
   font-family: var(--display);
   font-size: 20px;
-}
 
-.language-control {
-  position: relative;
-  display: flex;
-  align-items: center;
-  color: var(--muted);
-  font-size: 13px;
-}
+  .language-control {
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: var(--muted);
+    font-size: 16px;
+  }
 
-.language-control summary {
-  display: grid;
-  min-height: 40px;
+  min-height: 44px;
   align-items: center;
   padding: 0 12px;
   border: 1px solid var(--line);
@@ -120,7 +121,10 @@ select {
 }
 
 .language-options a {
-  padding: 9px 8px;
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 8px;
   border-radius: 3px;
   color: var(--ink);
   text-decoration: none;
@@ -133,7 +137,7 @@ select {
 
 .language-control summary:focus-visible,
 .language-options a:focus-visible {
-  outline: 3px solid var(--gold);
+  outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -152,11 +156,11 @@ select {
 }
 
 .wallet-page h1 {
-  font-size: clamp(32px, 7vw, 52px);
+  font-size: 48px;
 }
 
 .brand:focus-visible {
-  outline: 3px solid var(--gold);
+  outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -184,7 +188,7 @@ select {
   border-radius: 999px;
   color: var(--green);
   background: var(--mint);
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -198,7 +202,7 @@ select {
 h1 {
   margin: 25px 0 12px;
   font-family: var(--display);
-  font-size: clamp(42px, 9vw, 76px);
+  font-size: 64px;
   font-weight: 400;
   line-height: 1.04;
 }
@@ -208,7 +212,7 @@ h1 {
   margin: 0;
   color: var(--green);
   font-family: var(--display);
-  font-size: clamp(23px, 5vw, 34px);
+  font-size: 32px;
   line-height: 1.25;
 }
 
@@ -216,21 +220,23 @@ h1 {
   max-width: 470px;
   margin: 26px 0 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.6;
 }
 
 .asset-link {
-  display: inline-block;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
   margin-top: 12px;
   color: var(--green);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
   text-underline-offset: 3px;
 }
 
 .asset-link:focus-visible {
-  outline: 3px solid var(--gold);
+  outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -239,7 +245,8 @@ h1 {
 }
 
 .login-placeholder button {
-  min-height: 46px;
+  min-height: 48px;
+  font-size: 16px;
   padding: 0 16px;
   border: 1px solid var(--line);
   border-radius: 5px;
@@ -252,10 +259,13 @@ h1 {
   max-width: 470px;
   margin-top: 32px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .advanced-wallet summary {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
   width: fit-content;
   padding: 8px 0;
   color: var(--green);
@@ -268,7 +278,7 @@ h1 {
 }
 
 .advanced-wallet button {
-  min-height: 42px;
+  min-height: 44px;
   padding: 0 14px;
   border: 0;
   border-radius: 5px;
@@ -285,7 +295,7 @@ h1 {
 
 .advanced-wallet button:focus-visible,
 .advanced-wallet summary:focus-visible {
-  outline: 3px solid var(--gold);
+  outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
 
@@ -325,9 +335,252 @@ h1 {
   grid-area: 1 / 1;
   align-self: end;
   margin-bottom: 44px;
-  font-size: 10px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.12em;
+}
+
+.button {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button:focus-visible,
+.asset-links a:focus-visible,
+.asset-footer a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.button--primary {
+  color: var(--paper);
+  background: var(--green);
+}
+
+.button--secondary {
+  border-color: var(--green);
+  color: var(--green);
+  background: var(--paper);
+}
+
+.transaction-status {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.transaction-status__marker,
+.flow-step__number,
+.loading-state__marker {
+  display: inline-grid;
+  width: 32px;
+  aspect-ratio: 1;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  color: var(--green);
+  font-weight: 700;
+}
+
+.toast {
+  margin-block: 16px;
+  padding: 16px;
+  border: 2px solid var(--focus);
+  border-radius: 6px;
+  color: var(--ink);
+  background: #fff7e6;
+}
+
+.toast p,
+.system-card p,
+.empty-state p,
+.error-state p {
+  margin-bottom: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.system-card,
+.empty-state {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.system-card h3,
+.empty-state h3 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.flow-stepper {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.flow-step {
+  display: flex;
+  min-width: 0;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.flow-step__number {
+  width: 40px;
+  height: 40px;
+  background: var(--mint);
+}
+
+.flow-step__content {
+  min-width: 0;
+}
+
+.flow-step__content h3 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.35;
+}
+
+.flow-step__content p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.risk-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.loading-state {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.error-state {
+  margin-block: 12px;
+  padding: 14px;
+  border: 2px solid #8a1f11;
+  border-radius: 5px;
+  color: #57150d;
+  background: #fff2ef;
+}
+
+.asset-disclosure {
+  padding-bottom: 48px;
+}
+
+.asset-heading,
+.asset-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-block: 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.asset-heading h1 {
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+
+.asset-heading p,
+.asset-section p,
+.asset-section-note {
+  max-width: 780px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.asset-heading h2,
+.asset-section h2 {
+  font-size: 28px;
+  line-height: 1.25;
+}
+
+.asset-kicker {
+  color: var(--green);
+  font-weight: 700;
+}
+
+.asset-links,
+.asset-footer,
+.asset-locale {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 16px;
+}
+
+.asset-links a,
+.asset-footer a,
+.asset-locale a {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  color: var(--green);
+  font-size: 16px;
+  text-underline-offset: 3px;
+}
+
+.asset-meta,
+.asset-flags {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0 0;
+}
+
+.asset-meta > div,
+.asset-flags > div {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.asset-meta dt,
+.asset-flags dt {
+  font-weight: 700;
+}
+
+.asset-meta dd,
+.asset-flags dd {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 16px;
+}
+
+.asset-footer {
+  justify-content: space-between;
 }
 
 @keyframes arrive {
@@ -367,12 +620,39 @@ h1 {
   }
 
   .welcome-stamp span:first-child {
-    font-size: 50px;
+    font-size: 48px;
   }
 
   .welcome-stamp span:last-child {
     margin-bottom: 22px;
-    font-size: 7px;
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 42px;
+  }
+
+  .tagline {
+    font-size: 24px;
+  }
+
+  .flow-stepper,
+  .risk-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .asset-heading,
+  .asset-section {
+    padding-block: 20px;
+  }
+
+  .asset-heading h2,
+  .asset-section h2 {
+    font-size: 24px;
+  }
+
+  .wallet-page h1 {
+    font-size: 36px;
   }
 }
 

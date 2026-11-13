@@ -62,5 +62,13 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
 * **Changes:**
   - Added a Testnet-guarded mZAR setup script using the separate Anchor-sim issuer; it sets the issuer home domain, deploys the SAC, and records the SAC address.
   - Added an API faucet that checks recipient trustlines and limits each account to 100 mZAR per 24 hours; the in-memory cooldown is explicitly scoped to a single process.
-  - Added rand currency formatting, an mZAR disclosure page, and `MOCK mZAR` metadata in the Testnet `stellar.toml`.
-  - Recorded Mainnet Horizon `ZAR`/`ZARP` asset-code observations and verification limits in [B-02.md](./B-02.md); the project does not use any Mainnet issuer.
+  - Added rand currency formatting, an mZAR disclosure page, and MOCK mZAR metadata in the Testnet stellar.toml.
+  - Recorded Mainnet Horizon ZAR/ZARP asset-code observations and verification limits in [B-02.md](./B-02.md); the project does not use any Mainnet issuer.
+
+### [2026-11-13] Risk Explainer and Accessibility (D-02)
+* **Prompt / Task:** Add the D-02 design-system primitives, asset-flow narrative, plain-language risk explainer, and WCAG 2.2 AA checks.
+* **Changes:**
+  - Added reusable button, card, stepper, toast, transaction status, empty, loading, and error components; added the illustrative rand-to-T-Bill-to-pot-share flow and four explicit risk statements.
+  - Raised text and touch-target sizes, added visible keyboard focus, and retained text labels for simulated/not-connected statuses. The static shell uses local assets and supports low-data use without remote imagery or fonts.
+  - Ran axe-core 4.14 at 360×800 on six English/isiZulu routes: zero WCAG 2.0/2.1/2.2 A/AA violations. Keyboard focus/order and 360px overflow were checked in-browser.
+  - isiZulu fluent-speaker review, manual screen-reader testing, and non-technical comprehension testing remain pending; these are not claimed complete.

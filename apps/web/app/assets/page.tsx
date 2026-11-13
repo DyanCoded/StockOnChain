@@ -1,3 +1,6 @@
+import { EmptyState, TransactionStatus } from "../components/design-system";
+import RiskExplainer from "../components/risk-explainer";
+
 export const dynamic = "force-dynamic";
 
 const flags = [
@@ -23,7 +26,12 @@ const flags = [
   },
 ];
 
-export default function AssetTransparencyPage() {
+export default function AssetTransparencyPage({
+  searchParams,
+}: {
+  searchParams: { lang?: string };
+}) {
+  const locale = searchParams.lang === "zu" ? "zu" : "en";
   const issuer = process.env.STELLAR_ZATBILL_ISSUER_PUBLIC_KEY;
   const homeDomain = process.env.STELLAR_HOME_DOMAIN;
 
@@ -36,10 +44,23 @@ export default function AssetTransparencyPage() {
           </span>
           <span>StockOnChain</span>
         </a>
-        <span className="status">
-          <span aria-hidden="true" />
-          Testnet demo
-        </span>
+        <TransactionStatus label="Testnet mock demo" />
+        <nav className="asset-locale" aria-label="Language">
+          <a
+            href="/assets"
+            lang="en-ZA"
+            aria-current={locale === "en" ? "page" : undefined}
+          >
+            English
+          </a>
+          <a
+            href="/assets?lang=zu"
+            lang="zu-ZA"
+            aria-current={locale === "zu" ? "page" : undefined}
+          >
+            isiZulu
+          </a>
+        </nav>
       </header>
 
       <section className="asset-heading" aria-labelledby="asset-title">
@@ -64,6 +85,8 @@ export default function AssetTransparencyPage() {
         </div>
       </section>
 
+      <RiskExplainer locale={locale} />
+
       <section className="asset-section" aria-labelledby="value-title">
         <h2 id="value-title">Demo value</h2>
         <p>
@@ -80,7 +103,13 @@ export default function AssetTransparencyPage() {
           </div>
           <div>
             <dt>Issuer</dt>
-            <dd>{issuer ?? "Configure issuer in deployment environment"}</dd>
+            <dd>
+              {issuer ?? (
+                <EmptyState title="No issuer configured">
+                  No live issuer or backing partner is connected to this demo.
+                </EmptyState>
+              )}
+            </dd>
           </div>
           <div>
             <dt>Home domain</dt>

@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { Button, ErrorState, LoadingState } from "./design-system";
 
 const walletText = {
   en: {
     connect: "Connect Freighter",
     disconnect: "Disconnect",
     connecting: "Connecting...",
+    errorTitle: "Wallet connection unavailable",
+    loading: "Waiting for Freighter approval.",
     error:
       "Could not connect. Check that Freighter is available and try again.",
   },
@@ -14,6 +17,8 @@ const walletText = {
     connect: "Xhuma kuFreighter",
     disconnect: "Nqamula",
     connecting: "Iyaxhuma...",
+    errorTitle: "Ukuxhuma isikhwama akutholakali",
+    loading: "Ilinde imvume yeFreighter.",
     error:
       "Ayikwazanga ukuxhuma. Hlola ukuthi iFreighter iyatholakala yini bese uzama futhi.",
   },
@@ -68,20 +73,23 @@ export default function AdvancedWallet({ locale }: { locale: "en" | "zu" }) {
       {address ? (
         <div className="wallet-status">
           <code>{address}</code>
-          <button type="button" onClick={disconnectWallet}>
+          <Button type="button" variant="secondary" onClick={disconnectWallet}>
             {text.disconnect}
-          </button>
+          </Button>
         </div>
       ) : (
-        <button
+        <Button
           type="button"
           onClick={connectFreighter}
           disabled={isConnecting}
         >
-          {isConnecting ? text.connecting : text.connect}
-        </button>
+          {text.connect}
+        </Button>
       )}
-      {walletError && <p role="alert">{walletError}</p>}
+      {isConnecting && <LoadingState label={text.loading} />}
+      {walletError && (
+        <ErrorState title={text.errorTitle}>{walletError}</ErrorState>
+      )}
     </>
   );
 }

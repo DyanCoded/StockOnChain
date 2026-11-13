@@ -18,7 +18,7 @@
   <body>
     <main class="shell">
       <header class="topbar">
-        <a class="brand" href="/" aria-label="StockOnChain home">
+        <a class="brand" href="/">
           <span class="brand-mark" aria-hidden="true">S</span>
           <span>StockOnChain</span>
         </a>
@@ -38,6 +38,9 @@
           <p class="disclaimer">
             No funds or investments are connected to this prototype.
           </p>
+          <a class="asset-link" href="/assets">
+            MOCK ZATBILL: Testnet demo token, with no real backing.
+          </a>
           <div class="login-placeholder">
             <button type="button" disabled>Sign in (coming from I-01)</button>
           </div>
@@ -52,6 +55,58 @@
         <div class="welcome-stamp" aria-hidden="true">
           <span>S</span><span>SC</span>
         </div>
+      </section>
+      <section class="asset-section" aria-labelledby="asset-flow-title">
+        <h2 id="asset-flow-title">Your rand to your share</h2>
+        <p>
+          Illustrative model only. No real-world assets or services are
+          connected to this Testnet demo.
+        </p>
+        <ol class="flow-stepper" aria-label="Illustrative asset flow">
+          <li class="flow-step">
+            <span class="flow-step__number" aria-hidden="true">1</span>
+            <div class="flow-step__content">
+              <h3>Your Rand</h3>
+              <p>A contribution is represented by a mock digital balance.</p>
+              <span class="transaction-status"
+                ><span aria-hidden="true">!</span>Simulated contribution</span
+              >
+            </div>
+          </li>
+          <li class="flow-step">
+            <span class="flow-step__number" aria-hidden="true">2</span>
+            <div class="flow-step__content">
+              <h3>Government T-Bill held by a custodian</h3>
+              <p>
+                No real bill, custodian, or backing is connected to this demo.
+              </p>
+              <span class="transaction-status"
+                ><span aria-hidden="true">!</span>Not connected</span
+              >
+            </div>
+          </li>
+          <li class="flow-step">
+            <span class="flow-step__number" aria-hidden="true">3</span>
+            <div class="flow-step__content">
+              <h3>Your share in the pot</h3>
+              <p>
+                A simulated share record, not ownership or a redemption claim.
+              </p>
+              <span class="transaction-status"
+                ><span aria-hidden="true">!</span>Testnet mock</span
+              >
+            </div>
+          </li>
+        </ol>
+      </section>
+      <section class="risk-summary" aria-labelledby="risk-summary-title">
+        <h2 id="risk-summary-title">Know the risks</h2>
+        <p>
+          Custody and backing can fail, funds may be locked until maturity,
+          yield is not guaranteed, and wallet mistakes may be irreversible. This
+          prototype has no real T-Bill or custodian.
+        </p>
+        <a href="/assets">Read all risks and asset details</a>
       </section>
     </main>
     <script src="/shell.js" defer></script>
