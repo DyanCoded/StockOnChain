@@ -725,11 +725,7 @@ impl StokvelPotContract {
     }
 
     /// Configure the authorized Custodian Ed25519 public key (Admin only).
-    pub fn set_custodian_pubkey(
-        env: Env,
-        admin: Address,
-        pubkey: BytesN<32>,
-    ) -> Result<(), Error> {
+    pub fn set_custodian_pubkey(env: Env, admin: Address, pubkey: BytesN<32>) -> Result<(), Error> {
         admin.require_auth();
         let configured_admin = Self::get_admin(env.clone());
         if admin != configured_admin {
@@ -746,9 +742,7 @@ impl StokvelPotContract {
 
     /// Retrieve the configured Custodian Ed25519 public key.
     pub fn get_custodian_pubkey(env: Env) -> Option<BytesN<32>> {
-        env.storage()
-            .instance()
-            .get(&DataKey::CustodianPubkey)
+        env.storage().instance().get(&DataKey::CustodianPubkey)
     }
 
     /// Verify custodian Ed25519 signature over attestation payload and update on-chain reserve limit (T-07).

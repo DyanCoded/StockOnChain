@@ -144,7 +144,8 @@ fn test_revert_forged_attestation_signature() {
     sig_bytes[63] ^= 0xaa;
     let forged_sig_soroban = soroban_sdk::BytesN::<64>::from_array(&env, &sig_bytes);
 
-    let result = client.try_update_attested_reserves(&pk_soroban, &reserves, &ts, &forged_sig_soroban);
+    let result =
+        client.try_update_attested_reserves(&pk_soroban, &reserves, &ts, &forged_sig_soroban);
     assert!(result.is_err());
     // Stored reserves must remain unchanged
     assert_eq!(client.get_attested_reserves(), 100_000);
@@ -177,7 +178,8 @@ fn test_revert_tampered_attestation_amount() {
 
     // Attacker attempts to claim 100_000 reserves with honest 5_000 signature
     let tampered_reserves = 100_000i128;
-    let result = client.try_update_attested_reserves(&pk_soroban, &tampered_reserves, &ts, &sig_soroban);
+    let result =
+        client.try_update_attested_reserves(&pk_soroban, &tampered_reserves, &ts, &sig_soroban);
     assert!(result.is_err());
 }
 
@@ -317,10 +319,12 @@ fn test_revert_unauthorized_custodian_pubkey() {
     let (client, admin, _, _, _, _, _, _) = setup_pot_with_tokens(&env);
 
     let signing_key_a = SigningKey::from_bytes(&[11u8; 32]);
-    let pk_a = soroban_sdk::BytesN::<32>::from_array(&env, &signing_key_a.verifying_key().to_bytes());
+    let pk_a =
+        soroban_sdk::BytesN::<32>::from_array(&env, &signing_key_a.verifying_key().to_bytes());
 
     let signing_key_b = SigningKey::from_bytes(&[22u8; 32]);
-    let pk_b = soroban_sdk::BytesN::<32>::from_array(&env, &signing_key_b.verifying_key().to_bytes());
+    let pk_b =
+        soroban_sdk::BytesN::<32>::from_array(&env, &signing_key_b.verifying_key().to_bytes());
 
     // Admin binds custodian A
     client.set_custodian_pubkey(&admin, &pk_a);
@@ -368,7 +372,8 @@ fn test_revert_outdated_attestation_timestamp() {
     msg_old[0..17].copy_from_slice(b"ZATBILL_RESERVES:");
     msg_old[17..33].copy_from_slice(&2_000i128.to_be_bytes());
     msg_old[33..41].copy_from_slice(&ts_old.to_be_bytes());
-    let sig_old = soroban_sdk::BytesN::<64>::from_array(&env, &signing_key.sign(&msg_old).to_bytes());
+    let sig_old =
+        soroban_sdk::BytesN::<64>::from_array(&env, &signing_key.sign(&msg_old).to_bytes());
 
     let res = client.try_update_attested_reserves(&pk, &2_000, &ts_old, &sig_old);
     assert_eq!(res, Err(Ok(Error::InvalidTimestamp)));
