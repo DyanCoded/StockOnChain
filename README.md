@@ -63,7 +63,7 @@ This is a placeholder status matrix, not a claim that a component is deployed or
 |---|---|---|
 | Web app | Prototype deployed | Next.js PWA deployed at [https://stock-on-chain-gmu2.vercel.app/](https://stock-on-chain-gmu2.vercel.app/). See [apps/web/README.md](./apps/web/README.md). |
 | API and chain client | To verify | Source folders exist; integration status is not asserted here. |
-| Soroban pot contract | To verify | Contract source is in `contracts/stokvel-pot`; deployment status is unverified. |
+| Soroban pot contract | Prototype deployed | State-machine pot contract deployed on Testnet (`CCCC3ERGNWEICYH377ABAHKGTHA2T5YD7K7ETCHGESQ3I7RSUSAFXQNB`). See [docs/DEPLOYMENTS.md](./docs/DEPLOYMENTS.md) and [docs/POT_RULES.md](./docs/POT_RULES.md). |
 | MOCK ZATBILL | Testnet demo token | No real T-bills, reserves, securities, yield, or payout are represented. See [docs/ASSET.md](./docs/ASSET.md). |
 | MOCK mZAR | Testnet demo token | Issued only by the Anchor-sim Testnet account. Not backed by fiat; Mainnet ZAR/ZARP assets are not used. See [docs/B-02.md](./docs/B-02.md). |
 | Stellar network | To verify | Confirm the configured network and passphrase before use. |
@@ -99,6 +99,12 @@ Run `pnpm chain:mzar` to set the Anchor-sim issuer's home domain and deploy the 
 with `cargo test --workspace`.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidance and [AI_GUIDELINES.md](./AI_GUIDELINES.md) for G1–G10.
+
+## 8. Smart Contract & Fallback Architecture
+
+The stokvel pot is governed by the `StokvelPot` Soroban smart contract, implementing a 4-state lifecycle (`Open`, `Invested`, `Matured`, `Settled`). Complete plain-language rules, contribution caps, backing verification limits, and pro-rata distribution formulas are documented in [docs/POT_RULES.md](./docs/POT_RULES.md). Deployed contract addresses are recorded in [docs/DEPLOYMENTS.md](./docs/DEPLOYMENTS.md).
+
+- **Fallback Plan (Classic-Only):** If Soroban smart contract operations encounter consensus, RPC, or network blockers, StockOnChain falls back to a Classic Stellar multisig account (2-of-3 threshold among Admin, Custodian, and Dealer) with issuer trustline allowlisting, where pot state transitions and contribution limits are managed and audited by the backend API service.
 
 ## Live URL
 

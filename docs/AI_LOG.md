@@ -85,3 +85,15 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
   - Added `docs/KYC.md` detailing the simulation vs. production FICA compliance (DHA HANIS/ABIS database verification, biometric liveness, sanctions/PEP screening, goAML reporting, and POPIA data minimization).
   - Built interactive `KycAllowlist` UI component in `apps/web/app/components/kyc-allowlist.tsx` integrated into the Advanced Wallet page with full English and isiZulu localization, handling the safe `op_not_authorized` failure state and simulated admin freeze.
   - Added 12 unit tests in `services/api/src/kyc.test.ts` and `scripts/zatbill.test.ts`. All 29 workspace tests pass cleanly.
+
+### [2026-11-13] StokvelPot Soroban Smart Contract (T-04)
+* **Prompt / Task:** Implement Issue T-04: StokvelPot Soroban contract (#8) with explicit 4-state lifecycle (Open, Invested, Matured, Settled), membership control, mZAR contributions, atomic ZATBILL investment with backing verification, post-maturity settlement, pro-rata claims with rounding protection, emergency pause, storage TTL management, comprehensive cargo tests with 5 members and all reverts, live Testnet deployment recorded in docs/DEPLOYMENTS.md, and plain-language rules in docs/POT_RULES.md.
+* **Changes:**
+  - Implemented `StokvelPotContract` in `contracts/stokvel-pot/src/lib.rs` with `PotState` enum (`Open`, `Invested`, `Matured`, `Settled`), strict typed `Error` enum (`NotMember`, `OverCap`, `Paused`, `WrongState`, `ZeroAmount`, `NotMatured`, `AlreadyClaimed`, `ZeroBalance`, `InsufficientBacking`, `AlreadyMember`, `NotAdmin`, `NotDealer`), and storage TTL extensions (`17280` ledgers threshold, `518400` ledgers bump).
+  - Enforced guardrail against unbounded loops: all contribution, investment, settlement, and claim calls operate in O(1) constant time with zero iteration over member lists.
+  - Implemented mathematical backing verification: Dealer must deliver at least 1 ZATBILL per 1 mZAR invested (`zatbill_amount >= total_mzar`), guaranteeing full collateral backing and non-negative yield at maturity.
+  - Implemented integer division floor rounding rule for pro-rata payouts, leaving residual dust in the pot to protect against contract insolvency.
+  - Added comprehensive `contracts/stokvel-pot/src/test.rs` suite with 12 tests covering the full 5-member lifecycle, cap enforcement, pause controls, backing checks, premature claims, and double-claim reverts. All tests pass (`cargo test`).
+  - Compiled contract with `stellar contract build` and deployed live to Stellar Testnet with contract ID `CCCC3ERGNWEICYH377ABAHKGTHA2T5YD7K7ETCHGESQ3I7RSUSAFXQNB`.
+  - Created `docs/DEPLOYMENTS.md` recording contract addresses, deployment timestamps, and CLI verification commands.
+  - Created `docs/POT_RULES.md` documenting the 4 lifecycle states, plain-language UI copy rules, rounding rule, DoS safety guarantees, and the Classic multisig fallback plan. Updated `README.md` and `docs/ACCOUNTS.md`.
