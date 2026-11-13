@@ -34,6 +34,64 @@ The ZATBILL classic asset is wrapped by its deterministic Stellar Asset Contract
 
 Every command refuses to run unless `STELLAR_NETWORK=testnet` and the exact Stellar Testnet passphrase are configured. Successful transactions print their Stellar Testnet Horizon links. Keep secret keys in the ignored local `.env`; never commit or share them.
 
+## Primary Dealer Pricing & Yield Engine (T-05)
+
+### 1. South African Money Market Pricing Conventions
+
+Treasury Bills issued by the South African Government (via the South African Reserve Bank - SARB) are short-term zero-coupon debt instruments sold at a discount to face value and redeemed at full face value (R1.00 per token) at maturity.
+
+South African money markets adhere to the **Actual / 365** day-count convention. The primary dealer pricing engine calculates the discount purchase price per unit as:
+
+$$P = F \times \left(1 - \frac{d \times t}{365}\right)$$
+
+Where:
+- $P$: The discount purchase price per token (in rand).
+- $F$: The face value per token at maturity ($F = \text{R1.00}$).
+- $d$: The annualized discount rate quoted by the dealer (e.g. $0.0825$ for $8.25\%$ p.a., or $0.10$ for $10.00\%$ demo rate).
+- $t$: The tenor / term duration in days ($91$ days for standard South African Treasury bills).
+
+### 2. Standard Financial Yield Calculation
+
+The annualized investment yield earned by the pot is calculated using the standard money-market formula:
+
+$$\text{Yield} = \frac{F - P}{P} \times \frac{365}{t}$$
+
+Where:
+- $\frac{F - P}{P}$ represents the holding-period return over the term $t$.
+- $\frac{365}{t}$ annualizes the holding-period return under the SARB Actual/365 convention.
+
+### 3. Non-Guaranteed Simulated Rate Disclosure (AI Guardrails G4 & G6)
+
+> [!IMPORTANT]
+> **Simulated Demo Disclosure:** All rates and yields in StockOnChain are simulated demo figures.
+> - The configured dealer discount rate ($8.25\%$ to $10.00\%$ p.a.) is a test simulation.
+> - Rates and returns are strictly **indicative and non-guaranteed**.
+> - StockOnChain holds **no real South African Government Treasury bills, regulated banking deposits, or statutory fiat reserves**.
+> - Benchmark reference: Typical South African 91-day Treasury Bill auction clearing yields range between $8.10\%$ and $8.45\%$ p.a. (Source: SARB Weekly Treasury Bill Tender Results, Actual/365 convention).
+
+### 4. Time-Compressed Demo Bill
+
+To enable full end-to-end verification of the on-chain pot lifecycle (`contribute -> invest -> mature -> settle -> claim`) on the Stellar Testnet without waiting 91 calendar days:
+
+- **Standard Product:** 91-Day South African Treasury Bill ($t = 91$ days, term duration $7,862,400$ seconds).
+- **Time-Compressed Product:** Short-dated demo bill option maturing in 2 minutes ($120$ seconds ledger time).
+- **Visible Labeling:** Always labeled with the prominent badge: `[time compressed for demo]`. The financial pricing model calculates yield based on the 91-day benchmark discount while accelerating ledger maturity for rapid demonstration and automated testing.
+
+### 5. Cent-Precision Rounding & Pro-Rata Distribution Rule
+
+When the pot settles and members withdraw their returns via `claim(member)`:
+
+$$\text{Payout} = \left\lfloor\frac{\text{Shares} \times \text{Settlement Total}}{\text{Total Shares}}\right\rfloor$$
+
+- Integer floor division is enforced by the Soroban smart contract.
+- Any fractional stroop/cent remainder from division remains in the pot contract reserve.
+- This mathematically guarantees that $\sum \text{payouts} \le \text{Settlement Total}$ and $\sum \text{payouts} + \text{potRemainder} = \text{Settlement Total}$ down to the exact stroop and cent with zero overpayment or contract insolvency risk.
+
+### 6. CLI Automation Scripts
+
+- `pnpm demo:invest`: Initializes a time-compressed demo pot, pulls member contributions, quotes primary dealer discount pricing, and executes the dual-auth investment swap.
+- `pnpm demo:mature`: Awaits the 120s maturity countdown, triggers `mature()`, settles the pot with the primary dealer at full face value, claims member payouts, and prints the verified cent-precision reconciliation table.
+
 ## Official References
 
 - [Asset authorization flags](https://developers.stellar.org/docs/tokens/control-asset-access)
@@ -42,3 +100,6 @@ Every command refuses to run unless `STELLAR_NETWORK=testnet` and the exact Stel
 - [Deploy a Stellar Asset Contract](https://developers.stellar.org/docs/tools/cli/cookbook/deploy-stellar-asset-contract)
 - [Issue an asset](https://developers.stellar.org/docs/tokens/how-to-issue-an-asset)
 - [SEP-1 Stellar info file](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0001.md)
+- [SARB Money Market Operations & Tender Results](https://www.resbank.co.za/en/home/what-we-do/financial-markets/south-african-money-market)
+- [National Treasury Debt Management & Borrowing Strategy](http://www.treasury.gov.za/)
+

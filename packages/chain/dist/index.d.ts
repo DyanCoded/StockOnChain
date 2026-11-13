@@ -22,3 +22,4 @@ export interface ContractConfig {
     contractId: string;
     network: 'testnet';
 }
+export * from './dealer';

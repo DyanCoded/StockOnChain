@@ -97,3 +97,25 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
   - Compiled contract with `stellar contract build` and deployed live to Stellar Testnet with contract ID `CCCC3ERGNWEICYH377ABAHKGTHA2T5YD7K7ETCHGESQ3I7RSUSAFXQNB`.
   - Created `docs/DEPLOYMENTS.md` recording contract addresses, deployment timestamps, and CLI verification commands.
   - Created `docs/POT_RULES.md` documenting the 4 lifecycle states, plain-language UI copy rules, rounding rule, DoS safety guarantees, and the Classic multisig fallback plan. Updated `README.md` and `docs/ACCOUNTS.md`.
+
+### [2026-11-13] Mock Primary Dealer and Maturity Engine (T-05)
+* **Prompt / Task:** Implement Issue T-05: Mock primary dealer and maturity engine (#9) with dealer discount pricing module, time-compressed demo bill (120s term) labeled "time compressed for demo", annualized indicative yield helper, CLI automation scripts (`pnpm demo:invest` and `pnpm demo:mature`), cent-precision rounding tests, documentation of pricing formulas in `docs/ASSET.md`, and complete verified on-chain lifecycle execution on Stellar Testnet.
+* **Changes:**
+  - Implemented `@stockonchain/chain/dealer` (`packages/chain/src/dealer.ts`) with South African Money Market actual/365 discount pricing formula $P = F \times (1 - \frac{d \times t}{365})$ and annualized yield formula $\text{Yield} = \frac{F - P}{P} \times \frac{365}{t}$.
+  - Added product configurations: standard 91-day product ($t = 91$ days, 8.25% p.a.) and time-compressed demo bill ($t = 91$ financial equivalence, 120 seconds ledger term, 10.0% p.a.) labeled `time compressed for demo`.
+  - Added primary dealer quote generator `quotePrimaryDealer` enforcing non-guaranteed demo rate disclaimers (G4 & G6).
+  - Added `reconcileMemberPayouts` function enforcing cent-precision integer division invariants: $\sum \text{payouts} + \text{potRemainder} \equiv \text{Settlement Total}$ down to the exact stroop and cent.
+  - Added 7 unit tests in `packages/chain/src/dealer.test.ts` testing pricing formulas, yield checks, time-compressed configs, disclaimers, and 5-member/odd-share cent reconciliation. All 36 monorepo tests pass cleanly.
+  - Implemented Soroban multi-party auth client `scripts/soroban-client.ts` supporting dual-party authorization (`admin` + `dealer`) with automated retry on transient network resets.
+  - Created CLI automation scripts `scripts/demo-invest.ts` (`pnpm demo:invest`) and `scripts/demo-mature.ts` (`pnpm demo:mature`).
+  - Executed complete end-to-end lifecycle on Stellar Testnet for contract `CD3KZIPIZLF2G4D66IJ4NP5MKL22DX4VKLZ4TH7WY7IIM43SKA7E5UCX`:
+    - Initialization: [Tx 24f6cb37...](https://horizon-testnet.stellar.org/transactions/24f6cb37f690917d8e30164880e95fce16665db1c8f73ea79e60722aa3a8989e)
+    - SAC Authorization: [Tx 61c9d972...](https://horizon-testnet.stellar.org/transactions/61c9d97209d1031aef36bf3e1994751c05def9e041464c2070f177069f984288)
+    - Allowlist Additions: [Tx 2139e730...](https://horizon-testnet.stellar.org/transactions/2139e7303d556af1ebe4260964806bcd6cdb8baf43b786e5ae2ee32732bee394), [Tx 99187be6...](https://horizon-testnet.stellar.org/transactions/99187be66b8f5d7c501bedc1a3778c4805d34cc83f2b5e4ecedf560803febfbf), [Tx b584cabb...](https://horizon-testnet.stellar.org/transactions/b584cabb025dbf887a1853c4c262cc6caf72ed64b3e967bf2f5c992be6c08ff4)
+    - Contributions (R100 total): [Tx 264bdbcb...](https://horizon-testnet.stellar.org/transactions/264bdbcb1cf54eb5ab50cc5ae5bad54fcea713853b27b81eaeb8d6e42fbac2e1), [Tx 3d2dcae6...](https://horizon-testnet.stellar.org/transactions/3d2dcae6113b39bb26dfc992b401353254c54766f79d9b77520e807dfedced67), [Tx 8ad7ba03...](https://horizon-testnet.stellar.org/transactions/8ad7ba03a6e6bda9bb325cd71358f27ab11662b8f87330d5461efc3191070110)
+    - Dual-Auth Investment Swap: [Tx 49e811b0...](https://horizon-testnet.stellar.org/transactions/49e811b036e931bff2f63bd7fc7e8f18e63109e7c777c22360ee80b3ec3e8a20)
+    - Full Face-Value Settlement: [Tx 9e114ce1...](https://horizon-testnet.stellar.org/transactions/9e114ce12eb846c79e615531cbfe389e3b81a773477891926e9e0d66e47566b4)
+    - Pro-Rata Member Claims: [Tx f9fbc127...](https://horizon-testnet.stellar.org/transactions/f9fbc12783e6426219fc26a392c28a1e8f07b34af67f9c2c51f129f53e1c48b8), [Tx 8b039b90...](https://horizon-testnet.stellar.org/transactions/8b039b906472eafa85f3707f90bfd5b3940e0f673ce077335ed01185872c5d67), [Tx 99498f5e...](https://horizon-testnet.stellar.org/transactions/99498f5e16298807674376368dc4ffa3af101eec22634d4a7ba2c660bbef6599)
+    - Strict cent-level reconciliation verified: Total pooled R 100.00, settlement payout R 102.00, claims R 102.00, dust 0 stroops.
+  - Documented exact pricing formulas, Actual/365 conventions, non-guaranteed simulated rate disclosures, and testnet verification results in `docs/ASSET.md` and `docs/DEPLOYMENTS.md`.
+
