@@ -56,3 +56,11 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
   - Added authorize, freeze, clawback, and end-to-end Testnet verification commands with Testnet Horizon transaction links.
   - Added a CORS-enabled SEP-1 `stellar.toml`, a transparency disclosure explicitly marked not an attestation, `docs/ASSET.md`, and a localized home-page link.
   - Verified implementation details against official Stellar asset flags, clawback, SAC, issue-asset, SEP-1, and CLI documentation. No live Testnet deployment was run because no local `.env` or public home domain was configured.
+
+### [2026-11-13] Risk Explainer and Accessibility (D-02)
+* **Prompt / Task:** Add the D-02 design-system primitives, asset-flow narrative, plain-language risk explainer, and WCAG 2.2 AA checks.
+* **Changes:**
+  - Added reusable button, card, stepper, toast, transaction status, empty, loading, and error components; added the illustrative rand-to-T-Bill-to-pot-share flow and four explicit risk statements.
+  - Raised text and touch-target sizes, added visible keyboard focus, and retained text labels for simulated/not-connected statuses. The static shell uses local assets and supports low-data use without remote imagery or fonts.
+  - Ran axe-core 4.14 at 360×800 on six English/isiZulu routes: zero WCAG 2.0/2.1/2.2 A/AA violations. Keyboard focus/order and 360px overflow were checked in-browser.
+  - isiZulu fluent-speaker review, manual screen-reader testing, and non-technical comprehension testing remain pending; these are not claimed complete.

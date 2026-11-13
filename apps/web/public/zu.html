@@ -18,7 +18,7 @@
   <body>
     <main class="shell">
       <header class="topbar">
-        <a class="brand" href="/zu" aria-label="Ikhaya le-StockOnChain">
+        <a class="brand" href="/zu">
           <span class="brand-mark" aria-hidden="true">S</span>
           <span>StockOnChain</span>
         </a>
@@ -38,6 +38,10 @@
           <p class="disclaimer">
             Lesi sivivinyo asixhunyiwe emalini noma ekutshalweni kwezimali.
           </p>
+          <a class="asset-link" href="/assets?lang=zu">
+            I-MOCK ZATBILL: ithokheni yesivivinyo se-Testnet, ayisekelwe
+            yizimpahla zangempela.
+          </a>
           <div class="login-placeholder">
             <button type="button" disabled>
               Ngena ngemvume (kuvela ku-I-01)
@@ -55,6 +59,60 @@
         <div class="welcome-stamp" aria-hidden="true">
           <span>S</span><span>SC</span>
         </div>
+      </section>
+      <section class="asset-section" aria-labelledby="asset-flow-title">
+        <h2 id="asset-flow-title">Irandi lakho iye esabelweni sakho</h2>
+        <p>
+          Lesi yisibonelo kuphela. Azikho izimpahla noma izinsizakalo zangempela
+          ezixhunywe kulesi sivivinyo se-Testnet.
+        </p>
+        <ol class="flow-stepper" aria-label="Ukuhamba kwemali okuyisibonelo">
+          <li class="flow-step">
+            <span class="flow-step__number" aria-hidden="true">1</span>
+            <div class="flow-step__content">
+              <h3>Irandi lakho</h3>
+              <p>Umnikelo umelelwa ibhalansi yedijithali eyisivivinyo.</p>
+              <span class="transaction-status"
+                ><span aria-hidden="true">!</span>Umnikelo olingisiwe</span
+              >
+            </div>
+          </li>
+          <li class="flow-step">
+            <span class="flow-step__number" aria-hidden="true">2</span>
+            <div class="flow-step__content">
+              <h3>Ibhili kaHulumeni ephethwe umgcini</h3>
+              <p>Ibhili, umgcini nesiqinisekiso semali akuxhunyiwe.</p>
+              <span class="transaction-status"
+                ><span aria-hidden="true">!</span>Akuxhunyiwe</span
+              >
+            </div>
+          </li>
+          <li class="flow-step">
+            <span class="flow-step__number" aria-hidden="true">3</span>
+            <div class="flow-step__content">
+              <h3>Isabelo sakho eqoqweni</h3>
+              <p>
+                Irekhodi lesivivinyo, hhayi ubunikazi noma isithembiso
+                sokukhokhelwa.
+              </p>
+              <span class="transaction-status"
+                ><span aria-hidden="true">!</span>Isivivinyo se-Testnet</span
+              >
+            </div>
+          </li>
+        </ol>
+      </section>
+      <section class="risk-summary" aria-labelledby="risk-summary-title">
+        <h2 id="risk-summary-title">Yazi ubungozi</h2>
+        <p>
+          Ukugcinwa noma ukuqinisekiswa kwemali kungahluleka, imali ingase
+          ikhiywe kuze kuvuthwe, inzuzo ayiqinisekisiwe, futhi amaphutha
+          esikhwama angase angalungiseki. Lesi sivivinyo asinayo i-T-Bill noma
+          umgcini wangempela.
+        </p>
+        <a href="/assets?lang=zu"
+          >Funda bonke ubungozi nemininingwane yempahla</a
+        >
       </section>
     </main>
     <script src="/shell.js" defer></script>
