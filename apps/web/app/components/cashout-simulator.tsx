@@ -114,10 +114,6 @@ export default function CashoutSimulator({
 
   // Auto quote on load or change
   useEffect(() => {
-    fetchQuote();
-  }, [rail, amount]);
-
-  function fetchQuote() {
     const parsed = parseFloat(amount) || 100;
     const fixedFee = rail === "instant_bank" ? 2.5 : 1.5;
     const percentRate = rail === "instant_bank" ? 0.005 : 0.0075;
@@ -143,7 +139,7 @@ export default function CashoutSimulator({
       disclaimer:
         "SIMULATION ONLY: This is a demonstration flow on Stellar Testnet. No real South African rands or live bank transactions occur.",
     });
-  }
+  }, [rail, amount]);
 
   async function handleSimulateWithdrawal() {
     if (!account) return;
@@ -173,9 +169,8 @@ export default function CashoutSimulator({
   }
 
   return (
-    <Card className="cashout-simulator space-y-4">
+    <Card title={text.title} className="cashout-simulator space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-bold">{text.title}</h2>
         <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
           {text.badge}
         </span>
