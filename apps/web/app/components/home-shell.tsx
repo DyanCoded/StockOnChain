@@ -1,22 +1,18 @@
-import AdvancedWallet from "./advanced-wallet";
-import LocalePicker from "./locale-picker";
-
 const copy = {
   en: {
     language: "Language",
     prototype: "Prototype",
-    title: "StockOnChain",
     tagline: "A clearer view of your stokvel.",
     note: "No funds or investments are connected to this prototype.",
     assetInfo: "MOCK ZATBILL is a Testnet demo token with no real backing.",
     signIn: "Sign in (coming from I-01)",
     advanced: "Advanced",
     testnet: "Freighter connection is optional and limited to Stellar Testnet.",
+    connect: "Connect Freighter",
   },
   zu: {
     language: "Ulimi",
     prototype: "Isivivinyo",
-    title: "StockOnChain",
     tagline: "Bona kangcono iqembu lakho lokonga.",
     note: "Lesi sivivinyo asixhunyiwe emalini noma ekutshalweni kwezimali.",
     assetInfo:
@@ -25,22 +21,42 @@ const copy = {
     advanced: "Okuthuthukile",
     testnet:
       "Ukuxhuma kuFreighter akuphoqelekile futhi kusebenzisa iStellar Testnet kuphela.",
+    connect: "Xhuma kuFreighter",
   },
 } as const;
 
 export default function HomeShell({ locale }: { locale: "en" | "zu" }) {
   const text = copy[locale];
+  const homeUrl = locale === "zu" ? "/zu" : "/";
 
   return (
     <main className="shell">
       <header className="topbar">
-        <a className="brand" href="/" aria-label="StockOnChain home">
+        <a className="brand" href={homeUrl} aria-label="StockOnChain home">
           <span className="brand-mark" aria-hidden="true">
             S
           </span>
           <span className="font-bold">StockOnChain</span>
         </a>
-        <LocalePicker locale={locale} label={text.language} />
+        <details className="language-control">
+          <summary>{text.language}</summary>
+          <nav className="language-options" aria-label={text.language}>
+            <a
+              href="/"
+              lang="en-ZA"
+              aria-current={locale === "en" ? "page" : undefined}
+            >
+              English
+            </a>
+            <a
+              href="/zu"
+              lang="zu-ZA"
+              aria-current={locale === "zu" ? "page" : undefined}
+            >
+              isiZulu
+            </a>
+          </nav>
+        </details>
       </header>
 
       <section className="welcome" aria-labelledby="page-title">
@@ -49,7 +65,7 @@ export default function HomeShell({ locale }: { locale: "en" | "zu" }) {
             <span aria-hidden="true" />
             {text.prototype}
           </span>
-          <h1 id="page-title">{text.title}</h1>
+          <h1 id="page-title">StockOnChain</h1>
           <p className="tagline">{text.tagline}</p>
           <p className="disclaimer">{text.note}</p>
           <a className="asset-link" href="/assets">
@@ -63,7 +79,9 @@ export default function HomeShell({ locale }: { locale: "en" | "zu" }) {
           <details className="advanced-wallet">
             <summary>{text.advanced}</summary>
             <p>{text.testnet}</p>
-            <AdvancedWallet locale={locale} />
+            <a href={`/advanced-wallet${locale === "zu" ? "?lang=zu" : ""}`}>
+              {text.connect}
+            </a>
           </details>
         </div>
         <div className="welcome-stamp" aria-hidden="true">

@@ -82,23 +82,79 @@ select {
 }
 
 .language-control {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 9px;
   color: var(--muted);
   font-size: 13px;
 }
 
-.language-control select {
+.language-control summary {
+  display: grid;
   min-height: 40px;
-  padding: 0 30px 0 11px;
+  align-items: center;
+  padding: 0 12px;
   border: 1px solid var(--line);
   border-radius: 6px;
   color: var(--ink);
   background: var(--paper);
+  cursor: pointer;
+  list-style: none;
 }
 
-.language-control select:focus-visible,
+.language-control summary::-webkit-details-marker {
+  display: none;
+}
+
+.language-options {
+  position: absolute;
+  z-index: 1;
+  top: calc(100% + 4px);
+  right: 0;
+  display: grid;
+  min-width: 120px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.language-options a {
+  padding: 9px 8px;
+  border-radius: 3px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.language-options a:hover,
+.language-options a[aria-current="page"] {
+  background: var(--mint);
+}
+
+.language-control summary:focus-visible,
+.language-options a:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.wallet-page {
+  padding-top: 40px;
+}
+
+.wallet-page > p {
+  max-width: 540px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.wallet-page > a {
+  color: var(--green);
+}
+
+.wallet-page h1 {
+  font-size: clamp(32px, 7vw, 52px);
+}
+
 .brand:focus-visible {
   outline: 3px solid var(--gold);
   outline-offset: 3px;

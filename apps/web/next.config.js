@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
+  async rewrites() {
+    return {
+      beforeFiles: [
+        { source: "/", destination: "/index.html" },
+        { source: "/zu", destination: "/zu.html" },
+      ],
+    };
+  },
   async headers() {
     return [
       {

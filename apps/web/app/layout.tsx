@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en-ZA">
       <body>
         {children}
-        <script src="/app.js" defer />
+        <script src="/shell.js" defer />
       </body>
     </html>
   );

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en-ZA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f4f7f2" />
+    <meta
+      name="description"
+      content="A prototype for clearer stokvel savings records."
+    />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/icon-192.png" sizes="192x192" type="image/png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="stylesheet" href="/shell.css" />
+    <title>StockOnChain</title>
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="StockOnChain home">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span>StockOnChain</span>
+        </a>
+        <details class="language-control">
+          <summary>Language</summary>
+          <nav class="language-options" aria-label="Language">
+            <a href="/" lang="en-ZA" aria-current="page">English</a>
+            <a href="/zu" lang="zu-ZA">isiZulu</a>
+          </nav>
+        </details>
+      </header>
+      <section class="welcome" aria-labelledby="page-title">
+        <div class="welcome-copy">
+          <span class="status"><span aria-hidden="true"></span>Prototype</span>
+          <h1 id="page-title">StockOnChain</h1>
+          <p class="tagline">A clearer view of your stokvel.</p>
+          <p class="disclaimer">
+            No funds or investments are connected to this prototype.
+          </p>
+          <div class="login-placeholder">
+            <button type="button" disabled>Sign in (coming from I-01)</button>
+          </div>
+          <details class="advanced-wallet">
+            <summary>Advanced</summary>
+            <p>
+              Freighter connection is optional and limited to Stellar Testnet.
+            </p>
+            <a href="/advanced-wallet">Connect Freighter</a>
+          </details>
+        </div>
+        <div class="welcome-stamp" aria-hidden="true">
+          <span>S</span><span>SC</span>
+        </div>
+      </section>
+    </main>
+    <script src="/shell.js" defer></script>
+  </body>
+</html>
