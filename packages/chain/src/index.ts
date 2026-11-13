@@ -39,4 +39,5 @@ export interface ContractConfig {
 
 export * from './dealer';
 export * from './attestation';
+export * from './errors';
 

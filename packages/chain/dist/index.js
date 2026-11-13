@@ -38,3 +38,4 @@ function assertTestnetConfiguration(env = process.env) {
 }
 __exportStar(require("./dealer"), exports);
 __exportStar(require("./attestation"), exports);
+__exportStar(require("./errors"), exports);

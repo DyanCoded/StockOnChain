@@ -11,6 +11,9 @@
 - **Owner split:** Kea = product, UX, frontend, market and pitch; Ntsika = Stellar assets, Soroban contract, backend, integrations and deployment. Every issue is reviewed by the other person.
 - **Status:** Work in progress. This repository does not claim a production service, live deployment, financial licence, partnership, or real-world backing.
 
+> [!IMPORTANT]
+> **Security & Unaudited Testnet Notice:** All smart contracts, cryptographic attestation modules, demo tokens (`ZATBILL`, `mZAR`), and automation scripts in this repository are **unaudited prototype software** deployed exclusively on the **Stellar Testnet**. They are developed for demonstration purposes only and must **never** be used on Mainnet or with real funds. For full security analysis and known limitations, consult the [Threat Model](./docs/THREAT_MODEL.md).
+
 ## 2. Scope
 
 The workspace contains a web app, an API service, a Stellar/Soroban client package, and a Soroban contract. Their end-to-end integration is not asserted here.
