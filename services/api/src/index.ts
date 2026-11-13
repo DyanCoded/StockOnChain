@@ -38,6 +38,9 @@ import {
   sanitizeLogPayload,
   type VerifyRequest,
 } from "./kyc.js";
+import { CustodialWalletStore } from "./wallet-store.js";
+import { SponsorRateLimiter } from "./sponsor-limiter.js";
+import { SponsorService } from "./sponsor-service.js";
 
 config({ quiet: true });
 assertTestnetConfiguration();
@@ -83,6 +86,10 @@ const sponsorSecret = process.env.STELLAR_SPONSOR_SECRET_KEY?.trim();
 const dealerSecret = process.env.STELLAR_DEALER_SECRET_KEY?.trim();
 
 let kycService: KycService | null = null;
+let sponsorService: SponsorService | null = null;
+let walletStore: CustodialWalletStore | null = null;
+let sponsorRateLimiter: SponsorRateLimiter | null = null;
+
 if (zatbillIssuerSecret && sponsorSecret && dealerSecret) {
   try {
     const zatbillIssuer = Keypair.fromSecret(zatbillIssuerSecret);
@@ -101,9 +108,26 @@ if (zatbillIssuerSecret && sponsorSecret && dealerSecret) {
       zatbillAsset,
       kycStore,
     });
+
+    const encryptionKey = process.env.WALLET_ENCRYPTION_KEY?.trim() ||
+      "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+    walletStore = new CustodialWalletStore(
+      process.env.WALLET_STORE_PATH?.trim(),
+      encryptionKey,
+    );
+    sponsorRateLimiter = new SponsorRateLimiter(
+      process.env.SPONSOR_LIMIT_STATE_PATH?.trim(),
+    );
+    sponsorService = new SponsorService({
+      sponsorKeypair: sponsor,
+      horizon,
+      walletStore,
+      rateLimiter: sponsorRateLimiter,
+      kycService,
+    });
   } catch (error) {
     console.error(
-      "Warning: Could not initialize KYC service due to invalid role keypair.",
+      "Warning: Could not initialize KYC / Sponsor service due to invalid role keypair.",
       error instanceof Error ? error.message : "Unknown error",
     );
   }
@@ -445,6 +469,152 @@ export const server = createServer(async (request, response) => {
         error: `Could not complete the Testnet mZAR payment. The account remains rate-limited for ${MZAR_FAUCET_COOLDOWN_MS / 1000} seconds.`,
       });
     }
+    return;
+  }
+
+  // Route: POST /wallet/create (custodial-lite keypair generation)
+  if (pathname === "/wallet/create" && request.method === "POST") {
+    if (!walletStore) {
+      sendJson(response, 503, { error: "Wallet custody service is not configured on this node." });
+      return;
+    }
+    let body: unknown;
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      sendJson(response, 400, { error: "Send a valid JSON request." });
+      return;
+    }
+    const userId =
+      typeof body === "object" && body !== null && "userId" in body
+        ? String((body as { userId: unknown }).userId).trim()
+        : "";
+    if (!userId) {
+      sendJson(response, 400, { error: "userId is required to create or load a custodial wallet." });
+      return;
+    }
+
+    try {
+      const wallet = walletStore.getOrCreateWallet(userId);
+      sendJson(response, 200, {
+        userId,
+        publicKey: wallet.publicKey,
+        isNew: wallet.isNew,
+        createdAt: wallet.createdAt,
+        custodyType: "custodial-lite",
+        network: "testnet",
+        disclaimer:
+          "Prototype only. Private keys are encrypted server-side with WALLET_ENCRYPTION_KEY. Not for Mainnet or real funds.",
+      });
+    } catch (error) {
+      sendJson(response, 500, {
+        error: error instanceof Error ? error.message : "Failed to create custodial wallet.",
+      });
+    }
+    return;
+  }
+
+  // Route: POST /wallet/sponsor/fee-bump
+  if (pathname === "/wallet/sponsor/fee-bump" && request.method === "POST") {
+    if (!sponsorService) {
+      sendJson(response, 503, { error: "Sponsor service is not configured on this node." });
+      return;
+    }
+    let body: unknown;
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      sendJson(response, 400, { error: "Send a valid JSON request." });
+      return;
+    }
+    const xdr = typeof body === "object" && body !== null && "innerTxXdr" in body
+      ? String((body as { innerTxXdr: unknown }).innerTxXdr).trim()
+      : "";
+    const userIdOrAccount = typeof body === "object" && body !== null && "userId" in body
+      ? String((body as { userId: unknown }).userId).trim()
+      : (typeof body === "object" && body !== null && "account" in body
+          ? String((body as { account: unknown }).account).trim()
+          : "");
+
+    if (!xdr || !userIdOrAccount) {
+      sendJson(response, 400, { error: "innerTxXdr and userId or account are required." });
+      return;
+    }
+
+    try {
+      const txHash = await sponsorService.sponsorFeeBump(xdr, userIdOrAccount);
+      sendJson(response, 200, {
+        success: true,
+        transactionHash: txHash,
+        feeBumped: true,
+      });
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "Failed to sponsor fee-bump transaction.",
+      });
+    }
+    return;
+  }
+
+  // Route: POST /wallet/contribute (custodial explicit confirmation + sponsor)
+  if (pathname === "/wallet/contribute" && request.method === "POST") {
+    if (!sponsorService) {
+      sendJson(response, 503, { error: "Sponsor service is not configured on this node." });
+      return;
+    }
+    let body: unknown;
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      sendJson(response, 400, { error: "Send a valid JSON request." });
+      return;
+    }
+
+    const typedBody = body as {
+      userId?: string;
+      userExplicitConfirmation?: boolean;
+      amountStroops?: string;
+      contractId?: string;
+    };
+
+    if (!typedBody.userId) {
+      sendJson(response, 400, { error: "userId is required." });
+      return;
+    }
+    if (!typedBody.userExplicitConfirmation) {
+      sendJson(response, 400, {
+        error:
+          "userExplicitConfirmation: true is required. Custodial key signing requires explicit user consent in the application UI.",
+      });
+      return;
+    }
+
+    try {
+      const result = await sponsorService.executeCustodialContribution({
+        userId: typedBody.userId,
+        userExplicitConfirmation: true,
+        intent: "contribute",
+        amountStroops: typedBody.amountStroops,
+        contractId: typedBody.contractId,
+      });
+      sendJson(response, 200, result as unknown as Record<string, unknown>);
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "Failed to execute contribution.",
+      });
+    }
+    return;
+  }
+
+  // Route: GET /wallet/sponsor/limits
+  if (pathname === "/wallet/sponsor/limits" && request.method === "GET") {
+    if (!sponsorRateLimiter) {
+      sendJson(response, 503, { error: "Sponsor limiter not configured." });
+      return;
+    }
+    const user = reqUrl.searchParams.get("userId") || reqUrl.searchParams.get("account") || undefined;
+    const stats = sponsorRateLimiter.getStats(user);
+    sendJson(response, 200, stats as unknown as Record<string, unknown>);
     return;
   }
 
