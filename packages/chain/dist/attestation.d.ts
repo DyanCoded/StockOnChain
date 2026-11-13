@@ -170,3 +170,35 @@ export declare function verifyProofOfBacking(params: {
     circulatingSupply?: number;
     demoDeficit?: boolean;
 }): Promise<BackingVerificationResult>;
+/**
+ * Constructs the canonical 41-byte binary message for on-chain Soroban Ed25519 attestation verification (T-07):
+ * - ASCII prefix: "ZATBILL_RESERVES:" (17 bytes)
+ * - reserves: 16 bytes big-endian signed 128-bit integer (i128)
+ * - timestamp: 8 bytes big-endian unsigned 64-bit integer (u64)
+ */
+export declare function buildOnchainAttestationMessage(reservesStroops: bigint, timestampSeconds: bigint): Buffer;
+/**
+ * Signs an on-chain attestation payload for the Soroban StokvelPot contract using Ed25519 (T-07).
+ */
+export declare function signOnchainAttestation(params: {
+    custodianKeypair: Keypair;
+    reservesStroops: bigint;
+    timestampSeconds?: bigint;
+}): {
+    custodianPubkey: Buffer;
+    custodianPubkeyHex: string;
+    reservesStroops: bigint;
+    timestampSeconds: bigint;
+    message: Buffer;
+    signature: Buffer;
+    signatureHex: string;
+};
+/**
+ * Cryptographically verifies an on-chain attestation signature using Ed25519.
+ */
+export declare function verifyOnchainAttestationSignature(params: {
+    custodianPubkey: Buffer | string;
+    reservesStroops: bigint;
+    timestampSeconds: bigint;
+    signature: Buffer | string;
+}): boolean;

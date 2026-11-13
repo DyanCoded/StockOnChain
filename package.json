@@ -16,6 +16,7 @@
     "chain:mzar": "tsx scripts/mzar.ts",
     "chain:attestation:anchor": "tsx scripts/anchor-attestation.ts",
     "chain:attestation:verify": "tsx scripts/verify-backing.ts",
+    "chain:attestation:post": "tsx scripts/post-attestation.ts",
     "demo:invest": "tsx scripts/demo-invest.ts",
     "demo:mature": "tsx scripts/demo-mature.ts",
     "quickstart": "node scripts/quickstart.mjs",

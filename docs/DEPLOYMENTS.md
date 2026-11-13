@@ -6,10 +6,22 @@ This document tracks verified Soroban smart contract deployments on Stellar Test
 
 | Contract Name | Network | Contract ID | Deployed At | Compiler / Toolchain |
 |---|---|---|---|---|
-| **StokvelPot (T-04 Standard)** | Stellar Testnet | `CCCC3ERGNWEICYH377ABAHKGTHA2T5YD7K7ETCHGESQ3I7RSUSAFXQNB` | 2026-11-13T06:55:09.634Z | `stellar 30.0.1` / `soroban-sdk 29.0.1` |
+| **StokvelPot (T-07 ProofOfBacking Check)** | Stellar Testnet | `CBIZM7UPAA7OCRRHSEL43MMDZIKNYQEMB5LB7HZQ32KMV44V6ZW456XM` | 2026-11-13T13:42:10.269Z | `stellar 30.0.1` / `soroban-sdk 29.0.1` |
 | **StokvelPot (T-05 Time-Compressed Demo)** | Stellar Testnet | `CD3KZIPIZLF2G4D66IJ4NP5MKL22DX4VKLZ4TH7WY7IIM43SKA7E5UCX` | 2026-11-13T11:27:50.000Z | `stellar 30.0.1` / `soroban-sdk 29.0.1` |
+| **StokvelPot (T-04 Standard)** | Stellar Testnet | `CCCC3ERGNWEICYH377ABAHKGTHA2T5YD7K7ETCHGESQ3I7RSUSAFXQNB` | 2026-11-13T06:55:09.634Z | `stellar 30.0.1` / `soroban-sdk 29.0.1` |
 | **ZATBILL SAC (T-01)** | Stellar Testnet | `CDALMH56TPGL37P4AIELC4FBISERZDRIJZIMIGRGCUNFPW7WLPS27GUR` | 2026-11-12 | Stellar Asset Contract (Protocol 22) |
 | **mZAR SAC (B-02)** | Stellar Testnet | `CDH2DYZNE6K5P2EV6JAVTHVVNROLC6TIRWQNFF2OUMBNT36ZCTJPNXXX` | 2026-11-13 | Stellar Asset Contract (Protocol 22) |
+
+## Onchain Reserve Check (ProofOfBacking T-07)
+
+- **Active Contract:** `CBIZM7UPAA7OCRRHSEL43MMDZIKNYQEMB5LB7HZQ32KMV44V6ZW456XM`
+- **Version:** `0.3.0-stokvel-pot`
+- **Custodian Signer:** `GAP6QC2WHE37IY47WLPG7G375DCFLHAKP5RQLTF3LXZGC75STTBVLA2K`
+- **Custodian Raw Ed25519 Pubkey:** `1fe80b563937f4639fb2de6f9b7fe8c4559c0a7f6305ccbb5df2617fb29cc355`
+- **Attested Reserves Limit:** R 1,000.00 (`10000000000` stroops)
+- **Attestation Timestamp:** `1794577401`
+- **Ed25519 Signature Verified On-Chain:** `1e488d0c8bd9785f2510f1fb1198fbd7d6b465d0759f1e41208ea49a61173b69d8a2ead3402ed6dc64c380369fbace6ebd6d3f9af5e0116a0c8ee3e936743608`
+- **Enforcement Invariant:** In `invest(admin, dealer, zatbill_amount)`, `zatbill_amount <= get_attested_reserves()`. Attempts to invest above the currently stored attested reserve limit revert immediately with `Error::ExceedsAttestedReserves` (code 18).
 
 ## Time-Compressed Demo Pot Lifecycle Verification (T-05)
 
@@ -48,16 +60,15 @@ To establish an immutable on-chain audit trail linking the mock custodian reserv
 - **Mock IPFS URI:** `ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi/mock-custody-statement.pdf`
 - **Circulating Supply vs Attested Reserves:** $1,000.00\text{ ZATBILL} \equiv \text{R } 1,000.00$ ($100.00\%$ fully backed)
 
-
 ## Contract Addresses & Role Bindings
 
-- **StokvelPot Contract:** `CCCC3ERGNWEICYH377ABAHKGTHA2T5YD7K7ETCHGESQ3I7RSUSAFXQNB`
+- **StokvelPot Contract:** `CBIZM7UPAA7OCRRHSEL43MMDZIKNYQEMB5LB7HZQ32KMV44V6ZW456XM`
 - **Admin Address:** `GAXLZKWGKXFLKLSNYBL3CDXWJKHTPPDFUBX2I6ZRA4V5UBI2HJMFPSEH`
 - **Dealer Address:** `GATM4LFVO4DYXGIKKAUYNHSVQ6M7FTS3FPZSMNWEGKB7Q6XNOMXIPYVR`
 - **mZAR Token (SAC):** `CDH2DYZNE6K5P2EV6JAVTHVVNROLC6TIRWQNFF2OUMBNT36ZCTJPNXXX`
 - **ZATBILL Token (SAC):** `CDALMH56TPGL37P4AIELC4FBISERZDRIJZIMIGRGCUNFPW7WLPS27GUR`
 - **Initial Term Duration:** `2592000` seconds (30 days)
-- **Maturity Timestamp:** `1797144905` (Sun, 13 Dec 2026 06:55:05 GMT)
+- **Maturity Timestamp:** `1797169325` (Sun, 13 Dec 2026 13:42:05 GMT)
 - **Member Contribution Cap:** `1000000000` stroops (100 mZAR)
 
 ## Verification Commands
@@ -65,7 +76,8 @@ To establish an immutable on-chain audit trail linking the mock custodian reserv
 To inspect the on-chain interface and status using the Stellar CLI:
 
 ```sh
-stellar contract info interface --contract-id CCCC3ERGNWEICYH377ABAHKGTHA2T5YD7K7ETCHGESQ3I7RSUSAFXQNB --network testnet
-stellar contract invoke --id CCCC3ERGNWEICYH377ABAHKGTHA2T5YD7K7ETCHGESQ3I7RSUSAFXQNB --network testnet -- get_state
-stellar contract invoke --id CCCC3ERGNWEICYH377ABAHKGTHA2T5YD7K7ETCHGESQ3I7RSUSAFXQNB --network testnet -- version
+stellar contract info interface --contract-id CBIZM7UPAA7OCRRHSEL43MMDZIKNYQEMB5LB7HZQ32KMV44V6ZW456XM --network testnet
+stellar contract invoke --id CBIZM7UPAA7OCRRHSEL43MMDZIKNYQEMB5LB7HZQ32KMV44V6ZW456XM --network testnet -- get_state
+stellar contract invoke --id CBIZM7UPAA7OCRRHSEL43MMDZIKNYQEMB5LB7HZQ32KMV44V6ZW456XM --network testnet -- version
+stellar contract invoke --id CBIZM7UPAA7OCRRHSEL43MMDZIKNYQEMB5LB7HZQ32KMV44V6ZW456XM --network testnet -- get_attested_reserves
 ```

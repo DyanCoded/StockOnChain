@@ -4,7 +4,8 @@
 #![allow(clippy::needless_borrows_for_generic_args)]
 
 use soroban_sdk::{
-    contract, contracterror, contractimpl, contracttype, symbol_short, Address, Env, String, Symbol,
+    contract, contracterror, contractimpl, contracttype, symbol_short, Address, Bytes, BytesN, Env,
+    String, Symbol,
 };
 
 /// Explicit lifecycle states for the Stokvel Pot.
@@ -40,6 +41,8 @@ pub enum Error {
     InvalidDiscount = 15,
     AlreadyMember = 16,
     Unauthorized = 17,
+    ExceedsAttestedReserves = 18,
+    InvalidTimestamp = 19,
 }
 
 #[contracttype]
@@ -68,6 +71,11 @@ pub enum DataKey {
     TotalShares,
     ZatbillHeld,
     SettlementTotal,
+
+    // Proof of Backing (T-07)
+    CustodianPubkey,
+    AttestedReserves,
+    AttestationTimestamp,
 
     // Per-member Persistent storage (No loops over member lists!)
     Member(Address),
@@ -338,6 +346,13 @@ impl StokvelPotContract {
         // Therefore, at least 1 ZATBILL per 1 mZAR must be held for full collateral backing.
         if zatbill_amount < total_mzar {
             return Err(Error::InsufficientBacking);
+        }
+
+        // Onchain reserve check (T-07):
+        // Purchases of ZATBILL cannot exceed the currently stored attested reserve limit.
+        let attested_reserves = Self::get_attested_reserves(env.clone());
+        if zatbill_amount > attested_reserves {
+            return Err(Error::ExceedsAttestedReserves);
         }
 
         let mzar_token = Self::get_mzar_token(env.clone());
@@ -709,8 +724,113 @@ impl StokvelPotContract {
         client.transfer(&env.current_contract_address(), &to, &amount);
     }
 
+    /// Configure the authorized Custodian Ed25519 public key (Admin only).
+    pub fn set_custodian_pubkey(
+        env: Env,
+        admin: Address,
+        pubkey: BytesN<32>,
+    ) -> Result<(), Error> {
+        admin.require_auth();
+        let configured_admin = Self::get_admin(env.clone());
+        if admin != configured_admin {
+            return Err(Error::NotAdmin);
+        }
+        env.storage()
+            .instance()
+            .set(&DataKey::CustodianPubkey, &pubkey);
+        extend_instance_ttl(&env);
+        env.events()
+            .publish((Symbol::new(&env, "custodian_pubkey_set"),), pubkey);
+        Ok(())
+    }
+
+    /// Retrieve the configured Custodian Ed25519 public key.
+    pub fn get_custodian_pubkey(env: Env) -> Option<BytesN<32>> {
+        env.storage()
+            .instance()
+            .get(&DataKey::CustodianPubkey)
+    }
+
+    /// Verify custodian Ed25519 signature over attestation payload and update on-chain reserve limit (T-07).
+    pub fn update_attested_reserves(
+        env: Env,
+        custodian_pubkey: BytesN<32>,
+        reserves: i128,
+        timestamp: u64,
+        signature: BytesN<64>,
+    ) -> Result<(), Error> {
+        if Self::is_paused(env.clone()) {
+            return Err(Error::Paused);
+        }
+        if reserves <= 0 {
+            return Err(Error::ZeroAmount);
+        }
+
+        let current_ts = Self::get_attestation_timestamp(env.clone());
+        if timestamp <= current_ts {
+            return Err(Error::InvalidTimestamp);
+        }
+
+        // If custodian public key has been configured, enforce that only that custodian can sign
+        if let Some(configured_pk) = env
+            .storage()
+            .instance()
+            .get::<DataKey, BytesN<32>>(&DataKey::CustodianPubkey)
+        {
+            if custodian_pubkey != configured_pk {
+                return Err(Error::NotCustodian);
+            }
+        } else {
+            // First valid attestation binds the custodian public key
+            env.storage()
+                .instance()
+                .set(&DataKey::CustodianPubkey, &custodian_pubkey);
+        }
+
+        // Construct canonical on-chain attestation payload
+        let mut message = Bytes::new(&env);
+        message.extend_from_array(b"ZATBILL_RESERVES:");
+        message.extend_from_array(&reserves.to_be_bytes());
+        message.extend_from_array(&timestamp.to_be_bytes());
+
+        // Verify Ed25519 signature. Panics with Error(Crypto, InvalidInput) if forged/invalid.
+        env.crypto()
+            .ed25519_verify(&custodian_pubkey, &message, &signature);
+
+        env.storage()
+            .instance()
+            .set(&DataKey::AttestedReserves, &reserves);
+        env.storage()
+            .instance()
+            .set(&DataKey::AttestationTimestamp, &timestamp);
+
+        extend_instance_ttl(&env);
+        env.events().publish(
+            (Symbol::new(&env, "attestation_updated"),),
+            (custodian_pubkey, reserves, timestamp),
+        );
+
+        Ok(())
+    }
+
+    /// Retrieve the currently stored attested reserve limit in stroops.
+    pub fn get_attested_reserves(env: Env) -> i128 {
+        env.storage()
+            .instance()
+            .get(&DataKey::AttestedReserves)
+            .unwrap_or(0)
+    }
+
+    /// Retrieve the timestamp of the latest valid attestation.
+    pub fn get_attestation_timestamp(env: Env) -> u64 {
+        env.storage()
+            .instance()
+            .get(&DataKey::AttestationTimestamp)
+            .unwrap_or(0)
+    }
+
     pub fn version(env: Env) -> String {
-        String::from_str(&env, "0.2.0-stokvel-pot")
+        String::from_str(&env, "0.3.0-stokvel-pot")
     }
 }
 

@@ -97,6 +97,11 @@ The pot advances through four explicit, sequential states:
 ### Rule 9: DoS Prevention & Pull-Based Claims
 - **Design:** The contract contains **absolutely no loops over member lists**. Payouts are pull-based: each member initiates their own `claim(member)` call in $O(1)$ constant time. This eliminates gas exhaustion limits and prevents malicious DoS attacks.
 
+### Rule 10: On-Chain Proof of Backing & Reserve Limit (`ExceedsAttestedReserves`)
+- **Rule (T-07):** In the `invest` function, total purchases of `ZATBILL` cannot exceed the currently stored attested reserve limit verified by the custodian's Ed25519 cryptographic signature. If the dealer delivers more `ZATBILL` than the custodian has attested, the transaction reverts immediately with `ExceedsAttestedReserves`.
+- **UI Error:** *"Investment rejected: Requested ZATBILL purchase exceeds the custodian's on-chain verified backing reserve."*
+- **Fallback Architecture:** If the on-chain cryptographic check is deferred or bypassed, the validation check is enforced within the backend API, and all disclosures must state this honestly in the UI and README.md.
+
 ---
 
 ## 3. Storage & Ledger TTL Management

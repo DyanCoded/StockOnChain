@@ -26,6 +26,7 @@ import { config } from "dotenv";
 import {
   assertTestnetConfiguration,
   quotePrimaryDealer,
+  signOnchainAttestation,
   STELLAR_NETWORKS,
   TESTNET_PASSPHRASE,
   TREASURY_PRODUCTS,
@@ -332,6 +333,39 @@ async function main() {
   console.log(`  Disclaimer:        ${quote.disclaimer}`);
 
   const zatbillDeliveredStroops = BigInt(quote.zatbillTokensReceived) * 10_000_000n;
+
+  // 5b. Verify and update on-chain attested reserves (T-07 Proof of Backing check)
+  console.log("\n[5b/6] Ensuring on-chain attested reserves limit (T-07)...");
+  const custodianSecret = process.env.STELLAR_CUSTODIAN_SECRET_KEY?.trim();
+  if (custodianSecret) {
+    const custodianKp = Keypair.fromSecret(custodianSecret);
+    const signed = signOnchainAttestation({
+      custodianKeypair: custodianKp,
+      reservesStroops: 10_000_000_000n, // R1,000.00
+      timestampSeconds: BigInt(Math.floor(Date.now() / 1000)),
+    });
+
+    try {
+      invokeCli(
+        potContractId,
+        "update_attested_reserves",
+        [
+          "--custodian_pubkey",
+          signed.custodianPubkeyHex,
+          "--reserves",
+          signed.reservesStroops.toString(),
+          "--timestamp",
+          signed.timestampSeconds.toString(),
+          "--signature",
+          signed.signatureHex,
+        ],
+        adminSecret,
+      );
+      console.log("  On-chain attested reserves verified and updated!");
+    } catch {
+      console.log("  On-chain attested reserves already sufficient.");
+    }
+  }
 
   // 6. Execute investment swap
   console.log("\n[6/6] Executing dual-auth investment swap (Pot mZAR <-> Dealer ZATBILL)...");

@@ -10,6 +10,9 @@ import {
   calculateBackingRatio,
   verifyProofOfBacking,
   MOCK_CUSTODIAN_METADATA,
+  buildOnchainAttestationMessage,
+  signOnchainAttestation,
+  verifyOnchainAttestationSignature,
 } from './attestation';
 
 test('attestation - Mock Custody Statement PDF generation and disclaimers', () => {
@@ -268,3 +271,72 @@ test('attestation - Demo deficit mode toggle forces under-collateralized state',
   assert.ok(deficitResult.warning?.includes('DEMO WARNING: Under-collateralized'));
   assert.equal(deficitResult.verification.allChecksPassed, true, 'Cryptographic checks still pass in demo deficit mode');
 });
+
+test('attestation - On-chain Ed25519 payload signing and signature verification (T-07)', () => {
+  const custodianKp = Keypair.random();
+  const reservesStroops = 10_000_000_000n; // 1,000 ZATBILL in stroops
+  const timestampSeconds = 1_797_144_905n;
+
+  // 1. Build canonical message
+  const message = buildOnchainAttestationMessage(reservesStroops, timestampSeconds);
+  assert.equal(message.length, 41, 'Message must be exactly 41 bytes (17 prefix + 16 reserves + 8 timestamp)');
+  assert.equal(message.slice(0, 17).toString('utf8'), 'ZATBILL_RESERVES:');
+
+  // 2. Sign on-chain payload
+  const signed = signOnchainAttestation({
+    custodianKeypair: custodianKp,
+    reservesStroops,
+    timestampSeconds,
+  });
+
+  assert.equal(signed.custodianPubkey.length, 32);
+  assert.equal(signed.signature.length, 64);
+
+  // 3. Verify valid signature
+  const isValid = verifyOnchainAttestationSignature({
+    custodianPubkey: signed.custodianPubkey,
+    reservesStroops,
+    timestampSeconds,
+    signature: signed.signature,
+  });
+  assert.equal(isValid, true, 'Valid signature must verify');
+
+  // 4. Verify with Stellar G... public key string
+  const isValidStr = verifyOnchainAttestationSignature({
+    custodianPubkey: custodianKp.publicKey(),
+    reservesStroops,
+    timestampSeconds,
+    signature: signed.signatureHex,
+  });
+  assert.equal(isValidStr, true, 'Valid signature must verify with Stellar public key string');
+
+  // 5. Tampered reserves amount fails
+  const tamperedReserves = verifyOnchainAttestationSignature({
+    custodianPubkey: signed.custodianPubkey,
+    reservesStroops: 20_000_000_000n, // Altered amount
+    timestampSeconds,
+    signature: signed.signature,
+  });
+  assert.equal(tamperedReserves, false, 'Altered reserves amount must fail verification');
+
+  // 6. Tampered timestamp fails
+  const tamperedTimestamp = verifyOnchainAttestationSignature({
+    custodianPubkey: signed.custodianPubkey,
+    reservesStroops,
+    timestampSeconds: timestampSeconds + 1n,
+    signature: signed.signature,
+  });
+  assert.equal(tamperedTimestamp, false, 'Altered timestamp must fail verification');
+
+  // 7. Forged signature fails
+  const forgedSig = Buffer.from(signed.signature);
+  forgedSig[0] ^= 0xff;
+  const forgedResult = verifyOnchainAttestationSignature({
+    custodianPubkey: signed.custodianPubkey,
+    reservesStroops,
+    timestampSeconds,
+    signature: forgedSig,
+  });
+  assert.equal(forgedResult, false, 'Forged signature must fail verification');
+});
+

@@ -132,4 +132,16 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
   - Added unit test suites `packages/chain/src/attestation.test.ts` (6 tests) and `apps/web/app/api/backing/route.test.ts` (2 tests) covering all tamper modes (signature corruption, payload alteration, PDF single-byte modification, and demo deficit toggle).
   - Documented full proof of backing architecture, formulas, and testnet transaction links in `docs/ASSET.md` and `docs/DEPLOYMENTS.md`.
 
+### [2026-11-13] Onchain Reserve Check: ProofOfBacking (T-07)
+* **Prompt / Task:** Implement Issue T-07: Onchain reserve check (ProofOfBacking) #11 with Soroban contract function verifying the custodian's Ed25519 signature over the attestation payload, storing the latest attested reserve on-chain, and enforcing a validation check in `invest` so that purchases of ZATBILL cannot exceed the currently stored attested reserve limit, with comprehensive unit test coverage and fallback architecture documentation.
+* **Changes:**
+  - Added on-chain Proof of Backing storage keys (`CustodianPubkey`, `AttestedReserves`, `AttestationTimestamp`) and errors (`ExceedsAttestedReserves = 18`, `InvalidTimestamp = 19`) in `contracts/stokvel-pot/src/lib.rs`.
+  - Implemented `update_attested_reserves`, `set_custodian_pubkey`, `get_custodian_pubkey`, `get_attested_reserves`, and `get_attestation_timestamp` in `StokvelPotContract`, verifying Ed25519 signatures via `env.crypto().ed25519_verify()` over a 41-byte canonical binary payload (`ZATBILL_RESERVES:` + 16 bytes `i128` + 8 bytes `u64`).
+  - Added enforcement check in `invest`: purchases of `ZATBILL` exceeding `get_attested_reserves()` immediately revert with `Error::ExceedsAttestedReserves`.
+  - Added 7 Soroban unit tests in `contracts/stokvel-pot/src/test.rs` covering happy path signature verification, forged signature rejection, tampered reserves amount rejection, investment exceeding attested reserve revert, exact-boundary investment success, unauthorized custodian pubkey rejection, and outdated timestamp replay rejection (all 19 contract tests pass).
+  - Added on-chain signing and verification helpers `buildOnchainAttestationMessage`, `signOnchainAttestation`, and `verifyOnchainAttestationSignature` in `@stockonchain/chain` (`packages/chain/src/attestation.ts`) with unit tests (all 46 workspace tests pass).
+  - Compiled and deployed updated Soroban contract to Stellar Testnet with contract ID `CBIZM7UPAA7OCRRHSEL43MMDZIKNYQEMB5LB7HZQ32KMV44V6ZW456XM` (version `0.3.0-stokvel-pot`), verified on-chain signature verification and reserve storage via `scripts/post-attestation.ts`, and verified on-chain forged signature rejection.
+  - Updated `README.md`, `docs/DEPLOYMENTS.md`, and `docs/POT_RULES.md` documenting the on-chain architecture and backend API fallback plan.
+
+
 

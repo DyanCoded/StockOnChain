@@ -63,12 +63,20 @@ This is a placeholder status matrix, not a claim that a component is deployed or
 |---|---|---|
 | Web app | Prototype deployed | Next.js PWA deployed at [https://stock-on-chain-gmu2.vercel.app/](https://stock-on-chain-gmu2.vercel.app/). See [apps/web/README.md](./apps/web/README.md). |
 | API and chain client | To verify | Source folders exist; integration status is not asserted here. |
-| Soroban pot contract | Prototype deployed | State-machine pot contract deployed on Testnet (`CCCC3ERGNWEICYH377ABAHKGTHA2T5YD7K7ETCHGESQ3I7RSUSAFXQNB`). See [docs/DEPLOYMENTS.md](./docs/DEPLOYMENTS.md) and [docs/POT_RULES.md](./docs/POT_RULES.md). |
+| Soroban pot contract | Prototype deployed | State-machine pot contract deployed on Testnet (`CBIZM7UPAA7OCRRHSEL43MMDZIKNYQEMB5LB7HZQ32KMV44V6ZW456XM`). Enforces on-chain Ed25519 ProofOfBacking reserve checks (T-07). See [docs/DEPLOYMENTS.md](./docs/DEPLOYMENTS.md) and [docs/POT_RULES.md](./docs/POT_RULES.md). |
 | MOCK ZATBILL | Testnet demo token | No real T-bills, reserves, securities, yield, or payout are represented. See [docs/ASSET.md](./docs/ASSET.md). |
 | MOCK mZAR | Testnet demo token | Issued only by the Anchor-sim Testnet account. Not backed by fiat; Mainnet ZAR/ZARP assets are not used. See [docs/B-02.md](./docs/B-02.md). |
 | Stellar network | To verify | Confirm the configured network and passphrase before use. |
 | Identity checks, fiat rails, custody, and payouts | To verify / mock | Do not imply a real provider, licence, reserve, or payout without evidence. |
 | Yield or investment returns | Not asserted | No rate or return claim is made in this README. |
+
+### Architecture & Proof of Backing Verification Note (T-07)
+
+Proof of backing is enforced directly on-chain within the Soroban `StokvelPot` smart contract:
+- The custodian signs a canonical binary payload using Ed25519 containing the latest verified reserve limit and timestamp.
+- The contract verifies the Ed25519 signature via `env.crypto().ed25519_verify()` and stores the latest reserve limit on-chain (`update_attested_reserves`).
+- The `invest` function strictly enforces that `zatbill_amount <= get_attested_reserves()`, reverting with `Error::ExceedsAttestedReserves` if an investment exceeds attested backing.
+- **Fallback Architecture:** If on-chain cryptographic verification is deferred or bypassed in any deployment mode, the validation check is maintained within the backend API, and all disclosures must state this honestly.
 
 ## 7. Quickstart
 

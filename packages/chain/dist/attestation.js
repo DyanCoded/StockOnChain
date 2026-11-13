@@ -28,6 +28,9 @@ exports.verifyPdfHash = verifyPdfHash;
 exports.calculateBackingRatio = calculateBackingRatio;
 exports.queryOnchainBackingData = queryOnchainBackingData;
 exports.verifyProofOfBacking = verifyProofOfBacking;
+exports.buildOnchainAttestationMessage = buildOnchainAttestationMessage;
+exports.signOnchainAttestation = signOnchainAttestation;
+exports.verifyOnchainAttestationSignature = verifyOnchainAttestationSignature;
 const node_crypto_1 = __importDefault(require("node:crypto"));
 const stellar_sdk_1 = require("@stellar/stellar-sdk");
 const index_1 = require("./index");
@@ -358,4 +361,66 @@ async function verifyProofOfBacking(params) {
         warning,
         disclaimer: exports.MOCK_CUSTODIAN_METADATA.disclaimer,
     };
+}
+/**
+ * Constructs the canonical 41-byte binary message for on-chain Soroban Ed25519 attestation verification (T-07):
+ * - ASCII prefix: "ZATBILL_RESERVES:" (17 bytes)
+ * - reserves: 16 bytes big-endian signed 128-bit integer (i128)
+ * - timestamp: 8 bytes big-endian unsigned 64-bit integer (u64)
+ */
+function buildOnchainAttestationMessage(reservesStroops, timestampSeconds) {
+    const prefix = Buffer.from("ZATBILL_RESERVES:", "utf8");
+    const resBuf = Buffer.alloc(16);
+    let v = BigInt(reservesStroops);
+    for (let i = 15; i >= 0; i--) {
+        resBuf[i] = Number(v & 0xffn);
+        v >>= 8n;
+    }
+    const timeBuf = Buffer.alloc(8);
+    timeBuf.writeBigUInt64BE(BigInt(timestampSeconds), 0);
+    return Buffer.concat([prefix, resBuf, timeBuf]);
+}
+/**
+ * Signs an on-chain attestation payload for the Soroban StokvelPot contract using Ed25519 (T-07).
+ */
+function signOnchainAttestation(params) {
+    const ts = params.timestampSeconds ?? BigInt(Math.floor(Date.now() / 1000));
+    const message = buildOnchainAttestationMessage(params.reservesStroops, ts);
+    const signature = params.custodianKeypair.sign(message);
+    const custodianPubkey = params.custodianKeypair.rawPublicKey();
+    return {
+        custodianPubkey,
+        custodianPubkeyHex: custodianPubkey.toString("hex"),
+        reservesStroops: params.reservesStroops,
+        timestampSeconds: ts,
+        message,
+        signature,
+        signatureHex: signature.toString("hex"),
+    };
+}
+/**
+ * Cryptographically verifies an on-chain attestation signature using Ed25519.
+ */
+function verifyOnchainAttestationSignature(params) {
+    try {
+        const message = buildOnchainAttestationMessage(params.reservesStroops, params.timestampSeconds);
+        let strKey;
+        if (Buffer.isBuffer(params.custodianPubkey)) {
+            strKey = stellar_sdk_1.StrKey.encodeEd25519PublicKey(params.custodianPubkey);
+        }
+        else if (params.custodianPubkey.startsWith("G") && params.custodianPubkey.length === 56) {
+            strKey = params.custodianPubkey;
+        }
+        else {
+            strKey = stellar_sdk_1.StrKey.encodeEd25519PublicKey(Buffer.from(params.custodianPubkey, "hex"));
+        }
+        const sigBuf = Buffer.isBuffer(params.signature)
+            ? params.signature
+            : Buffer.from(params.signature, "hex");
+        const kp = stellar_sdk_1.Keypair.fromPublicKey(strKey);
+        return kp.verify(message, sigBuf);
+    }
+    catch {
+        return false;
+    }
 }
