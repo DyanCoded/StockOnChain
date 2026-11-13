@@ -119,3 +119,17 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
     - Strict cent-level reconciliation verified: Total pooled R 100.00, settlement payout R 102.00, claims R 102.00, dust 0 stroops.
   - Documented exact pricing formulas, Actual/365 conventions, non-guaranteed simulated rate disclosures, and testnet verification results in `docs/ASSET.md` and `docs/DEPLOYMENTS.md`.
 
+### [2026-11-13] Proof of Backing: Signed Attestation and On-Chain Anchor (T-06)
+* **Prompt / Task:** Implement Issue T-06: Proof of backing: signed attestation and onchain anchor (#10) with mock custodian `/attestation.json` endpoint, mock custody statement PDF generation & SHA-256 verification, on-chain `manage_data` anchoring on the ZATBILL issuer account, SEP-0001 `stellar.toml` reserve linking, live circulating supply calculation vs. attested reserves, backing ratio verification endpoint `/api/backing`, and demo deficit mode toggle (`?demo_deficit=true`).
+* **Changes:**
+  - Implemented `@stockonchain/chain/attestation` (`packages/chain/src/attestation.ts`) with mock custodian metadata (`Mock Custodian Services (Pty) Ltd`), deterministic canonical JSON serialization, and Ed25519 signing & verification.
+  - Implemented standard PDF-1.4 binary buffer generator `generateMockCustodyStatementPdf` with visible mock disclosures and SHA-256 computation (`computeSha256`).
+  - Anchored the PDF SHA-256 digest (`51d99c1974d37cc73dcd74da18e2c46a5c7341f86a14fd3a847809c75caa0c64`) directly onto the ZATBILL issuer account via Stellar `manage_data` (`zatbill_attestation_hash`) on Testnet: [Tx d54605a3...](https://horizon-testnet.stellar.org/transactions/d54605a38a0286e27c3bc397ff2780f1e5a22b656198d4e84626fe6510e21750).
+  - Created live `/attestation.json` and updated `/assets/zatbill-attestation.json` endpoints serving the cryptographically signed attestation payload with CORS headers.
+  - Saved mock custody statement PDF at `apps/web/public/assets/mock-custody-statement.pdf` and updated `stellar.toml` to cross-link the attestation via SEP-0001 `attestation_of_reserve = "https://${homeDomain}/attestation.json"`.
+  - Implemented `/api/backing` (and `/api/zatbill/backing`) returning live backing ratio, circulating supply, signature validation, PDF hash verification, and on-chain anchor matching, supporting `?demo_deficit=true` toggle for UI warning states.
+  - Created CLI automation tools: `pnpm chain:attestation:anchor` (`scripts/anchor-attestation.ts`) and `pnpm chain:attestation:verify` (`scripts/verify-backing.ts`).
+  - Added unit test suites `packages/chain/src/attestation.test.ts` (6 tests) and `apps/web/app/api/backing/route.test.ts` (2 tests) covering all tamper modes (signature corruption, payload alteration, PDF single-byte modification, and demo deficit toggle).
+  - Documented full proof of backing architecture, formulas, and testnet transaction links in `docs/ASSET.md` and `docs/DEPLOYMENTS.md`.
+
+

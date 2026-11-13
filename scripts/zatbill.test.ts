@@ -68,6 +68,18 @@ test("stellar.toml describes ZATBILL as a non-backed Testnet demo token", () => 
   );
 });
 
+test("stellar.toml includes attestation_of_reserve when attestationUrl is provided", () => {
+  const toml = buildStellarToml(
+    "GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF",
+    "assets.example.org",
+    { attestationUrl: "https://assets.example.org/attestation.json" },
+  );
+  assert.match(
+    toml,
+    /attestation_of_reserve="https:\/\/assets\.example\.org\/attestation\.json"/,
+  );
+});
+
 test("extractFailureReason formats op_not_authorized failure cleanly", () => {
   const failure = extractFailureReason({
     response: {

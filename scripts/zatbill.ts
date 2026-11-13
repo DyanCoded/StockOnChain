@@ -85,11 +85,15 @@ function tomlString(value: string): string {
   return JSON.stringify(value);
 }
 
-export function buildStellarToml(issuer: string, homeDomain: string): string {
+export function buildStellarToml(
+  issuer: string,
+  homeDomain: string,
+  options?: { attestationUrl?: string },
+): string {
   const rootUrl = `https://${homeDomain}`;
   const disclosureUrl = `${rootUrl}/assets/zatbill-attestation.json`;
   const transparencyUrl = `${rootUrl}/assets`;
-  return [
+  const lines = [
     'VERSION="2.0.0"',
     `NETWORK_PASSPHRASE=${tomlString(TESTNET_PASSPHRASE)}`,
     `ACCOUNTS=[${tomlString(issuer)}]`,
@@ -102,8 +106,12 @@ export function buildStellarToml(issuer: string, homeDomain: string): string {
     'name="MOCK ZATBILL"',
     'desc="Testnet-only mock pot claim. Not a security, real T-bill, or backed asset."',
     `conditions=${tomlString(`Illustrative face value: 1 token models R1.00 at an example maturity and is sold at a discount. No on-chain maturity schedule or fiat redemption is implemented. No real reserves. See ${disclosureUrl} and ${transparencyUrl}.`)}`,
-    "",
-  ].join("\n");
+  ];
+  if (options?.attestationUrl) {
+    lines.push(`attestation_of_reserve=${tomlString(options.attestationUrl)}`);
+  }
+  lines.push("");
+  return lines.join("\n");
 }
 
 export function validateHomeDomain(homeDomain: string | undefined): string {

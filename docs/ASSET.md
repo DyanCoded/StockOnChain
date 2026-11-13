@@ -92,6 +92,123 @@ $$\text{Payout} = \left\lfloor\frac{\text{Shares} \times \text{Settlement Total}
 - `pnpm demo:invest`: Initializes a time-compressed demo pot, pulls member contributions, quotes primary dealer discount pricing, and executes the dual-auth investment swap.
 - `pnpm demo:mature`: Awaits the 120s maturity countdown, triggers `mature()`, settles the pot with the primary dealer at full face value, claims member payouts, and prints the verified cent-precision reconciliation table.
 
+## Proof of Backing: Signed Attestation & On-Chain Anchor (T-06)
+
+### 1. Mock Custodian Architecture & Disclaimers (AI Guardrails G4 & G6)
+
+To establish transparent proof of backing for the circulating ZATBILL tokens without pretending to hold real sovereign debt or commercial banking reserves:
+
+- **Mock Custodian Name:** `Mock Custodian Services (Pty) Ltd (Demo Only)`
+- **Signer Public Key:** `GAP6QC2WHE37IY47WLPG7G375DCFLHAKP5RQLTF3LXZGC75STTBVLA2K`
+- **Mock Instrument Identifier:** `MOCK-TBILL-ZA-2026-Q4-DEMO`
+- **Mock Instrument Description:** Simulated South African Republic Treasury Bill (91-Day Zero-Coupon Benchmark)
+- **Face Value per Unit:** R 1.00 (simulated)
+- **Attested Reserves:** R 1,000.00 face value (1,000 simulated units held in segregated mock vault)
+
+> [!WARNING]
+> **Strict Mock Disclosure:** No real-world financial assets, South African Treasury Bills, commercial banking deposits, or statutory fiat reserves exist or are held. All custody statements, instrument identifiers, and signatures are generated exclusively for development, testing, and UI verification.
+
+### 2. Mock Custody Statement PDF & Cryptographic Hash
+
+A standardized PDF document (`mock-custody-statement.pdf`) is published at `/assets/mock-custody-statement.pdf` containing the custody declaration, as-of timestamp, custodian public key, and statutory AI disclaimers.
+
+- **PDF Digest Algorithm:** SHA-256
+- **Current PDF SHA-256 Digest:** `51d99c1974d37cc73dcd74da18e2c46a5c7341f86a14fd3a847809c75caa0c64`
+
+### 3. Ed25519 Signed Attestation Publication
+
+The mock custodian publishes an active `/attestation.json` endpoint. The attestation payload is deterministically serialized via recursive alphabetical key sorting (canonical JSON) and cryptographically signed with the custodian's Ed25519 keypair:
+
+```json
+{
+  "documentType": "mock-custodian-reserve-attestation",
+  "disclaimer": "MOCK CUSTODIAN DISCLOSURE: Strictly simulated demo attestation...",
+  "custodian": {
+    "name": "Mock Custodian Services (Pty) Ltd (Demo Only)",
+    "publicKey": "GAP6QC2WHE37IY47WLPG7G375DCFLHAKP5RQLTF3LXZGC75STTBVLA2K",
+    "location": "Mock Vault, Sandton, Johannesburg (SIMULATED)",
+    "isMock": true
+  },
+  "asset": {
+    "code": "ZATBILL",
+    "issuer": "GDEPFK6O3UCEFBDWHIFXYHVNW2SG5OTHTLE3GSHJFKSKVS5JGV6M5EIU",
+    "network": "testnet"
+  },
+  "instrument": {
+    "id": "MOCK-TBILL-ZA-2026-Q4-DEMO",
+    "description": "Simulated South African Republic Treasury Bill (91-Day Zero-Coupon Benchmark)",
+    "faceValuePerUnit": "1.00",
+    "currency": "ZAR (Simulated)"
+  },
+  "reserves": {
+    "faceAmountHeld": "1000.00",
+    "currency": "mZAR (Mock Rand)",
+    "unitsHeld": 1000
+  },
+  "statementPdf": {
+    "filename": "mock-custody-statement.pdf",
+    "url": "https://stockonchain.app/assets/mock-custody-statement.pdf",
+    "ipfsUri": "ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi/mock-custody-statement.pdf",
+    "sha256": "51d99c1974d37cc73dcd74da18e2c46a5c7341f86a14fd3a847809c75caa0c64"
+  },
+  "asOfDate": "2026-11-13T12:00:00.000Z",
+  "signature": "3e9b... (64-byte Ed25519 hex signature)"
+}
+```
+
+### 4. On-Chain Anchoring & SEP-0001 Linking
+
+The proof of backing is anchored directly to the Stellar blockchain and discoverable via SEP-0001:
+
+1. **Issuer `manage_data` Anchor:**
+   - **Key:** `zatbill_attestation_hash`
+   - **Value:** `51d99c1974d37cc73dcd74da18e2c46a5c7341f86a14fd3a847809c75caa0c64` (exact 64-character SHA-256 hex string)
+   - **Stellar Testnet Transaction:** [`d54605a38a0286e27c3bc397ff2780f1e5a22b656198d4e84626fe6510e21750`](https://horizon-testnet.stellar.org/transactions/d54605a38a0286e27c3bc397ff2780f1e5a22b656198d4e84626fe6510e21750)
+2. **`stellar.toml` Linking (SEP-0001):**
+   ```toml
+   [[CURRENCIES]]
+   code = "ZATBILL"
+   issuer = "GDEPFK6O3UCEFBDWHIFXYHVNW2SG5OTHTLE3GSHJFKSKVS5JGV6M5EIU"
+   status = "test"
+   display_decimals = 2
+   name = "MOCK ZATBILL"
+   desc = "Testnet-only MOCK stokvel claim; backed by mock custodian signed attestation."
+   attestation_of_reserve = "https://stockonchain.app/attestation.json"
+   ```
+
+### 5. Backing Ratio & Verification Logic
+
+The verification engine compares the attested reserves against the live circulating ZATBILL supply on Stellar Testnet:
+
+$$\text{Backing Ratio} = \left(\frac{\text{Attested Reserves}}{\text{Circulating Supply}}\right) \times 100\%$$
+
+- **Live Horizon Query:** Queries `horizon.assets().forCode("ZATBILL").forIssuer(issuer)` to sum authorized trustlines, unauthorized balances, and contract-held tokens.
+- **Ratio Assessment:**
+  - $\text{Ratio} \ge 100.00\%$: `fully_backed` (healthy green indicator in UI).
+  - $\text{Ratio} < 100.00\%$: `under_collateralized` (prominent warning state in UI).
+- **Verification Endpoint:** `GET /api/backing` executes the full verification pipeline and returns the structured audit JSON for task A-06.
+
+### 6. Demo Deficit Toggle for UI Warning Testing
+
+To test and showcase how the StockOnChain UI alerts members to reserve shortfalls:
+- Append `?demo_deficit=true` (or `?mode=deficit`) to `/api/backing`.
+- The endpoint forces the effective ratio to **85.00%** (under-collateralized), generating a visible warning without modifying the underlying cryptographic integrity of the attestation document or PDF.
+
+### 7. Tamper Detection & Security Guarantees
+
+The verification engine provides zero-tolerance tamper detection:
+1. **PDF Byte Alteration:** Flipping even a single bit in `mock-custody-statement.pdf` alters its SHA-256 digest, immediately failing both the `verifyPdfHash` check and the on-chain `manage_data` anchor check.
+2. **Attestation Document Tampering:** Modifying any value in `attestation.json` (such as changing reserves from `1000.00` to `2000.00` or altering the instrument ID) invalidates the Ed25519 digital signature against the custodian public key.
+3. **On-Chain Desynchronization:** If an unauthorized party attempts to point `stellar.toml` or `attestation.json` to a different PDF hash, it is rejected because the issuer's on-chain `manage_data` entry does not match.
+
+### 8. Verification CLI Commands
+
+- `pnpm chain:attestation:anchor`: Publishes or checks the PDF SHA-256 hash in the issuer account's `manage_data` storage on Stellar Testnet.
+- `pnpm chain:attestation:verify`: Runs the complete end-to-end audit (signature, PDF hash, on-chain anchor, circulating supply, backing ratio) from the terminal.
+  - Options:
+    - `--deficit`: Simulates under-collateralized demo state ($85.00\%$).
+    - `--tamper`: Simulates single-byte PDF corruption to verify tamper detection.
+
 ## Official References
 
 - [Asset authorization flags](https://developers.stellar.org/docs/tokens/control-asset-access)

@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { GET } from "./route.js";
 
-test("stellar.toml advertises only the Testnet mock mZAR issuer", async () => {
+test("stellar.toml advertises only the Testnet mock mZAR issuer and ZATBILL reserve attestation", async () => {
   const original = {
     zatbill: process.env.STELLAR_ZATBILL_ISSUER_PUBLIC_KEY,
     mzar: process.env.STELLAR_ANCHOR_SIM_PUBLIC_KEY,
@@ -27,6 +27,10 @@ test("stellar.toml advertises only the Testnet mock mZAR issuer", async () => {
     assert.match(toml, /Testnet-only mock rand token/);
     assert.match(toml, /not backed by fiat reserves/);
     assert.match(toml, /code="ZATBILL"/);
+    assert.match(
+      toml,
+      /attestation_of_reserve="https:\/\/assets\.example\.org\/attestation\.json"/,
+    );
   } finally {
     if (original.zatbill === undefined) {
       delete process.env.STELLAR_ZATBILL_ISSUER_PUBLIC_KEY;

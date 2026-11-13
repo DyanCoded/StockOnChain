@@ -23,3 +23,4 @@ export interface ContractConfig {
     network: 'testnet';
 }
 export * from './dealer';
+export * from './attestation';

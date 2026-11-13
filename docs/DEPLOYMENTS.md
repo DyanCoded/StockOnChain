@@ -34,6 +34,20 @@ This document tracks verified Soroban smart contract deployments on Stellar Test
   - Thabo D. (R20.40): [`99498f5e...`](https://horizon-testnet.stellar.org/transactions/99498f5e16298807674376368dc4ffa3af101eec22634d4a7ba2c660bbef6599)
 - **Reconciliation Invariant:** $\sum \text{claims} (\text{R102.00}) + \text{dust} (0\text{ stroops}) \equiv \text{Settlement Total} (\text{R102.00})$
 
+## Proof of Backing On-Chain Anchor (T-06)
+
+To establish an immutable on-chain audit trail linking the mock custodian reserve attestation to the Stellar ledger:
+
+- **Target Issuer Account:** `GDEPFK6O3UCEFBDWHIFXYHVNW2SG5OTHTLE3GSHJFKSKVS5JGV6M5EIU` (ZATBILL Issuer)
+- **Custodian Signer:** `GAP6QC2WHE37IY47WLPG7G375DCFLHAKP5RQLTF3LXZGC75STTBVLA2K`
+- **Manage Data Key:** `zatbill_attestation_hash`
+- **Anchored Data Value (Hex SHA-256):** `51d99c1974d37cc73dcd74da18e2c46a5c7341f86a14fd3a847809c75caa0c64`
+- **Anchoring Transaction Hash:** [`d54605a38a0286e27c3bc397ff2780f1e5a22b656198d4e84626fe6510e21750`](https://horizon-testnet.stellar.org/transactions/d54605a38a0286e27c3bc397ff2780f1e5a22b656198d4e84626fe6510e21750)
+- **SEP-0001 Reserve Attestation:** `https://stockonchain.app/attestation.json`
+- **Mock Statement PDF:** `https://stockonchain.app/assets/mock-custody-statement.pdf`
+- **Mock IPFS URI:** `ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi/mock-custody-statement.pdf`
+- **Circulating Supply vs Attested Reserves:** $1,000.00\text{ ZATBILL} \equiv \text{R } 1,000.00$ ($100.00\%$ fully backed)
+
 
 ## Contract Addresses & Role Bindings
 

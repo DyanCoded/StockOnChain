@@ -1,0 +1,74 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 2122 >>
+stream
+BT
+/F1 10 Tf
+50 720 Td
+15 TL
+(==================================================================) '
+(          MOCK CUSTODIAN SERVICES \(PTY\) LTD) '
+(    SIMULATED DEMO CUSTODY STATEMENT & PROOF OF RESERVE) '
+(==================================================================) '
+() '
+(STATUS: STRICTLY DEMO - NOT A REAL FINANCIAL DOCUMENT) '
+() '
+(As-of Date:       2026-11-13T12:00:00.000Z) '
+(Custodian Signer: GAP6QC2WHE37IY47WLPG7G375DCFLHAKP5RQLTF3LXZGC75STTBVLA2K) '
+(Custody Location: Mock Vault, Sandton, Johannesburg \(SIMULATED\)) '
+() '
+(------------------------------------------------------------------) '
+(  ASSET & HOLDINGS DECLARATION) '
+(------------------------------------------------------------------) '
+(Asset Code:       MOCK ZATBILL) '
+(Issuer Account:   GDEPFK6O3UCEFBDWHIFXYHVNW2SG5OTHTLE3GSHJFKSKVS5JGV6M5EIU) '
+(Network:          Stellar Testnet \(Test SDF Network ; September 2015\)) '
+(Mock Instrument:  MOCK-TBILL-ZA-2026-Q4-DEMO) '
+(Description:      Simulated South African Republic Treasury Bill \(91-Day Zero-Coupon Benchmark\)) '
+(Face Value/Token: R 1.00 \(simulated\)) '
+(Units Held:       1,000 ZATBILL) '
+(Total Face Value: R 1000.00 \(mZAR equivalent\)) '
+() '
+(------------------------------------------------------------------) '
+(  MOCK CUSTODIAN ATTESTATION) '
+(------------------------------------------------------------------) '
+(Mock Custodian Services \(Pty\) Ltd certifies that as of the date) '
+(above, it holds the aforementioned mock debt claims in segregated) '
+(simulated custody backing circulating ZATBILL tokens.) '
+() '
+(------------------------------------------------------------------) '
+(  STATUTORY DISCLAIMER \(AI GUARDRAILS G4 & G6\)) '
+(------------------------------------------------------------------) '
+(WARNING: This document is an illustrative mock statement generated) '
+(solely for protocol development, testing, and UI verification.) '
+(NO REAL SOUTH AFRICAN GOVERNMENT TREASURY BILLS, BANKING DEPOSITS,) '
+(SECURITIES, OR FIAT RAND RESERVES ARE HELD OR GUARANTEED.) '
+(==================================================================) '
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000002414 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2482
+%%EOF

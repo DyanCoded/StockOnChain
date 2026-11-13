@@ -38,7 +38,8 @@ export function GET() {
   const baseUrl = `https://${homeDomain}`;
   const conditions =
     `Testnet demo token only. One token is an illustrative R1.00 face-value claim at example maturity, sold at a discount. No on-chain maturity or fiat redemption is implemented. No reserves or real T-bills. This is not a security, investment, or payment promise. ` +
-    `Non-attestation disclosure: ${baseUrl}/assets/zatbill-attestation.json. ` +
+    `Mock custodian attestation: ${baseUrl}/attestation.json. ` +
+    `On-chain anchor: issuer manage_data zatbill_attestation_hash. ` +
     `Transparency: ${baseUrl}/assets.`;
   const toml = [
     'VERSION="2.0.0"',
@@ -61,8 +62,9 @@ export function GET() {
     'status="test"',
     "display_decimals=2",
     `name=${quote("MOCK ZATBILL")}`,
-    `desc=${quote("Testnet-only MOCK stokvel claim; not backed by a real T-bill or reserves.")}`,
+    `desc=${quote("Testnet-only MOCK stokvel claim; backed by mock custodian signed attestation.")}`,
     `conditions=${quote(conditions)}`,
+    `attestation_of_reserve=${quote(`${baseUrl}/attestation.json`)}`,
     "",
   ].join("\n");
 
