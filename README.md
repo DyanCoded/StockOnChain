@@ -4,6 +4,7 @@
 
 ## 1. Project
 
+- **Live prototype:** [https://stock-on-chain-gmu2.vercel.app/](https://stock-on-chain-gmu2.vercel.app/)
 - **Problem:** Shared savings groups need clear records of contributions, balances, and payout rules. StockOnChain explores how software can help make those records easier for members to inspect.
 - **Track / focus:** Stellar and Soroban; financial inclusion and tokenization. Confirm the official event track before describing this as an official track entry.
 - **Team:** Ntsika and Kea.
@@ -60,10 +61,11 @@ This is a placeholder status matrix, not a claim that a component is deployed or
 
 | Component | Status | Notes |
 |---|---|---|
-| Web app | Local scaffold | Next.js shell is implemented; no live deployment or real-device install has been verified. See [apps/web/README.md](./apps/web/README.md). |
+| Web app | Prototype deployed | Next.js PWA deployed at [https://stock-on-chain-gmu2.vercel.app/](https://stock-on-chain-gmu2.vercel.app/). See [apps/web/README.md](./apps/web/README.md). |
 | API and chain client | To verify | Source folders exist; integration status is not asserted here. |
 | Soroban pot contract | To verify | Contract source is in `contracts/stokvel-pot`; deployment status is unverified. |
 | MOCK ZATBILL | Testnet demo token | No real T-bills, reserves, securities, yield, or payout are represented. See [docs/ASSET.md](./docs/ASSET.md). |
+| MOCK mZAR | Testnet demo token | Issued only by the Anchor-sim Testnet account. Not backed by fiat; Mainnet ZAR/ZARP assets are not used. See [docs/B-02.md](./docs/B-02.md). |
 | Stellar network | To verify | Confirm the configured network and passphrase before use. |
 | Identity checks, fiat rails, custody, and payouts | To verify / mock | Do not imply a real provider, licence, reserve, or payout without evidence. |
 | Yield or investment returns | Not asserted | No rate or return claim is made in this README. |
@@ -92,6 +94,7 @@ testnet-only `pnpm chain:bootstrap` command. Bootstrap generates role keys in th
 and deploys and invokes the contract. It updates public keys in
 [docs/ACCOUNTS.md](./docs/ACCOUNTS.md); never share or commit `.env`.
 To provision the separate ZATBILL Testnet demo asset, deploy the web app to its public HTTPS host, set `STELLAR_HOME_DOMAIN` in `.env` to that host (domain only), then run `pnpm chain:zatbill setup`. Use `pnpm chain:zatbill verify` to exercise authorization, freeze, and clawback. See [docs/ASSET.md](./docs/ASSET.md) for scope and limits.
+Run `pnpm chain:mzar` to set the Anchor-sim issuer's home domain and deploy the mZAR Stellar Asset Contract on Testnet. The API faucet requires the Anchor-sim Testnet secret key and issues 100 mZAR per account per 24 hours after the recipient creates its trustline. It is not a SEP-24 service; use one API instance with persistent storage for its local cooldown file (`.local/mzar-faucet-rate-limits.json` by default). See [docs/B-02.md](./docs/B-02.md) for the Mainnet asset research.
 `pnpm test` runs Node network-guard tests. Rust contract tests are run separately
 with `cargo test --workspace`.
 

@@ -14,7 +14,7 @@ The web package can also be checked with `pnpm --filter web build` and `pnpm --f
 
 ## Deployment status
 
-There is no verified live URL yet. Connect the repository to Vercel with `apps/web` as the project root to enable preview deployments for pull requests; add the resulting production URL to the root README only after deployment is verified. Android installation and Lighthouse scores still require checks on the deployed site.
+The web application is deployed on Vercel at [https://stock-on-chain-gmu2.vercel.app/](https://stock-on-chain-gmu2.vercel.app/). Vercel preview deployments are enabled for pull requests with `apps/web` as the root directory. Android installation and Lighthouse scores should be audited on this live deployment.
 
 ## Scope and security
 

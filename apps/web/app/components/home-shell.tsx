@@ -4,7 +4,8 @@ const copy = {
     prototype: "Prototype",
     tagline: "A clearer view of your stokvel.",
     note: "No funds or investments are connected to this prototype.",
-    assetInfo: "MOCK ZATBILL is a Testnet demo token with no real backing.",
+    assetInfo: "MOCK mZAR is a Testnet-only demo token with no real backing.",
+    assetHref: "/assets/mzar",
     signIn: "Sign in (coming from I-01)",
     advanced: "Advanced",
     testnet: "Freighter connection is optional and limited to Stellar Testnet.",
@@ -16,7 +17,8 @@ const copy = {
     tagline: "Bona kangcono iqembu lakho lokonga.",
     note: "Lesi sivivinyo asixhunyiwe emalini noma ekutshalweni kwezimali.",
     assetInfo:
-      "I-MOCK ZATBILL iyithokheni yesivivinyo se-Testnet, ayisekelwe yizimpahla zangempela.",
+      "I-MOCK mZAR iyithokheni yesivivinyo se-Testnet, ayisekelwe yimali yangempela.",
+    assetHref: "/assets/mzar",
     signIn: "Ngena ngemvume (kuvela ku-I-01)",
     advanced: "Okuthuthukile",
     testnet:
@@ -68,7 +70,7 @@ export default function HomeShell({ locale }: { locale: "en" | "zu" }) {
           <h1 id="page-title">StockOnChain</h1>
           <p className="tagline">{text.tagline}</p>
           <p className="disclaimer">{text.note}</p>
-          <a className="asset-link" href="/assets">
+          <a className="asset-link" href={text.assetHref}>
             {text.assetInfo}
           </a>
           <div className="login-placeholder">

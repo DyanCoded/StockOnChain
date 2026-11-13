@@ -21,6 +21,7 @@ Cargo.lock
 # Stellar / Soroban
 .soroban/
 .stellar/
+.local/
 
 # IDE & Editor
 .vscode/*

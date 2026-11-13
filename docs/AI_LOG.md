@@ -56,3 +56,11 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
   - Added authorize, freeze, clawback, and end-to-end Testnet verification commands with Testnet Horizon transaction links.
   - Added a CORS-enabled SEP-1 `stellar.toml`, a transparency disclosure explicitly marked not an attestation, `docs/ASSET.md`, and a localized home-page link.
   - Verified implementation details against official Stellar asset flags, clawback, SAC, issue-asset, SEP-1, and CLI documentation. No live Testnet deployment was run because no local `.env` or public home domain was configured.
+
+### [2026-11-13] MOCK mZAR and Testnet Faucet (B-02)
+* **Prompt / Task:** Issue a mock rand asset, wrap it in a Stellar Asset Contract, provide a rate-limited demo faucet, format mZAR as rand in the UI, and research Mainnet ZAR/ZARP assets without using them in the demo.
+* **Changes:**
+  - Added a Testnet-guarded mZAR setup script using the separate Anchor-sim issuer; it sets the issuer home domain, deploys the SAC, and records the SAC address.
+  - Added an API faucet that checks recipient trustlines and limits each account to 100 mZAR per 24 hours; the in-memory cooldown is explicitly scoped to a single process.
+  - Added rand currency formatting, an mZAR disclosure page, and `MOCK mZAR` metadata in the Testnet `stellar.toml`.
+  - Recorded Mainnet Horizon `ZAR`/`ZARP` asset-code observations and verification limits in [B-02.md](./B-02.md); the project does not use any Mainnet issuer.

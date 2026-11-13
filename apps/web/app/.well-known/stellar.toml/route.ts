@@ -18,10 +18,12 @@ export function OPTIONS() {
 }
 
 export function GET() {
-  const issuer = process.env.STELLAR_ZATBILL_ISSUER_PUBLIC_KEY?.trim();
+  const zatbillIssuer = process.env.STELLAR_ZATBILL_ISSUER_PUBLIC_KEY?.trim();
+  const mzarIssuer = process.env.STELLAR_ANCHOR_SIM_PUBLIC_KEY?.trim();
   const homeDomain = process.env.STELLAR_HOME_DOMAIN?.trim();
   if (
-    !issuer ||
+    !zatbillIssuer ||
+    !mzarIssuer ||
     !homeDomain ||
     homeDomain.length > 32 ||
     !homeDomain.includes(".") ||
@@ -41,11 +43,21 @@ export function GET() {
   const toml = [
     'VERSION="2.0.0"',
     'NETWORK_PASSPHRASE="Test SDF Network ; September 2015"',
-    `ACCOUNTS=[${quote(issuer)}]`,
+    `ACCOUNTS=[${quote(zatbillIssuer)}, ${quote(mzarIssuer)}]`,
+    "",
+    "[[CURRENCIES]]",
+    `code=${quote("mZAR")}`,
+    `issuer=${quote(mzarIssuer)}`,
+    'status="test"',
+    "display_decimals=2",
+    `name=${quote("MOCK mZAR")}`,
+    `desc=${quote("Testnet-only mock rand token. Not a real ZAR stablecoin and not backed by fiat reserves.")}`,
+    `conditions=${quote(`Demo token only. The faucet is a Testnet simulation, not a SEP-24 deposit service. No fiat reserves, redemption, or real-world value are represented. Transparency: ${baseUrl}/assets/mzar.`)}`,
+    "",
     "",
     "[[CURRENCIES]]",
     `code=${quote("ZATBILL")}`,
-    `issuer=${quote(issuer)}`,
+    `issuer=${quote(zatbillIssuer)}`,
     'status="test"',
     "display_decimals=2",
     `name=${quote("MOCK ZATBILL")}`,
