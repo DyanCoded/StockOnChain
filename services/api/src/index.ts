@@ -41,6 +41,7 @@ import {
 import { CustodialWalletStore } from "./wallet-store.js";
 import { SponsorRateLimiter } from "./sponsor-limiter.js";
 import { SponsorService } from "./sponsor-service.js";
+import { Sep24Simulator } from "./sep24.js";
 
 config({ quiet: true });
 assertTestnetConfiguration();
@@ -80,7 +81,18 @@ const rateLimiter = new MzarRateLimiter(
 );
 let mzarSubmissionQueue = Promise.resolve();
 
-// Initialize KYC & ZATBILL Service if role keys are provided
+let sep24Simulator: Sep24Simulator | null = null;
+try {
+  sep24Simulator = new Sep24Simulator({
+    serverKeypair: anchorKeypair,
+    homeDomain: process.env.STELLAR_HOME_DOMAIN?.trim() || "stockonchain.test",
+  });
+} catch (error) {
+  console.error(
+    "Warning: Could not initialize SEP-24 simulator.",
+    error instanceof Error ? error.message : "Unknown error",
+  );
+}
 const zatbillIssuerSecret = process.env.STELLAR_ZATBILL_ISSUER_SECRET_KEY?.trim();
 const sponsorSecret = process.env.STELLAR_SPONSOR_SECRET_KEY?.trim();
 const dealerSecret = process.env.STELLAR_DEALER_SECRET_KEY?.trim();
@@ -615,6 +627,236 @@ export const server = createServer(async (request, response) => {
     const user = reqUrl.searchParams.get("userId") || reqUrl.searchParams.get("account") || undefined;
     const stats = sponsorRateLimiter.getStats(user);
     sendJson(response, 200, stats as unknown as Record<string, unknown>);
+    return;
+  }
+
+  // ==========================================
+  // SEP-10 & SEP-24 Anchor Routes
+  // ==========================================
+
+  // Route: GET /auth (SEP-10 challenge generation)
+  if (pathname === "/auth" && request.method === "GET") {
+    if (!sep24Simulator) {
+      sendJson(response, 503, { error: "SEP-10 auth service not available." });
+      return;
+    }
+    const account = reqUrl.searchParams.get("account");
+    if (!isValidStellarPublicKey(account)) {
+      sendJson(response, 400, { error: "account query parameter must be a valid Stellar public key." });
+      return;
+    }
+    const challenge = sep24Simulator.buildChallengeTransaction(account);
+    sendJson(response, 200, challenge as unknown as Record<string, unknown>);
+    return;
+  }
+
+  // Route: POST /auth (SEP-10 challenge validation & token issuance)
+  if (pathname === "/auth" && request.method === "POST") {
+    if (!sep24Simulator) {
+      sendJson(response, 503, { error: "SEP-10 auth service not available." });
+      return;
+    }
+    let body: unknown;
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      sendJson(response, 400, { error: "Send a valid JSON request." });
+      return;
+    }
+    const tx = typeof body === "object" && body !== null && "transaction" in body
+      ? String((body as { transaction: unknown }).transaction).trim()
+      : "";
+    const account = typeof body === "object" && body !== null && "account" in body
+      ? String((body as { account: unknown }).account).trim()
+      : "";
+
+    if (!tx || !isValidStellarPublicKey(account)) {
+      sendJson(response, 400, { error: "transaction (XDR) and account are required." });
+      return;
+    }
+
+    try {
+      const token = sep24Simulator.verifyChallenge(tx, account);
+      sendJson(response, 200, { token });
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "SEP-10 authentication failed.",
+      });
+    }
+    return;
+  }
+
+  // Route: GET /sep24/info (SEP-24 info endpoint)
+  if (pathname === "/sep24/info" && request.method === "GET") {
+    if (!sep24Simulator) {
+      sendJson(response, 503, { error: "SEP-24 service not available." });
+      return;
+    }
+    const info = sep24Simulator.getInfo();
+    sendJson(response, 200, info as unknown as Record<string, unknown>);
+    return;
+  }
+
+  // Route: POST /sep24/transactions/withdraw/interactive
+  if (pathname === "/sep24/transactions/withdraw/interactive" && request.method === "POST") {
+    if (!sep24Simulator) {
+      sendJson(response, 503, { error: "SEP-24 service not available." });
+      return;
+    }
+    let body: unknown;
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      sendJson(response, 400, { error: "Send a valid JSON request." });
+      return;
+    }
+
+    const typedBody = body as {
+      account?: string;
+      amount?: string;
+      asset_code?: string;
+      rail?: "instant_bank" | "mobile_money";
+      recipient?: string;
+    };
+
+    if (!isValidStellarPublicKey(typedBody.account)) {
+      sendJson(response, 400, { error: "account must be a valid Stellar public key." });
+      return;
+    }
+
+    try {
+      const res = sep24Simulator.initiateWithdrawal({
+        account: typedBody.account,
+        amount: typedBody.amount || "100",
+        asset_code: typedBody.asset_code || "mZAR",
+        rail: typedBody.rail,
+        recipient: typedBody.recipient,
+      });
+      sendJson(response, 200, res);
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "Failed to initiate withdrawal.",
+      });
+    }
+    return;
+  }
+
+  // Route: POST /sep24/transactions/deposit/interactive
+  if (pathname === "/sep24/transactions/deposit/interactive" && request.method === "POST") {
+    if (!sep24Simulator) {
+      sendJson(response, 503, { error: "SEP-24 service not available." });
+      return;
+    }
+    let body: unknown;
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      sendJson(response, 400, { error: "Send a valid JSON request." });
+      return;
+    }
+
+    const typedBody = body as {
+      account?: string;
+      amount?: string;
+      asset_code?: string;
+    };
+
+    if (!isValidStellarPublicKey(typedBody.account)) {
+      sendJson(response, 400, { error: "account must be a valid Stellar public key." });
+      return;
+    }
+
+    try {
+      const res = sep24Simulator.initiateDeposit({
+        account: typedBody.account,
+        amount: typedBody.amount || "100",
+        asset_code: typedBody.asset_code || "mZAR",
+      });
+      sendJson(response, 200, res);
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "Failed to initiate deposit.",
+      });
+    }
+    return;
+  }
+
+  // Route: GET /sep24/transaction (SEP-24 single transaction lookup)
+  if (pathname === "/sep24/transaction" && request.method === "GET") {
+    if (!sep24Simulator) {
+      sendJson(response, 503, { error: "SEP-24 service not available." });
+      return;
+    }
+    const id = reqUrl.searchParams.get("id");
+    if (!id) {
+      sendJson(response, 400, { error: "id query parameter is required." });
+      return;
+    }
+    const tx = sep24Simulator.getTransaction(id);
+    if (!tx) {
+      sendJson(response, 404, { error: "Transaction not found." });
+      return;
+    }
+    sendJson(response, 200, { transaction: tx });
+    return;
+  }
+
+  // Route: POST /sep24/payout/execute (executes simulated local bank or mobile money payout)
+  if (pathname === "/sep24/payout/execute" && request.method === "POST") {
+    if (!sep24Simulator) {
+      sendJson(response, 503, { error: "SEP-24 service not available." });
+      return;
+    }
+    let body: unknown;
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      sendJson(response, 400, { error: "Send a valid JSON request." });
+      return;
+    }
+    const txId = typeof body === "object" && body !== null && "transaction_id" in body
+      ? String((body as { transaction_id: unknown }).transaction_id).trim()
+      : "";
+    const stellarTx = typeof body === "object" && body !== null && "stellar_transaction_id" in body
+      ? String((body as { stellar_transaction_id: unknown }).stellar_transaction_id).trim()
+      : `sim_tx_${Date.now()}`;
+
+    if (!txId) {
+      sendJson(response, 400, { error: "transaction_id is required." });
+      return;
+    }
+
+    try {
+      const completed = sep24Simulator.executeSimulatedPayout(txId, stellarTx);
+      sendJson(response, 200, {
+        success: true,
+        transaction: completed,
+        simulated: true,
+        disclaimer:
+          "SIMULATION ONLY: Simulated local payout completed. No actual fiat or real-world money moved.",
+      });
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "Payout execution failed.",
+      });
+    }
+    return;
+  }
+
+  // Route: GET /sep24/quote
+  if (pathname === "/sep24/quote" && request.method === "GET") {
+    if (!sep24Simulator) {
+      sendJson(response, 503, { error: "SEP-24 service not available." });
+      return;
+    }
+    const rail = (reqUrl.searchParams.get("rail") as "instant_bank" | "mobile_money") || "instant_bank";
+    const amount = parseFloat(reqUrl.searchParams.get("amount") || "100");
+    const quote = sep24Simulator.quotePayout({
+      rail,
+      recipient: "Simulated User",
+      amountMzar: isNaN(amount) ? 100 : amount,
+    });
+    sendJson(response, 200, quote as unknown as Record<string, unknown>);
     return;
   }
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button, ErrorState, LoadingState } from "./design-system";
 import KycAllowlist from "./kyc-allowlist";
+import CashoutSimulator from "./cashout-simulator";
 
 const walletText = {
   en: {
@@ -187,6 +188,9 @@ export default function AdvancedWallet({ locale }: { locale: "en" | "zu" }) {
 
       {/* Compliance KYC & Allowlist Component */}
       <KycAllowlist locale={locale} account={address} />
+
+      {/* Simulated Cash-Out & SEP-24 Local Rails */}
+      <CashoutSimulator locale={locale} account={address} />
     </div>
   );
 }
