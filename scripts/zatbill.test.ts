@@ -67,3 +67,20 @@ test("stellar.toml describes ZATBILL as a non-backed Testnet demo token", () => 
     /No on-chain maturity schedule or fiat redemption is implemented/i,
   );
 });
+
+test("extractFailureReason formats op_not_authorized failure cleanly", () => {
+  const failure = extractFailureReason({
+    response: {
+      status: 400,
+      data: {
+        extras: {
+          result_codes: {
+            transaction: "tx_failed",
+            operations: ["op_not_authorized"],
+          },
+        },
+      },
+    },
+  });
+  assert.equal(failure.includes("op_not_authorized"), true);
+});

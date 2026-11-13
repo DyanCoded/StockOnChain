@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "description": "Backend service for identity verification, transaction fee sponsorship, and simulation",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./src/index.ts",
+    "./kyc": "./src/kyc.ts"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "tsx --test src/faucet.test.ts"
+    "test": "tsx --test src/faucet.test.ts src/kyc.test.ts"
   },
   "dependencies": {
     "@stockonchain/chain": "workspace:*",

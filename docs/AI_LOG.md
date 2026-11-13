@@ -72,3 +72,16 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
   - Raised text and touch-target sizes, added visible keyboard focus, and retained text labels for simulated/not-connected statuses. The static shell uses local assets and supports low-data use without remote imagery or fonts.
   - Ran axe-core 4.14 at 360×800 on six English/isiZulu routes: zero WCAG 2.0/2.1/2.2 A/AA violations. Keyboard focus/order and 360px overflow were checked in-browser.
   - isiZulu fluent-speaker review, manual screen-reader testing, and non-technical comprehension testing remain pending; these are not claimed complete.
+
+### [2026-11-13] Simulated KYC and Trustline Allowlist (T-03)
+* **Prompt / Task:** Implement Issue T-03: Simulated KYC and trustline allowlist (#7) with synthetic SA ID Luhn algorithm check, phone OTP, POPIA user consent, automated sponsor provisioning and issuer trustline authorization, admin revocation, docs/KYC.md brief, and UI error handling for unauthorized accounts.
+* **Changes:**
+  - Added `services/api/src/kyc.ts` with synthetic 13-digit South African ID validation (Luhn checksum algorithm, DOB, citizenship), phone format and 6-digit OTP validation, and POPIA consent verification.
+  - Implemented `KycStore` and `KycService` with zero-PII logging/storage: only account public key and timestamps are recorded; sensitive fields are strictly redacted in server logs (G1 & G7).
+  - Implemented automated sponsor account provisioning (2.5 XLM reserve) and issuer trustline authorization (`setTrustLineFlags({ authorized: true })`).
+  - Added administrative revocation (`POST /kyc/revoke` and `pnpm chain:zatbill revoke <account>`), which executes `flags: { authorized: false }` to freeze transfers.
+  - Added `POST /zatbill/claim` demo distribution endpoint from Dealer to demonstrate that unverified or frozen accounts are rejected on-chain with `op_not_authorized`.
+  - Added CLI commands in `scripts/zatbill.ts`: `allowlist`, `revoke`, `transfer`, and end-to-end `kyc-demo`. Verified live on Stellar Testnet.
+  - Added `docs/KYC.md` detailing the simulation vs. production FICA compliance (DHA HANIS/ABIS database verification, biometric liveness, sanctions/PEP screening, goAML reporting, and POPIA data minimization).
+  - Built interactive `KycAllowlist` UI component in `apps/web/app/components/kyc-allowlist.tsx` integrated into the Advanced Wallet page with full English and isiZulu localization, handling the safe `op_not_authorized` failure state and simulated admin freeze.
+  - Added 12 unit tests in `services/api/src/kyc.test.ts` and `scripts/zatbill.test.ts`. All 29 workspace tests pass cleanly.

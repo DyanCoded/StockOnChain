@@ -801,6 +801,147 @@ function updateAccountDoc(issuer: string, sacId: string): void {
   writeFileSync(accountsPath, content, "utf8");
 }
 
+export async function allowlistAccount(targetPublicKey: string): Promise<string> {
+  const configuredRoles = roles();
+  const server = new Horizon.Server(STELLAR_NETWORKS.testnet.horizonUrl);
+  const asset = assetFor(configuredRoles.ZATBILL_ISSUER);
+  const hash = await submitClassic(server, configuredRoles.ZATBILL_ISSUER, [
+    Operation.setTrustLineFlags({
+      trustor: targetPublicKey,
+      asset,
+      flags: { authorized: true },
+    }),
+  ]);
+  printTransaction(`Authorized ZATBILL trustline for ${targetPublicKey}`, hash);
+  return hash;
+}
+
+export async function revokeAccount(targetPublicKey: string): Promise<string> {
+  const configuredRoles = roles();
+  const server = new Horizon.Server(STELLAR_NETWORKS.testnet.horizonUrl);
+  const asset = assetFor(configuredRoles.ZATBILL_ISSUER);
+  const hash = await submitClassic(server, configuredRoles.ZATBILL_ISSUER, [
+    Operation.setTrustLineFlags({
+      trustor: targetPublicKey,
+      asset,
+      flags: { authorized: false },
+    }),
+  ]);
+  printTransaction(`Revoked/froze ZATBILL trustline for ${targetPublicKey}`, hash);
+  return hash;
+}
+
+export async function transferZatbill(
+  destination: string,
+  amount: string = probeAmount,
+): Promise<boolean> {
+  const configuredRoles = roles();
+  const server = new Horizon.Server(STELLAR_NETWORKS.testnet.horizonUrl);
+  const asset = assetFor(configuredRoles.ZATBILL_ISSUER);
+  try {
+    const hash = await submitClassic(server, configuredRoles.DEALER, [
+      Operation.payment({ destination, asset, amount }),
+    ]);
+    printTransaction(`Transferred ${amount} ZATBILL to ${destination}`, hash);
+    return true;
+  } catch (error) {
+    const reason = extractFailureReason(error);
+    console.error(`ZATBILL payment rejected: ${reason}`);
+    return false;
+  }
+}
+
+export async function runKycDemo(): Promise<void> {
+  const configuredRoles = roles();
+  const server = new Horizon.Server(STELLAR_NETWORKS.testnet.horizonUrl);
+  const asset = assetFor(configuredRoles.ZATBILL_ISSUER);
+
+  console.log("=== StockOnChain: T-03 Simulated KYC & Allowlist Lifecycle Demo ===");
+
+  const memberKeypair = Keypair.random();
+  const member: Role = {
+    name: "CUSTODIAN", // using Role name type for typing
+    publicKey: memberKeypair.publicKey(),
+    keypair: memberKeypair,
+  };
+  console.log(`Generated synthetic member address: ${member.publicKey}`);
+
+  console.log("Sponsor provisioning member account on Testnet (2.5 XLM starting balance)...");
+  const createHash = await submitClassic(server, configuredRoles.SPONSOR, [
+    Operation.createAccount({ destination: member.publicKey, startingBalance: "2.5" }),
+  ]);
+  printTransaction("Sponsor provisioned member account", createHash);
+
+  console.log("Member establishing ZATBILL trustline (unauthorized by default due to AUTH_REQUIRED)...");
+  const trustHash = await submitClassic(server, member, [
+    Operation.changeTrust({ asset, limit: "1000000" }),
+  ]);
+  printTransaction("Member established ZATBILL trustline", trustHash);
+
+  console.log("Attempting payment to unverified member (expecting rejection)...");
+  let unverifiedFailedAsExpected = false;
+  try {
+    await submitClassic(server, configuredRoles.DEALER, [
+      Operation.payment({ destination: member.publicKey, asset, amount: probeAmount }),
+    ]);
+  } catch (error) {
+    const reason = extractFailureReason(error);
+    console.log(`ZATBILL payment rejected as expected: ${reason}`);
+    if (reason.includes("op_not_authorized")) {
+      unverifiedFailedAsExpected = true;
+    }
+  }
+  if (!unverifiedFailedAsExpected) {
+    throw new Error("Unverified account transfer should have been rejected with op_not_authorized.");
+  }
+
+  console.log("Simulating KYC verification (synthetic SA ID format check, phone OTP, POPIA consent)...");
+  console.log("Zero personal data is stored or logged. Issuer granting trustline authorization...");
+  const authHash = await submitClassic(server, configuredRoles.ZATBILL_ISSUER, [
+    Operation.setTrustLineFlags({
+      trustor: member.publicKey,
+      asset,
+      flags: { authorized: true },
+    }),
+  ]);
+  printTransaction("Issuer authorized ZATBILL trustline for verified member", authHash);
+
+  console.log(`Attempting transfer of ${probeAmount} ZATBILL to verified member...`);
+  const transferHash = await submitClassic(server, configuredRoles.DEALER, [
+    Operation.payment({ destination: member.publicKey, asset, amount: probeAmount }),
+  ]);
+  printTransaction("Payment to verified member succeeded", transferHash);
+
+  console.log("Admin executing compliance revocation / freeze...");
+  const revokeHash = await submitClassic(server, configuredRoles.ZATBILL_ISSUER, [
+    Operation.setTrustLineFlags({
+      trustor: member.publicKey,
+      asset,
+      flags: { authorized: false },
+    }),
+  ]);
+  printTransaction("Issuer revoked/froze ZATBILL trustline for member", revokeHash);
+
+  console.log("Attempting transfer to revoked member (expecting rejection)...");
+  let revokedFailedAsExpected = false;
+  try {
+    await submitClassic(server, configuredRoles.DEALER, [
+      Operation.payment({ destination: member.publicKey, asset, amount: probeAmount }),
+    ]);
+  } catch (error) {
+    const reason = extractFailureReason(error);
+    console.log(`ZATBILL payment rejected as expected after revocation: ${reason}`);
+    if (reason.includes("op_not_authorized")) {
+      revokedFailedAsExpected = true;
+    }
+  }
+  if (!revokedFailedAsExpected) {
+    throw new Error("Revoked account transfer should have been rejected with op_not_authorized.");
+  }
+
+  console.log("=== T-03 Simulated KYC & Allowlist Lifecycle Demo Completed Successfully ===");
+}
+
 async function main(): Promise<void> {
   const dotenvResult = config({ path: envPath, quiet: true });
   if (dotenvResult.error) {
@@ -809,6 +950,9 @@ async function main(): Promise<void> {
   assertTestnetConfiguration();
 
   const command = process.argv[2] ?? "setup";
+  const target = process.argv[3];
+  const amount = process.argv[4] ?? probeAmount;
+
   if (command === "setup") {
     await setup();
   } else if (command === "authorize") {
@@ -819,9 +963,20 @@ async function main(): Promise<void> {
     await clawback();
   } else if (command === "verify") {
     await verifyFlow();
+  } else if (command === "allowlist") {
+    if (!target) throw new Error("Usage: pnpm chain:zatbill allowlist <public-key>");
+    await allowlistAccount(target);
+  } else if (command === "revoke") {
+    if (!target) throw new Error("Usage: pnpm chain:zatbill revoke <public-key>");
+    await revokeAccount(target);
+  } else if (command === "transfer") {
+    if (!target) throw new Error("Usage: pnpm chain:zatbill transfer <destination> [amount]");
+    await transferZatbill(target, amount);
+  } else if (command === "kyc-demo") {
+    await runKycDemo();
   } else {
     throw new Error(
-      "Usage: pnpm chain:zatbill [setup|authorize|freeze|clawback|verify]",
+      "Usage: pnpm chain:zatbill [setup|authorize|freeze|clawback|verify|allowlist|revoke|transfer|kyc-demo]",
     );
   }
 }
