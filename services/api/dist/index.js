@@ -21,6 +21,7 @@ const sponsor_limiter_js_1 = require("./sponsor-limiter.js");
 const sponsor_service_js_1 = require("./sponsor-service.js");
 const sep24_js_1 = require("./sep24.js");
 const notification_service_js_1 = require("./notification-service.js");
+const keeper_js_1 = require("./keeper.js");
 (0, dotenv_1.config)({ quiet: true });
 (0, chain_1.assertTestnetConfiguration)();
 const anchorSecret = process.env.STELLAR_ANCHOR_SIM_SECRET_KEY?.trim();
@@ -59,6 +60,7 @@ catch (error) {
 }
 const zatbillIssuerSecret = process.env.STELLAR_ZATBILL_ISSUER_SECRET_KEY?.trim();
 const notificationService = new notification_service_js_1.NotificationService();
+const keeperService = new keeper_js_1.KeeperService();
 const sponsorSecret = process.env.STELLAR_SPONSOR_SECRET_KEY?.trim();
 const dealerSecret = process.env.STELLAR_DEALER_SECRET_KEY?.trim();
 let kycService = null;
@@ -795,6 +797,50 @@ exports.server = (0, node_http_1.createServer)(async (request, response) => {
         }
         const items = notificationService.getInAppNotifications(phone);
         sendJson(response, 200, { notifications: items });
+        return;
+    }
+    // ==========================================
+    // Admin & Keeper Controls (I-04)
+    // ==========================================
+    // Route: GET /admin/keeper/status
+    if (pathname === "/admin/keeper/status" && request.method === "GET") {
+        const status = keeperService.getStatus();
+        sendJson(response, 200, status);
+        return;
+    }
+    // Route: POST /admin/keeper/step (execute cycle step)
+    if (pathname === "/admin/keeper/step" && request.method === "POST") {
+        try {
+            const status = await keeperService.executeCycleStep();
+            sendJson(response, 200, status);
+        }
+        catch (error) {
+            sendJson(response, 500, {
+                error: error instanceof Error ? error.message : "Keeper execution failed.",
+            });
+        }
+        return;
+    }
+    // Route: POST /admin/keeper/fast-forward
+    if (pathname === "/admin/keeper/fast-forward" && request.method === "POST") {
+        let body = {};
+        try {
+            body = await readJsonBody(request);
+        }
+        catch {
+            // optional body
+        }
+        const seconds = typeof body === "object" && body !== null && "seconds" in body
+            ? Number(body.seconds)
+            : 130;
+        const res = keeperService.fastForwardMaturity(isNaN(seconds) ? 130 : seconds);
+        sendJson(response, 200, res);
+        return;
+    }
+    // Route: POST /admin/keeper/reset
+    if (pathname === "/admin/keeper/reset" && request.method === "POST") {
+        const res = keeperService.resetDemoState();
+        sendJson(response, 200, res);
         return;
     }
     sendJson(response, 404, { error: "Not found." });

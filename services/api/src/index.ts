@@ -43,6 +43,7 @@ import { SponsorRateLimiter } from "./sponsor-limiter.js";
 import { SponsorService } from "./sponsor-service.js";
 import { Sep24Simulator } from "./sep24.js";
 import { NotificationService } from "./notification-service.js";
+import { KeeperService } from "./keeper.js";
 
 config({ quiet: true });
 assertTestnetConfiguration();
@@ -96,6 +97,7 @@ try {
 }
 const zatbillIssuerSecret = process.env.STELLAR_ZATBILL_ISSUER_SECRET_KEY?.trim();
 const notificationService = new NotificationService();
+const keeperService = new KeeperService();
 const sponsorSecret = process.env.STELLAR_SPONSOR_SECRET_KEY?.trim();
 const dealerSecret = process.env.STELLAR_DEALER_SECRET_KEY?.trim();
 
@@ -948,6 +950,54 @@ export const server = createServer(async (request, response) => {
     }
     const items = notificationService.getInAppNotifications(phone);
     sendJson(response, 200, { notifications: items });
+    return;
+  }
+
+  // ==========================================
+  // Admin & Keeper Controls (I-04)
+  // ==========================================
+
+  // Route: GET /admin/keeper/status
+  if (pathname === "/admin/keeper/status" && request.method === "GET") {
+    const status = keeperService.getStatus();
+    sendJson(response, 200, status as unknown as Record<string, unknown>);
+    return;
+  }
+
+  // Route: POST /admin/keeper/step (execute cycle step)
+  if (pathname === "/admin/keeper/step" && request.method === "POST") {
+    try {
+      const status = await keeperService.executeCycleStep();
+      sendJson(response, 200, status as unknown as Record<string, unknown>);
+    } catch (error) {
+      sendJson(response, 500, {
+        error: error instanceof Error ? error.message : "Keeper execution failed.",
+      });
+    }
+    return;
+  }
+
+  // Route: POST /admin/keeper/fast-forward
+  if (pathname === "/admin/keeper/fast-forward" && request.method === "POST") {
+    let body: unknown = {};
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      // optional body
+    }
+    const seconds =
+      typeof body === "object" && body !== null && "seconds" in body
+        ? Number((body as { seconds: unknown }).seconds)
+        : 130;
+    const res = keeperService.fastForwardMaturity(isNaN(seconds) ? 130 : seconds);
+    sendJson(response, 200, res as unknown as Record<string, unknown>);
+    return;
+  }
+
+  // Route: POST /admin/keeper/reset
+  if (pathname === "/admin/keeper/reset" && request.method === "POST") {
+    const res = keeperService.resetDemoState();
+    sendJson(response, 200, res as unknown as Record<string, unknown>);
     return;
   }
 

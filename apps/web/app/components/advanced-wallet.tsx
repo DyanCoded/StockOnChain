@@ -5,6 +5,7 @@ import { Button, ErrorState, LoadingState } from "./design-system";
 import KycAllowlist from "./kyc-allowlist";
 import CashoutSimulator from "./cashout-simulator";
 import NotificationManager from "./notification-manager";
+import AdminKeeperControls from "./admin-keeper-controls";
 
 const walletText = {
   en: {
@@ -195,6 +196,9 @@ export default function AdvancedWallet({ locale }: { locale: "en" | "zu" }) {
 
       {/* WhatsApp & SMS Lite Member Notifications */}
       <NotificationManager locale={locale} account={address} />
+
+      {/* Hidden Admin & Keeper Demo Controls */}
+      <AdminKeeperControls locale={locale} />
     </div>
   );
 }
