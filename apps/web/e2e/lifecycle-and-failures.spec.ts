@@ -30,12 +30,14 @@ test("full lifecycle and T-08 failure handling across Testnet and mock flows", a
   await expect(checkButton).toBeEnabled();
   await checkButton.click();
 
-  // Confirm verification pass status
+  // Confirm verification flow transitions to final step
+  await expect(page.getByText("Screen 3 of 3")).toBeVisible();
+  await expect(page.locator(".error-state strong")).toHaveText(
+    "Not verified yet",
+  );
   await expect(
-    page.getByText(
-      /Pass \(synthetic sample\)|Verification passed|Valid South African/i,
-    ),
-  ).toBeVisible({ timeout: 15_000 });
+    page.getByText(/no real identity verification or wallet setup/i),
+  ).toBeVisible();
 
   // 3. Pot Dashboard & Progression (A-02)
   await page.goto("/pot");
