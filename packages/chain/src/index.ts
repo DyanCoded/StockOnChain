@@ -41,3 +41,6 @@ export * from './dealer';
 export * from './attestation';
 export * from './errors';
 export * from './pot-dashboard';
+export * from './models';
+export * from './format';
+export * from './mock-fixtures';

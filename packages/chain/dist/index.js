@@ -40,3 +40,6 @@ __exportStar(require("./dealer"), exports);
 __exportStar(require("./attestation"), exports);
 __exportStar(require("./errors"), exports);
 __exportStar(require("./pot-dashboard"), exports);
+__exportStar(require("./models"), exports);
+__exportStar(require("./format"), exports);
+__exportStar(require("./mock-fixtures"), exports);
