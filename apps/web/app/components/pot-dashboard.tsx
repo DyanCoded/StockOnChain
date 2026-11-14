@@ -560,6 +560,18 @@ export default function PotDashboard({
 
       <footer className="asset-footer">
         <a href={locale === "zu" ? "/zu" : "/"}>{text.backHome}</a>
+        <a
+          href={locale === "zu" ? "/pot/create?lang=zu" : "/pot/create"}
+          data-testid="nav-create-pot-link"
+        >
+          {locale === "zu" ? "Dala Iphodwe" : "Create a Pot"}
+        </a>
+        <a
+          href={locale === "zu" ? "/pot/join?lang=zu" : "/pot/join"}
+          data-testid="nav-join-pot-link"
+        >
+          {locale === "zu" ? "Joyina Iphodwe" : "Join a Pot"}
+        </a>
         <a href={locale === "zu" ? "/onboarding?lang=zu" : "/onboarding"}>
           {text.onboardingLink}
         </a>

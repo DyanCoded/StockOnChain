@@ -1,6 +1,6 @@
 "use strict";
 /**
- * @stockonchain/chain - Primary Dealer Pricing & Yield Engine (T-05)
+ * @stockonchain/chain - Primary Dealer Pricing & Yield Engine (T-05 / A-03)
  *
  * Implements South African Treasury Bill discount pricing and annualized yield
  * calculation following official SARB (South African Reserve Bank) money-market
@@ -17,9 +17,11 @@ exports.calculateAnnualizedYield = calculateAnnualizedYield;
 exports.quotePrimaryDealer = quotePrimaryDealer;
 exports.reconcileMemberPayouts = reconcileMemberPayouts;
 exports.SARB_TILL_BENCHMARKS = {
-    // Typical South African 91-day Treasury Bill auction clearing rate range: 8.10% - 8.45%
-    // Source: SARB Weekly Treasury Bill Tender Results (Actual/365 convention)
+    // Typical South African Treasury Bill auction clearing rate ranges (Actual/365 convention)
+    // Source: SARB Weekly Treasury Bill Tender Results
     indicative91DayRate: 0.0825, // 8.25% p.a.
+    indicative182DayRate: 0.084, // 8.40% p.a.
+    indicative364DayRate: 0.0855, // 8.55% p.a.
     daysPerYear: 365,
 };
 exports.TREASURY_PRODUCTS = {
@@ -33,13 +35,33 @@ exports.TREASURY_PRODUCTS = {
         isTimeCompressed: false,
         label: "Standard 91-Day Product",
     },
+    standard182Day: {
+        id: "standard-182-day",
+        name: "182-Day South African Treasury Bill",
+        termDays: 182,
+        termSeconds: 182 * 86400, // 15,724,800 seconds
+        faceValuePerUnit: 1.0, // R1.00 face value
+        indicativeAnnualRate: exports.SARB_TILL_BENCHMARKS.indicative182DayRate,
+        isTimeCompressed: false,
+        label: "Standard 182-Day Product",
+    },
+    standard364Day: {
+        id: "standard-364-day",
+        name: "364-Day South African Treasury Bill",
+        termDays: 364,
+        termSeconds: 31_449_600, // 364 * 86400 seconds
+        faceValuePerUnit: 1.0, // R1.00 face value
+        indicativeAnnualRate: exports.SARB_TILL_BENCHMARKS.indicative364DayRate,
+        isTimeCompressed: false,
+        label: "Standard 364-Day Product",
+    },
     demoTimeCompressed: {
         id: "demo-time-compressed",
         name: "Time-Compressed Demo Treasury Bill",
         termDays: 91, // Financial rate models standard 91-day discount
         termSeconds: 120, // 2 minutes (120 seconds) for live testnet verification
         faceValuePerUnit: 1.0, // R1.00 face value
-        indicativeAnnualRate: 0.10, // 10.00% p.a. demo rate for clear visual yield
+        indicativeAnnualRate: 0.1, // 10.00% p.a. demo rate for clear visual yield
         isTimeCompressed: true,
         label: "time compressed for demo",
     },

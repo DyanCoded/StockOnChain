@@ -12,6 +12,10 @@
     "./pot-dashboard": {
       "types": "./dist/pot-dashboard.d.ts",
       "default": "./dist/pot-dashboard.js"
+    },
+    "./pot-create-join": {
+      "types": "./dist/pot-create-join.d.ts",
+      "default": "./dist/pot-create-join.js"
     }
   },
   "scripts": {

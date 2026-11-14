@@ -13,7 +13,11 @@
  * - G9 Frontend guardrails: Strict en-ZA Rand (ZAR) currency formatting.
  */
 
-import { quotePrimaryDealer, type DealerQuote } from "./dealer";
+import {
+  quotePrimaryDealer,
+  type DealerQuote,
+  type TreasuryProductKey,
+} from "./dealer";
 
 export const POT_DASHBOARD_TESTNET_PASSPHRASE =
   "Test SDF Network ; September 2015";
@@ -31,7 +35,7 @@ export type PotDashboardMode = "mock" | "testnet";
 
 export type PotLifecycleState = "Open" | "Invested" | "Matured" | "Settled";
 
-export type ProductTermKey = "standard91Day" | "demoTimeCompressed";
+export type ProductTermKey = TreasuryProductKey;
 
 export interface PotMemberRecord {
   id: string;

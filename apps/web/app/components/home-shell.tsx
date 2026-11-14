@@ -90,6 +90,16 @@ export default function HomeShell({ locale }: { locale: "en" | "zu" }) {
               {text.potLink}
             </a>
           </p>
+          <p className="mt-2">
+            <a
+              className="asset-link"
+              href={locale === "zu" ? "/pot/create?lang=zu" : "/pot/create"}
+            >
+              {locale === "zu"
+                ? "Dala Iphodwe le-Stokvel noma Joyina Iphodwe (A-03)"
+                : "Create or Join a Stokvel Pot (Wizard, WhatsApp Invite & Rules)"}
+            </a>
+          </p>
           <form
             className="landing-signup"
             action="/onboarding"

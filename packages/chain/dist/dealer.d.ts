@@ -1,5 +1,5 @@
 /**
- * @stockonchain/chain - Primary Dealer Pricing & Yield Engine (T-05)
+ * @stockonchain/chain - Primary Dealer Pricing & Yield Engine (T-05 / A-03)
  *
  * Implements South African Treasury Bill discount pricing and annualized yield
  * calculation following official SARB (South African Reserve Bank) money-market
@@ -9,8 +9,9 @@
  * - G4 Verify, do not trust: Formulas adhere to SARB Money Market tender standards.
  * - G6 Honesty: Rates and yields are explicitly flagged as indicative and non-guaranteed.
  */
+export type TreasuryProductKey = "standard91Day" | "standard182Day" | "standard364Day" | "demoTimeCompressed";
 export interface TreasuryBillProduct {
-    id: "standard-91-day" | "demo-time-compressed";
+    id: "standard-91-day" | "standard-182-day" | "standard-364-day" | "demo-time-compressed";
     name: string;
     termDays: number;
     termSeconds: number;
@@ -21,9 +22,11 @@ export interface TreasuryBillProduct {
 }
 export declare const SARB_TILL_BENCHMARKS: {
     indicative91DayRate: number;
+    indicative182DayRate: number;
+    indicative364DayRate: number;
     daysPerYear: number;
 };
-export declare const TREASURY_PRODUCTS: Record<string, TreasuryBillProduct>;
+export declare const TREASURY_PRODUCTS: Record<TreasuryProductKey, TreasuryBillProduct>;
 export interface DealerQuote {
     productId: string;
     productName: string;
@@ -62,7 +65,7 @@ export declare function calculateAnnualizedYield(faceValue: number, price: numbe
 /**
  * Quotes a primary dealer discount price and expected ZATBILL delivery for a pot investment.
  */
-export declare function quotePrimaryDealer(productKey: "standard91Day" | "demoTimeCompressed", investmentAmountMzar: number, customAnnualRate?: number): DealerQuote;
+export declare function quotePrimaryDealer(productKey: TreasuryProductKey, investmentAmountMzar: number, customAnnualRate?: number): DealerQuote;
 /**
  * Member share reconciliation helper.
  * Reconciles pro-rata member payouts down to the cent, proving that:

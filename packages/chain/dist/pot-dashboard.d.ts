@@ -12,12 +12,13 @@
  * - G7 Data protection (POPIA): Strictly synthetic member names and addresses only.
  * - G9 Frontend guardrails: Strict en-ZA Rand (ZAR) currency formatting.
  */
+import { type TreasuryProductKey } from "./dealer";
 export declare const POT_DASHBOARD_TESTNET_PASSPHRASE = "Test SDF Network ; September 2015";
 export declare const DEFAULT_POT_CONTRACT_ID = "CBIZM7UPAA7OCRRHSEL43MMDZIKNYQEMB5LB7HZQ32KMV44V6ZW456XM";
 export declare const DEFAULT_ADMIN_PUBLIC_KEY = "GAXLZKWGKXFLKLSNYBL3CDXWJKHTPPDFUBX2I6ZRA4V5UBI2HJMFPSEH";
 export type PotDashboardMode = "mock" | "testnet";
 export type PotLifecycleState = "Open" | "Invested" | "Matured" | "Settled";
-export type ProductTermKey = "standard91Day" | "demoTimeCompressed";
+export type ProductTermKey = TreasuryProductKey;
 export interface PotMemberRecord {
     id: string;
     displayName: string;

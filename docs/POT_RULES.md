@@ -120,3 +120,17 @@ If Soroban smart contract development, consensus upgrades, or testnet RPCs encou
 2. **Asset Trustline Controls:** The `ZATBILL` asset's native `AUTH_REQUIRED` and `AUTH_REVOCABLE` compliance flags enforce the member allowlist directly on-chain without smart contract execution.
 3. **Backend API State Machine:** Pot state transitions, member share accounting, and contribution caps are coordinated and attested by the `@stockonchain/api` microservice.
 4. **Transparency:** If the fallback is engaged, all state transition attestations are published as signed JSON disclosures under `/assets/pot-disclosure.json`.
+
+
+---
+
+## 5. Join Flow Transparency & Non-Technical Comprehension Verification (A-03)
+
+On the dedicated Join screen (`/pot/join`), every prospective Stokvel member is presented with:
+1. **Pool Rules Summary**: The 4 sequential lifecycle states (`Open`, `Invested`, `Matured`, `Settled`) and Rules 1–7 & 10 above in plain English and isiZulu.
+2. **D-01 Plain-Language Glossary (`G4`)**: Exact definitions of `Stokvel`, `Treasurer`, `T-Bill`, `Custodian`, `Maturity`, `Yield`, `Testnet`, `Wallet key`, `Trustline`, `Mock asset`, `Attestation`, and `Soroban` from `docs/RESEARCH.md`.
+3. **Mandatory Risk Explainer Gate**: The `RiskExplainer` component must be reviewed and acknowledged before confirmation.
+4. **Comprehension Verification ("Explain the Rules Back")**:
+   - **Q1 (Maturity Timing):** Members can claim their share only after the scheduled Maturity date has passed and the pot is Settled.
+   - **Q2 (Yield & Mock Asset Honesty):** Indicative Yield is an unguaranteed estimate, and this Stellar Testnet demo uses Mock assets with no real money or real T-Bill.
+   - **Q3 (Allowlist & Per-Member Cap):** Only allowlisted Stokvel members approved by the Treasurer can contribute, and any deposit exceeding the Per-Member Cap is rejected.
