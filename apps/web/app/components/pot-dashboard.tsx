@@ -561,6 +561,12 @@ export default function PotDashboard({
       <footer className="asset-footer">
         <a href={locale === "zu" ? "/zu" : "/"}>{text.backHome}</a>
         <a
+          href={locale === "zu" ? "/pot/contribute?lang=zu" : "/pot/contribute"}
+          data-testid="nav-contribute-pot-link"
+        >
+          {locale === "zu" ? "Faka Umnikelo" : "Contribute"}
+        </a>
+        <a
           href={locale === "zu" ? "/pot/create?lang=zu" : "/pot/create"}
           data-testid="nav-create-pot-link"
         >

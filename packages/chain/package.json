@@ -16,6 +16,10 @@
     "./pot-create-join": {
       "types": "./dist/pot-create-join.d.ts",
       "default": "./dist/pot-create-join.js"
+    },
+    "./contribute": {
+      "types": "./dist/contribute.d.ts",
+      "default": "./dist/contribute.js"
     }
   },
   "scripts": {
