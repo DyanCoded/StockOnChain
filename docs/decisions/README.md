@@ -8,3 +8,4 @@ This folder records the project’s key design decisions using the Educate & Rec
 | [ADR-002](./ADR-002-wallet-and-onboarding-experience.md) | Wallet and onboarding experience | Accepted | 2026-11-12 |
 | [ADR-003](./ADR-003-asset-and-backing-design.md) | Asset and backing design | Accepted | 2026-11-12 |
 | [ADR-004](./ADR-004-cash-out-simulation-and-local-payment-rails.md) | Cash-out simulation and local payment rails | Accepted | 2026-11-12 |
+| [ADR-005](./ADR-005-governance-and-community-token-deferral.md) | Governance and community token deferral | Accepted | 2026-11-14 |

@@ -13,6 +13,9 @@
 - **Status:** Work in progress. This repository does not claim a production service, live deployment, financial licence, partnership, or real-world backing.
 
 > [!IMPORTANT]
+> **Regulatory & Legal Notice:** StockOnChain is an educational research and development prototype deployed exclusively on the **Stellar Testnet**. It **does not constitute legal, regulatory, tax, or investment advice**, nor does it represent an offer or solicitation of securities, collective investment schemes, or financial products. StockOnChain does not currently hold any financial services provider (FSP) license, credit provider license, or banking license from the Financial Sector Conduct Authority (FSCA) or South African Reserve Bank (SARB), nor does it participate in an active regulatory sandbox. Commercial production deployment will require direct engagement with qualified South African legal counsel, formal regulatory approvals, and authorized licensing partners. For complete analysis, review the [Regulatory Compliance Framework](./docs/COMPLIANCE.md).
+
+> [!WARNING]
 > **Security & Unaudited Testnet Notice:** All smart contracts, cryptographic attestation modules, demo tokens (`ZATBILL`, `mZAR`), and automation scripts in this repository are **unaudited prototype software** deployed exclusively on the **Stellar Testnet**. They are developed for demonstration purposes only and must **never** be used on Mainnet or with real funds. For full security analysis and known limitations, consult the [Threat Model](./docs/THREAT_MODEL.md).
 
 ## 2. Scope
@@ -58,8 +61,27 @@ The project records architecture decisions in the decision log and keeps them al
 - [ADR-002 — Wallet and onboarding experience](./docs/decisions/ADR-002-wallet-and-onboarding-experience.md)
 - [ADR-003 — Asset and backing design](./docs/decisions/ADR-003-asset-and-backing-design.md)
 - [ADR-004 — Cash-out simulation and local payment rails](./docs/decisions/ADR-004-cash-out-simulation-and-local-payment-rails.md)
+- [ADR-005 — Governance and community token deferral](./docs/decisions/ADR-005-governance-and-community-token-deferral.md)
 
-## 6. Mocked vs. real
+## 6. Partner Ecosystem Map (Production Pathway)
+
+To transition StockOnChain into a legally compliant, commercial production service in South Africa, the platform requires an ecosystem of licensed institutional partners. The matrix below outlines the required partner categories, their operational roles under South African law, verified real-world examples to research, and our current simulated MVP stand-ins:
+
+| Partner Category | Operational Necessity | Verified South African Candidates (For Production) | MVP Stand-in (Testnet Prototype) |
+| :--- | :--- | :--- | :--- |
+| **1. Licensed Crypto FSP / Intermediary** | Required under FSCA Declaration 135/2022 to lawfully distribute, intermediate, and broker crypto assets to consumers in South Africa. | Luno (FSCA FSP #52471), VALR (FSCA FSP #53308), Sygnia, Altvest Capital | Internal simulated API services; explicit disclaimer of zero financial advice |
+| **2. Licensed Asset / CIS Manager** | Required under CISCA to legally manage and structure pooled investor capital into interest-bearing securities. | Prescient Investment Management, Allan Gray, Coronation, Stanlib | Soroban smart contract (`StokvelPot`) simulating automated pro-rata rules |
+| **3. Bond Dealer, Custodian & CSDP** | Required under Financial Markets Act to hold legal custody of RSA Government Treasury Bills via Strate (CSD). | Standard Bank CSDP, Nedbank Investor Services, RMB Custody, Absa Investor Services | Synthetic Custodian Ed25519 keypair (`GCUSTODIAN...`) issuing simulated signed statements |
+| **4. Trust & SPV Administrator** | Required to establish an insolvency-remote legal structure (SPV/Trust) holding assets for the benefit of stokvel members. | Maitland (Apex Group), Sanne Group (Apex), GMG Trust, Stonehage Fleming | Open-source Soroban smart contract state machine |
+| **5. KYC / AML Verification Provider** | Required under FICA Schedule 1 (Item 22) to perform automated ID verification, Home Affairs matching, and sanctions screening. | Smile ID, LexisNexis Risk Solutions SA, PBVerify / Didomi, ThisIsMe | Synthetic Luhn algorithm validator + synthetic OTP verification service |
+| **6. Banking & Instant Rail Partner** | Required under NPS Act to clear and settle fiat Rand deposits and instant payouts (PayShap / RTC). | Stitch Money, Peach Payments, Ozow, Capitec Pay, Standard Bank OneHub | Simulated SEP-24 Payout Simulator (`CashoutSimulator.tsx`) |
+| **7. Stellar Anchor & Off-Ramp** | Required to provide audited, compliant fiat on/off-ramps and institutional liquidity bridging Stellar to ZAR. | ClickPesa, Yellow Card, Bitmama, licensed South African CASPs | Simulated Anchor API (`services/api/src/sep24.ts`) |
+| **8. Regulated ZAR Stablecoin Issuer** | Required to mint fully backed, 1:1 audited digital Rand on the Stellar network under banking regulations. | Future regulated banking consortium or licensed CASP with audited trust account | Testnet Anchor-sim account issuing `mZAR` with zero fiat reserves |
+| **9. Specialized Legal & Regulatory Counsel** | Required to structure product documentation, obtain FSCA exemptions, and engage the SARB / IFWG Sandbox. | ENSafrica (Banking & FinTech), Bowmans, Webber Wentzel, Cliffe Dekker Hofmeyr | Internal compliance research documents (`docs/COMPLIANCE.md`, `ADR-005`) |
+
+For comprehensive legal analysis, review the [Compliance Framework](./docs/COMPLIANCE.md) and the [Pitch Deck](./docs/DECK.md).
+
+## 7. Mocked vs. real
 
 This is a placeholder status matrix, not a claim that a component is deployed or backed by a real-world service. Verify each entry against the implementation and authoritative sources before changing its status.
 
@@ -82,7 +104,7 @@ Proof of backing is enforced directly on-chain within the Soroban `StokvelPot` s
 - The `invest` function strictly enforces that `zatbill_amount <= get_attested_reserves()`, reverting with `Error::ExceedsAttestedReserves` if an investment exceeds attested backing.
 - **Fallback Architecture:** If on-chain cryptographic verification is deferred or bypassed in any deployment mode, the validation check is maintained within the backend API, and all disclosures must state this honestly.
 
-## 7. Quickstart
+## 8. Quickstart
 
 Prerequisites (install once per machine): Node.js 20 or newer, pnpm 9.15.9, Rust 1.84 or newer with the `wasm32v1-none` target, and Stellar CLI for contract builds. The quickstart command installs Node dependencies and bootstraps Stellar Testnet. Never commit `.env` or put secret keys, API keys, or wallet encryption keys into an AI tool.
 
@@ -112,13 +134,13 @@ with `cargo test --workspace`.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidance and [AI_GUIDELINES.md](./AI_GUIDELINES.md) for G1–G10.
 
-## 8. Smart Contract & Fallback Architecture
+## 9. Smart Contract & Fallback Architecture
 
 The stokvel pot is governed by the `StokvelPot` Soroban smart contract, implementing a 4-state lifecycle (`Open`, `Invested`, `Matured`, `Settled`). Complete plain-language rules, contribution caps, backing verification limits, and pro-rata distribution formulas are documented in [docs/POT_RULES.md](./docs/POT_RULES.md). Deployed contract addresses are recorded in [docs/DEPLOYMENTS.md](./docs/DEPLOYMENTS.md).
 
 - **Fallback Plan (Classic-Only):** If Soroban smart contract operations encounter consensus, RPC, or network blockers, StockOnChain falls back to a Classic Stellar multisig account (2-of-3 threshold among Admin, Custodian, and Dealer) with issuer trustline allowlisting, where pot state transitions and contribution limits are managed and audited by the backend API service.
 
-## 9. User Research
+## 10. User Research
 
 Research status, synthetic personas, interview consent script, current-state hypotheses, wireframe flows, glossary, and the contribute-clock definition are recorded in [docs/RESEARCH.md](./docs/RESEARCH.md). No participant interviews or comprehension tests have been conducted yet; persona details and process pain points are explicitly hypotheses, not findings.
 
