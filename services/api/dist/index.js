@@ -20,6 +20,7 @@ const wallet_store_js_1 = require("./wallet-store.js");
 const sponsor_limiter_js_1 = require("./sponsor-limiter.js");
 const sponsor_service_js_1 = require("./sponsor-service.js");
 const sep24_js_1 = require("./sep24.js");
+const notification_service_js_1 = require("./notification-service.js");
 (0, dotenv_1.config)({ quiet: true });
 (0, chain_1.assertTestnetConfiguration)();
 const anchorSecret = process.env.STELLAR_ANCHOR_SIM_SECRET_KEY?.trim();
@@ -57,6 +58,7 @@ catch (error) {
     console.error("Warning: Could not initialize SEP-24 simulator.", error instanceof Error ? error.message : "Unknown error");
 }
 const zatbillIssuerSecret = process.env.STELLAR_ZATBILL_ISSUER_SECRET_KEY?.trim();
+const notificationService = new notification_service_js_1.NotificationService();
 const sponsorSecret = process.env.STELLAR_SPONSOR_SECRET_KEY?.trim();
 const dealerSecret = process.env.STELLAR_DEALER_SECRET_KEY?.trim();
 let kycService = null;
@@ -719,6 +721,80 @@ exports.server = (0, node_http_1.createServer)(async (request, response) => {
             amountMzar: isNaN(amount) ? 100 : amount,
         });
         sendJson(response, 200, quote);
+        return;
+    }
+    // ==========================================
+    // WhatsApp & SMS Outbound Notifications (I-03)
+    // ==========================================
+    // Route: POST /notifications/dispatch
+    if (pathname === "/notifications/dispatch" && request.method === "POST") {
+        let body;
+        try {
+            body = await readJsonBody(request);
+        }
+        catch {
+            sendJson(response, 400, { error: "Send a valid JSON request." });
+            return;
+        }
+        const typedBody = body;
+        if (!typedBody.phone || !typedBody.channel || !typedBody.type) {
+            sendJson(response, 400, {
+                error: "phone, channel (whatsapp|sms|in_app), and type are required.",
+            });
+            return;
+        }
+        try {
+            const res = notificationService.dispatchOutbound({
+                phone: typedBody.phone,
+                channel: typedBody.channel,
+                type: typedBody.type,
+                templateParams: typedBody.templateParams,
+                locale: typedBody.locale,
+            });
+            sendJson(response, 200, res);
+        }
+        catch (error) {
+            sendJson(response, 400, {
+                error: error instanceof Error ? error.message : "Notification dispatch failed.",
+            });
+        }
+        return;
+    }
+    // Route: POST /notifications/opt-out (Handles inbound STOP or START keyword)
+    if (pathname === "/notifications/opt-out" && request.method === "POST") {
+        let body;
+        try {
+            body = await readJsonBody(request);
+        }
+        catch {
+            sendJson(response, 400, { error: "Send a valid JSON request." });
+            return;
+        }
+        const typedBody = body;
+        if (!typedBody.phone || !typedBody.keyword) {
+            sendJson(response, 400, { error: "phone and keyword ('STOP' or 'START') are required." });
+            return;
+        }
+        try {
+            const res = notificationService.handleKeyword(typedBody.phone, typedBody.keyword);
+            sendJson(response, 200, res);
+        }
+        catch (error) {
+            sendJson(response, 400, {
+                error: error instanceof Error ? error.message : "Keyword processing failed.",
+            });
+        }
+        return;
+    }
+    // Route: GET /notifications/in-app?phone=...
+    if (pathname === "/notifications/in-app" && request.method === "GET") {
+        const phone = reqUrl.searchParams.get("phone");
+        if (!phone) {
+            sendJson(response, 400, { error: "phone parameter is required." });
+            return;
+        }
+        const items = notificationService.getInAppNotifications(phone);
+        sendJson(response, 200, { notifications: items });
         return;
     }
     sendJson(response, 404, { error: "Not found." });
