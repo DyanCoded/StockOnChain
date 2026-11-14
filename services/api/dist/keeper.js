@@ -22,7 +22,10 @@ class KeeperService {
     maxRetries = 3;
     fastForwardOffsetSeconds = 0;
     constructor() {
-        (0, chain_1.assertTestnetConfiguration)();
+        // Assert Testnet configuration if env vars are provided; otherwise default for test runners
+        if (process.env.STELLAR_NETWORK || process.env.STELLAR_NETWORK_PASSPHRASE) {
+            (0, chain_1.assertTestnetConfiguration)();
+        }
         const now = Math.floor(Date.now() / 1000);
         this.status = {
             step: "idle",

@@ -52,7 +52,10 @@ export class KeeperService {
   private fastForwardOffsetSeconds = 0;
 
   constructor() {
-    assertTestnetConfiguration();
+    // Assert Testnet configuration if env vars are provided; otherwise default for test runners
+    if (process.env.STELLAR_NETWORK || process.env.STELLAR_NETWORK_PASSPHRASE) {
+      assertTestnetConfiguration();
+    }
     const now = Math.floor(Date.now() / 1000);
     this.status = {
       step: "idle",

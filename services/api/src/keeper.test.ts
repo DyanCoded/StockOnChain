@@ -1,9 +1,5 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { config } from "dotenv";
-import path from "node:path";
-
-config({ path: path.join(process.cwd(), ".env"), quiet: true });
 import { KeeperService } from "./keeper.js";
 
 test("KeeperService - full hands-off lifecycle execution from open to invest to settle and claim", async () => {

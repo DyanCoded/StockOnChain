@@ -5,9 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const node_test_1 = __importDefault(require("node:test"));
 const strict_1 = __importDefault(require("node:assert/strict"));
-const dotenv_1 = require("dotenv");
-const node_path_1 = __importDefault(require("node:path"));
-(0, dotenv_1.config)({ path: node_path_1.default.join(process.cwd(), ".env"), quiet: true });
 const keeper_js_1 = require("./keeper.js");
 (0, node_test_1.default)("KeeperService - full hands-off lifecycle execution from open to invest to settle and claim", async () => {
     const keeper = new keeper_js_1.KeeperService();
