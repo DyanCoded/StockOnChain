@@ -4,6 +4,16 @@
   "description": "Stellar SDK bindings and Soroban client for StockOnChain",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./pot-dashboard": {
+      "types": "./dist/pot-dashboard.d.ts",
+      "default": "./dist/pot-dashboard.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "lint": "eslint src"

@@ -926,3 +926,262 @@ h1 {
     scroll-behavior: auto !important;
   }
 }
+
+.pot-dashboard {
+  padding-bottom: 48px;
+}
+
+.pot-topbar-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.pot-hero,
+.pot-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding-block: 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pot-hero h1 {
+  margin-block: 10px 8px;
+  font-size: 46px;
+}
+
+.pot-subtitle {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.pot-toolbar,
+.pot-term-toggle,
+.pot-activity-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.pot-section h2 {
+  margin: 0 0 12px;
+  font-size: 28px;
+  line-height: 1.25;
+}
+
+.pot-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+
+.pot-metric-value {
+  margin: 8px 0 4px;
+  color: var(--green);
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.pot-progress-card {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.pot-progress-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 16px;
+}
+
+.pot-progress-track,
+.pot-member-bar {
+  width: 100%;
+  height: 14px;
+  overflow: hidden;
+  border: 1px solid #8ea699;
+  border-radius: 999px;
+  background: #e5ede7;
+}
+
+.pot-progress-fill,
+.pot-member-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--green);
+  transition: width 220ms ease-out;
+}
+
+.pot-progress-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pot-members-wrapper {
+  margin-top: 22px;
+}
+
+.pot-members-wrapper h3 {
+  margin: 0 0 12px;
+  font-size: 20px;
+}
+
+.pot-members-list {
+  display: grid;
+  gap: 12px;
+}
+
+.pot-member-card {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.pot-member-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pot-member-role {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: var(--green);
+  background: var(--mint);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.pot-member-amount {
+  color: var(--green);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.pot-member-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.pot-holdings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 22px 0 0;
+}
+
+.pot-holding-box {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.pot-holding-box dt {
+  color: var(--muted);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.pot-holding-box dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.pot-activity-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.pot-activity-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pot-activity-item {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.pot-activity-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pot-activity-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.pot-activity-meta a {
+  color: var(--green);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.pot-activity-meta a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .pot-hero h1 {
+    font-size: 34px;
+  }
+
+  .pot-section h2 {
+    font-size: 24px;
+  }
+
+  .pot-metrics-grid,
+  .pot-holdings-grid {
+    grid-template-columns: 1fr;
+  }
+}

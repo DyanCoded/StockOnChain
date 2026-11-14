@@ -6,6 +6,9 @@ const copy = {
     note: "No funds or investments are connected to this prototype.",
     assetInfo: "MOCK mZAR is a Testnet-only demo token with no real backing.",
     assetHref: "/assets/mzar",
+    potLink:
+      "Open Stokvel Pot Dashboard (ZAR balance, members, ZATBILL & activity)",
+    potHref: "/pot",
     signupLabel: "Sign up or sign in with a sample contact",
     emailSample: "Email · member@example.test",
     phoneSample: "Mobile · +27000000000",
@@ -22,6 +25,9 @@ const copy = {
     assetInfo:
       "I-MOCK mZAR iyithokheni yesivivinyo se-Testnet, ayisekelwe yimali yangempela.",
     assetHref: "/assets/mzar",
+    potLink:
+      "Vula Ibhodi Lephodwe le-Stokvel (Ibhalansi ye-ZAR, amalungu ne-ZATBILL)",
+    potHref: "/pot?lang=zu",
     signupLabel: "Bhalisa noma ungene ngemininingwane yesampula",
     emailSample: "I-imeyili · member@example.test",
     phoneSample: "Iselula · +27000000000",
@@ -79,6 +85,11 @@ export default function HomeShell({ locale }: { locale: "en" | "zu" }) {
           <a className="asset-link" href={text.assetHref}>
             {text.assetInfo}
           </a>
+          <p className="mt-2">
+            <a className="asset-link" href={text.potHref}>
+              {text.potLink}
+            </a>
+          </p>
           <form
             className="landing-signup"
             action="/onboarding"
