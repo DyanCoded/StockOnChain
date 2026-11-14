@@ -42,6 +42,8 @@ import { CustodialWalletStore } from "./wallet-store.js";
 import { SponsorRateLimiter } from "./sponsor-limiter.js";
 import { SponsorService } from "./sponsor-service.js";
 import { Sep24Simulator } from "./sep24.js";
+import { NotificationService } from "./notification-service.js";
+import { KeeperService } from "./keeper.js";
 
 config({ quiet: true });
 assertTestnetConfiguration();
@@ -94,6 +96,8 @@ try {
   );
 }
 const zatbillIssuerSecret = process.env.STELLAR_ZATBILL_ISSUER_SECRET_KEY?.trim();
+const notificationService = new NotificationService();
+const keeperService = new KeeperService();
 const sponsorSecret = process.env.STELLAR_SPONSOR_SECRET_KEY?.trim();
 const dealerSecret = process.env.STELLAR_DEALER_SECRET_KEY?.trim();
 
@@ -857,6 +861,143 @@ export const server = createServer(async (request, response) => {
       amountMzar: isNaN(amount) ? 100 : amount,
     });
     sendJson(response, 200, quote as unknown as Record<string, unknown>);
+    return;
+  }
+
+  // ==========================================
+  // WhatsApp & SMS Outbound Notifications (I-03)
+  // ==========================================
+
+  // Route: POST /notifications/dispatch
+  if (pathname === "/notifications/dispatch" && request.method === "POST") {
+    let body: unknown;
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      sendJson(response, 400, { error: "Send a valid JSON request." });
+      return;
+    }
+
+    const typedBody = body as {
+      phone?: string;
+      channel?: "whatsapp" | "sms" | "in_app";
+      type?: "contribution_reminder" | "approaching_maturity" | "payout_ready";
+      templateParams?: Record<string, unknown>;
+      locale?: "en" | "zu";
+    };
+
+    if (!typedBody.phone || !typedBody.channel || !typedBody.type) {
+      sendJson(response, 400, {
+        error: "phone, channel (whatsapp|sms|in_app), and type are required.",
+      });
+      return;
+    }
+
+    try {
+      const res = notificationService.dispatchOutbound({
+        phone: typedBody.phone,
+        channel: typedBody.channel,
+        type: typedBody.type,
+        templateParams: typedBody.templateParams as any,
+        locale: typedBody.locale,
+      });
+      sendJson(response, 200, res as unknown as Record<string, unknown>);
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "Notification dispatch failed.",
+      });
+    }
+    return;
+  }
+
+  // Route: POST /notifications/opt-out (Handles inbound STOP or START keyword)
+  if (pathname === "/notifications/opt-out" && request.method === "POST") {
+    let body: unknown;
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      sendJson(response, 400, { error: "Send a valid JSON request." });
+      return;
+    }
+
+    const typedBody = body as {
+      phone?: string;
+      keyword?: string;
+    };
+
+    if (!typedBody.phone || !typedBody.keyword) {
+      sendJson(response, 400, { error: "phone and keyword ('STOP' or 'START') are required." });
+      return;
+    }
+
+    try {
+      const res = notificationService.handleKeyword(typedBody.phone, typedBody.keyword);
+      sendJson(response, 200, res as unknown as Record<string, unknown>);
+    } catch (error) {
+      sendJson(response, 400, {
+        error: error instanceof Error ? error.message : "Keyword processing failed.",
+      });
+    }
+    return;
+  }
+
+  // Route: GET /notifications/in-app?phone=...
+  if (pathname === "/notifications/in-app" && request.method === "GET") {
+    const phone = reqUrl.searchParams.get("phone");
+    if (!phone) {
+      sendJson(response, 400, { error: "phone parameter is required." });
+      return;
+    }
+    const items = notificationService.getInAppNotifications(phone);
+    sendJson(response, 200, { notifications: items });
+    return;
+  }
+
+  // ==========================================
+  // Admin & Keeper Controls (I-04)
+  // ==========================================
+
+  // Route: GET /admin/keeper/status
+  if (pathname === "/admin/keeper/status" && request.method === "GET") {
+    const status = keeperService.getStatus();
+    sendJson(response, 200, status as unknown as Record<string, unknown>);
+    return;
+  }
+
+  // Route: POST /admin/keeper/step (execute cycle step)
+  if (pathname === "/admin/keeper/step" && request.method === "POST") {
+    try {
+      const status = await keeperService.executeCycleStep();
+      sendJson(response, 200, status as unknown as Record<string, unknown>);
+    } catch (error) {
+      sendJson(response, 500, {
+        error: error instanceof Error ? error.message : "Keeper execution failed.",
+      });
+    }
+    return;
+  }
+
+  // Route: POST /admin/keeper/fast-forward
+  if (pathname === "/admin/keeper/fast-forward" && request.method === "POST") {
+    let body: unknown = {};
+    try {
+      body = await readJsonBody(request);
+    } catch {
+      // optional body
+    }
+    const seconds =
+      typeof body === "object" && body !== null && "seconds" in body
+        ? Number((body as { seconds: unknown }).seconds)
+        : 130;
+    const res = keeperService.fastForwardMaturity(isNaN(seconds) ? 130 : seconds);
+    sendJson(response, 200, res as unknown as Record<string, unknown>);
+    return;
+  }
+
+  // Route: POST /admin/keeper/reset
+  if (pathname === "/admin/keeper/reset" && request.method === "POST") {
+    const res = keeperService.resetDemoState();
+    sendJson(response, 200, res as unknown as Record<string, unknown>);
     return;
   }
 
