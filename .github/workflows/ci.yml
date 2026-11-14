@@ -67,6 +67,12 @@ jobs:
       - name: Build web app
         run: pnpm --filter web build
 
+      - name: Install onboarding browsers
+        run: pnpm --filter web exec playwright install --with-deps chrome msedge firefox
+
+      - name: Test onboarding in three browsers
+        run: pnpm --filter web test:e2e --project=chrome --project=edge --project=firefox
+
       - name: Run tests
         run: pnpm test
 

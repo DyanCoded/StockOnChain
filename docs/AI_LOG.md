@@ -145,3 +145,17 @@ This log tracks notable AI prompts, tasks, and code changes made across the repo
 
 
 
+### [2026-11-13] D-01 Research Plan
+* **Prompt / Task:** Structure the D-01 personas, journeys, interview plan, process map, wireframe flows, glossary, pitch, and contribution clock.
+* **Changes:**
+  - Added `docs/RESEARCH.md` with explicitly synthetic personas and unverified process hypotheses, a consent script, privacy constraints, interview questions, six lo-fi text flows, glossary, and clock definition.
+  - Updated the README with a draft pitch and a link to the research plan.
+  - No interviews, Figma file, participant findings, comprehension tests, or interview-traced design changes were fabricated; all remain visibly pending.
+
+### [2026-11-14] Onboarding and Verification Flow (A-01)
+* **Prompt / Task:** Implement Issue A-01: Frictionless sign-up and simulated KYC verification flow in 3 screens or fewer with elapsed-time tracking, plain-language "Not verified yet" state handling, zero crypto jargon, POPIA consent, and 3-browser E2E verification.
+* **Changes:**
+  - Added landing-page sample contact sign-up (`apps/web/public/index.html`, `apps/web/public/zu.html`, `apps/web/app/components/home-shell.tsx`) and `/onboarding` wizard (`apps/web/app/onboarding/page.tsx`, `apps/web/app/components/onboarding-wizard.tsx`) with English and isiZulu localization.
+  - Implemented 3-screen onboarding progress indicator, synthetic-only email/phone contact selection, 13-digit synthetic SA ID and 6-digit OTP checks, mandatory POPIA privacy consent, plain-language `"Not verified yet"` result state, and zero-PII interaction time recording in `sessionStorage`.
+  - Removed user-facing crypto jargon (`trustline`, `seed phrase`, `gas fee`) from web UI copy (`apps/web/app/components/kyc-allowlist.tsx`, `apps/web/app/assets/page.tsx`, `apps/web/app/assets/mzar/page.tsx`).
+  - Added Playwright E2E test suite (`apps/web/e2e/onboarding.spec.ts`, `apps/web/playwright.config.ts`) and CI step verifying the onboarding and verification flow across Chrome, Edge, and Firefox.

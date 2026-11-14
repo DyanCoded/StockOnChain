@@ -6,7 +6,10 @@ const copy = {
     note: "No funds or investments are connected to this prototype.",
     assetInfo: "MOCK mZAR is a Testnet-only demo token with no real backing.",
     assetHref: "/assets/mzar",
-    signIn: "Sign in (coming from I-01)",
+    signupLabel: "Sign up or sign in with a sample contact",
+    emailSample: "Email · member@example.test",
+    phoneSample: "Mobile · +27000000000",
+    signupButton: "Continue",
     advanced: "Advanced",
     testnet: "Freighter connection is optional and limited to Stellar Testnet.",
     connect: "Connect Freighter",
@@ -19,7 +22,10 @@ const copy = {
     assetInfo:
       "I-MOCK mZAR iyithokheni yesivivinyo se-Testnet, ayisekelwe yimali yangempela.",
     assetHref: "/assets/mzar",
-    signIn: "Ngena ngemvume (kuvela ku-I-01)",
+    signupLabel: "Bhalisa noma ungene ngemininingwane yesampula",
+    emailSample: "I-imeyili · member@example.test",
+    phoneSample: "Iselula · +27000000000",
+    signupButton: "Qhubeka",
     advanced: "Okuthuthukile",
     testnet:
       "Ukuxhuma kuFreighter akuphoqelekile futhi kusebenzisa iStellar Testnet kuphela.",
@@ -73,11 +79,31 @@ export default function HomeShell({ locale }: { locale: "en" | "zu" }) {
           <a className="asset-link" href={text.assetHref}>
             {text.assetInfo}
           </a>
-          <div className="login-placeholder">
-            <button type="button" disabled>
-              {text.signIn}
-            </button>
-          </div>
+          <form
+            className="landing-signup"
+            action="/onboarding"
+            method="get"
+            data-onboarding-form
+          >
+            {locale === "zu" && <input type="hidden" name="lang" value="zu" />}
+            <fieldset>
+              <legend>{text.signupLabel}</legend>
+              <label>
+                <input
+                  type="radio"
+                  name="contact"
+                  value="email"
+                  defaultChecked
+                />
+                {text.emailSample}
+              </label>
+              <label>
+                <input type="radio" name="contact" value="phone" />
+                {text.phoneSample}
+              </label>
+            </fieldset>
+            <button type="submit">{text.signupButton}</button>
+          </form>
           <details className="advanced-wallet">
             <summary>{text.advanced}</summary>
             <p>{text.testnet}</p>

@@ -9,6 +9,7 @@
 - **Track / focus:** Stellar and Soroban; financial inclusion and tokenization. Confirm the official event track before describing this as an official track entry.
 - **Team:** Ntsika and Kea.
 - **Owner split:** Kea = product, UX, frontend, market and pitch; Ntsika = Stellar assets, Soroban contract, backend, integrations and deployment. Every issue is reviewed by the other person.
+- **Pitch (draft, not user-validated):** StockOnChain is a Testnet prototype exploring clearer records for stokvel contributions and payout rules, with a mock pot used to demonstrate a possible future T-Bill savings flow.
 - **Status:** Work in progress. This repository does not claim a production service, live deployment, financial licence, partnership, or real-world backing.
 
 > [!IMPORTANT]
@@ -116,6 +117,10 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidance and [AI_GUIDEL
 The stokvel pot is governed by the `StokvelPot` Soroban smart contract, implementing a 4-state lifecycle (`Open`, `Invested`, `Matured`, `Settled`). Complete plain-language rules, contribution caps, backing verification limits, and pro-rata distribution formulas are documented in [docs/POT_RULES.md](./docs/POT_RULES.md). Deployed contract addresses are recorded in [docs/DEPLOYMENTS.md](./docs/DEPLOYMENTS.md).
 
 - **Fallback Plan (Classic-Only):** If Soroban smart contract operations encounter consensus, RPC, or network blockers, StockOnChain falls back to a Classic Stellar multisig account (2-of-3 threshold among Admin, Custodian, and Dealer) with issuer trustline allowlisting, where pot state transitions and contribution limits are managed and audited by the backend API service.
+
+## 9. User Research
+
+Research status, synthetic personas, interview consent script, current-state hypotheses, wireframe flows, glossary, and the contribute-clock definition are recorded in [docs/RESEARCH.md](./docs/RESEARCH.md). No participant interviews or comprehension tests have been conducted yet; persona details and process pain points are explicitly hypotheses, not findings.
 
 ## Live URL
 

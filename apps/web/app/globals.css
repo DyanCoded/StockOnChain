@@ -583,6 +583,248 @@ h1 {
   justify-content: space-between;
 }
 
+.landing-signup {
+  max-width: 520px;
+  margin-top: 20px;
+}
+
+.landing-signup fieldset {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+}
+
+.landing-signup legend {
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.landing-signup label {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.landing-signup input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--green);
+}
+
+.landing-signup button,
+.onboarding-actions button {
+  min-height: 48px;
+  padding-inline: 16px;
+  border: 0;
+  border-radius: 5px;
+  color: var(--paper);
+  background: var(--green);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.landing-signup button:focus-visible,
+.onboarding-actions button:focus-visible,
+.onboarding-input:focus-visible,
+.contact-methods input:focus-visible,
+.consent-check input:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.onboarding-page {
+  padding-bottom: 48px;
+}
+
+.onboarding-content {
+  width: min(100%, 680px);
+  margin: 0 auto;
+  padding-block: 24px;
+}
+
+.onboarding-content > h1 {
+  margin-block: 20px 8px;
+  font-size: 44px;
+}
+
+.onboarding-subtitle {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.onboarding-progress ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.onboarding-progress li {
+  display: flex;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.onboarding-progress li[aria-current="step"] {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.onboarding-progress li > span:first-child {
+  display: inline-grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.onboarding-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+}
+
+.onboarding-panel h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.3;
+}
+
+.onboarding-panel p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.contact-methods {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.contact-methods legend,
+.onboarding-field {
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.contact-methods label {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.contact-methods input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--green);
+}
+
+.onboarding-field {
+  display: block;
+  margin: 0;
+}
+
+.onboarding-input {
+  width: 100%;
+  min-height: 48px;
+  padding-inline: 12px;
+  border: 1px solid #718078;
+  border-radius: 5px;
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 16px;
+}
+
+.onboarding-input[readonly] {
+  background: #edf2ee;
+}
+
+.field-help {
+  color: var(--muted);
+}
+
+.consent-check {
+  display: flex;
+  min-height: 52px;
+  align-items: flex-start;
+  gap: 12px;
+  padding-block: 8px;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+.consent-check input {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  accent-color: var(--green);
+}
+
+.onboarding-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.onboarding-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.onboarding-result {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.onboarding-result > div {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+
+.onboarding-result dt {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.onboarding-result dd {
+  margin: 4px 0 0;
+  font-size: 16px;
+}
+
+.onboarding-page a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
 @keyframes arrive {
   from {
     opacity: 0;
@@ -653,6 +895,25 @@ h1 {
 
   .wallet-page h1 {
     font-size: 36px;
+  }
+
+  .onboarding-content > h1 {
+    font-size: 36px;
+  }
+
+  .onboarding-progress ol {
+    gap: 4px;
+  }
+
+  .onboarding-progress li {
+    display: grid;
+    justify-items: start;
+    align-content: start;
+    font-size: 14px;
+  }
+
+  .onboarding-panel {
+    padding: 16px;
   }
 }
 

@@ -12,6 +12,9 @@ node_modules/
 **/.next/
 **/next-env.d.ts
 *.tsbuildinfo
+apps/web/test-results/
+apps/web/playwright-report/
+apps/web/playwright/.cache/
 
 # Rust / Cargo
 target/

@@ -42,11 +42,26 @@
             I-MOCK ZATBILL: ithokheni yesivivinyo se-Testnet, ayisekelwe
             yizimpahla zangempela.
           </a>
-          <div class="login-placeholder">
-            <button type="button" disabled>
-              Ngena ngemvume (kuvela ku-I-01)
-            </button>
-          </div>
+          <form
+            class="landing-signup"
+            action="/onboarding"
+            method="get"
+            data-onboarding-form
+          >
+            <input type="hidden" name="lang" value="zu" />
+            <fieldset>
+              <legend>Bhalisa noma ungene ngemininingwane yesampula</legend>
+              <label
+                ><input type="radio" name="contact" value="email" checked />
+                I-imeyili · member@example.test</label
+              >
+              <label
+                ><input type="radio" name="contact" value="phone" /> Iselula ·
+                +27000000000</label
+              >
+            </fieldset>
+            <button type="submit">Qhubeka</button>
+          </form>
           <details class="advanced-wallet">
             <summary>Okuthuthukile</summary>
             <p>

@@ -232,6 +232,49 @@ h1 {
   font-size: 16px;
   font-weight: 700;
 }
+.landing-signup {
+  max-width: 520px;
+  margin-top: 20px;
+}
+.landing-signup fieldset {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 12px;
+  padding: 0;
+  border: 0;
+}
+.landing-signup legend {
+  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.landing-signup label {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+.landing-signup input[type="radio"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--green);
+}
+.landing-signup button {
+  min-height: 48px;
+  padding-inline: 16px;
+  border: 0;
+  border-radius: 5px;
+  color: var(--paper);
+  background: var(--green);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.landing-signup button:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
 .asset-section,
 .risk-summary {
   padding-block: 24px;

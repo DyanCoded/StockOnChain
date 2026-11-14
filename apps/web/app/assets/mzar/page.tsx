@@ -56,11 +56,10 @@ export default function MzarDisclosurePage() {
       <section className="asset-section" aria-labelledby="faucet-title">
         <h2 id="faucet-title">Testnet faucet</h2>
         <p>
-          Create an mZAR trustline first, then POST your Stellar account public
-          key to the API&apos;s <code>/faucet/mzar</code> endpoint. Each account
-          may receive 100 MOCK mZAR once every 24 hours. Cooldown state is kept
-          in a local file; the demo API must use one instance with persistent
-          storage.
+          Set up the demo asset for your account, then request sample mZAR from
+          the API. Each account may receive 100 MOCK mZAR once every 24 hours.
+          Cooldown state is kept in a local file; the demo API must use one
+          instance with persistent storage.
         </p>
         <p>
           The faucet is a demo convenience, not a deposit service, and accepts

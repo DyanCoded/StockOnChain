@@ -12,12 +12,12 @@ import {
 
 export const kycCopy = {
   en: {
-    title: "Compliance Allowlist & KYC (Simulated)",
-    desc: "ZATBILL requires compliance authorization before tokens can be transferred. Complete simulated verification under POPIA guidelines to authorize your trustline.",
-    statusLabel: "Allowlist Status",
-    statusUnverified: "Not Verified / Unauthorized",
-    statusVerified: "Verified & Authorized",
-    statusRevoked: "Revoked / Frozen",
+    title: "Identity check (demo)",
+    desc: "Complete the sample identity check to enable demo access. This check is simulated and does not verify a real identity.",
+    statusLabel: "Demo access",
+    statusUnverified: "Not verified yet",
+    statusVerified: "Verified for this demo",
+    statusRevoked: "Demo access paused",
     syntheticId: "South African ID (Synthetic)",
     syntheticIdPlaceholder: "13-digit synthetic ID (e.g. 9001015000085)",
     fillSynthetic: "Use Sample Synthetic ID",
@@ -28,8 +28,9 @@ export const kycCopy = {
       "I consent to simulated identity verification for testing under POPIA data protection guidelines.",
     popiaNote:
       "POPIA Compliance: Only synthetic data is processed. Zero personal documents, real ID numbers, or phone numbers are logged or stored.",
-    verifyButton: "Verify & Authorize Trustline",
-    verifying: "Verifying & provisioning trustline on Testnet...",
+    verifyButton: "Verify sample details",
+    verifying: "Checking sample details...",
+    verifySuccess: "Verified for this demo. Sample access is active.",
     claimTitle: "Receive Demo ZATBILL",
     claimDesc:
       "Test token transfer from the dealer. Unverified or frozen accounts are rejected on-chain by the issuer's compliance flags.",
@@ -43,21 +44,21 @@ export const kycCopy = {
     reauthButton: "Restore Authorization",
     reauthing: "Re-authorizing on Testnet...",
     unverifiedError:
-      "Transfer rejected (op_not_authorized): This account is not on the compliance allowlist. Complete simulated KYC verification to authorize your ZATBILL trustline before receiving tokens.",
+      "Not verified yet. Demo access is unavailable until the sample check and account setup are complete.",
     revokedError:
-      "Transfer rejected (op_not_authorized): Subsequent transfer blocked. This account's authorization has been frozen/revoked by the compliance administrator.",
+      "Not verified yet. Demo access for this profile has been paused by an administrator.",
     connectPrompt:
       "Connect a wallet above to test simulated compliance allowlisting and transfers.",
-    transferredSuccess: "Transferred 1.00 ZATBILL successfully!",
+    transferredSuccess: "Received 1.00 demo ZATBILL successfully.",
     viewOnExplorer: "View transaction on Horizon Testnet",
   },
   zu: {
-    title: "Uhlu Olugunyaziwe Nokuhlolwa Kwe-KYC (Ukulingisa)",
-    desc: "I-ZATBILL idinga imvume yokuhambisana nomthetho ngaphambi kokuba amathokheni adluliswe. Qedela ukuhlola kokulingisa ngaphansi kwemihlahlandlela ye-POPIA ukuze ugunyaze i-trustline yakho.",
-    statusLabel: "Isimo Sokugunyazwa",
-    statusUnverified: "Akuqinisekiswanga / Akugunyaziwe",
-    statusVerified: "Kugunyaziwe Futhi Kusemthethweni",
-    statusRevoked: "Kuhoxisiwe / Kumisiwe",
+    title: "Ukuhlolwa kobuwena (isivivinyo)",
+    desc: "Qedela ukuhlola kobuwena besampula ukuze uthole ukufinyelela kwesivivinyo. Lokhu akuhloli ubuwena bangempela.",
+    statusLabel: "Ukufinyelela kwesivivinyo",
+    statusUnverified: "Awukaqinisekiswa",
+    statusVerified: "Uqinisekisiwe kulesi sivivinyo",
+    statusRevoked: "Ukufinyelela kwesivivinyo kumisiwe",
     syntheticId: "Inombolo Kamazisi WaseNingizimu Afrika (Yokulingisa)",
     syntheticIdPlaceholder:
       "Izinombolo eziyi-13 zokulingisa (isib. 9001015000085)",
@@ -69,8 +70,10 @@ export const kycCopy = {
       "Ngiyavuma ukuhlolwa kobuwena bokulingisa ngaphansi kwemihlahlandlela ye-POPIA.",
     popiaNote:
       "Ukuvikelwa Kwedatha (POPIA): Kusetshenziswa idatha yokulingisa kuphela. Ayikho imininingwane yangempela egcinwayo noma ebhalwayo.",
-    verifyButton: "Qinisekisa Futhi Ugunyaze I-Trustline",
-    verifying: "Iyaqinisekisa ku-Testnet...",
+    verifyButton: "Hlola imininingwane yesampula",
+    verifying: "Ihlola imininingwane yesampula...",
+    verifySuccess:
+      "Uqinisekisiwe kulesi sivivinyo. Ukufinyelela kwesampula kuyasebenza.",
     claimTitle: "Thola i-ZATBILL Yesivivinyo",
     claimDesc:
       "Hlola ukudluliswa kwethokheni. Ama-akhawunti angaqinisekiswanga noma amisiwe anqatshwa ku-chain ngenxa yemithetho ye-compliance.",
@@ -83,12 +86,13 @@ export const kycCopy = {
     reauthButton: "Buyisela Ukugunyazwa",
     reauthing: "Iyagunyaza futhi...",
     unverifiedError:
-      "Ukudlulisa kunqatshiwe (op_not_authorized): Le akhawunti ayikho ohlwini olugunyaziwe. Sicela uqedele ukuhlola kwe-KYC.",
+      "Awukaqinisekiswa. Ukufinyelela kwesivivinyo akutholakali kuze kuqedwe ukuhlola kwesampula nokusethwa kwe-akhawunti.",
     revokedError:
-      "Ukudlulisa kunqatshiwe (op_not_authorized): Le akhawunti imisiwe ngumlawuli we-compliance.",
+      "Awukaqinisekiswa. Ukufinyelela kwesivivinyo sale phrofayela kumiswe umlawuli.",
     connectPrompt:
       "Xhuma isikhwama ngaphezulu ukuze uhlole ukugunyazwa kwe-compliance.",
-    transferredSuccess: "Kudluliswe 1.00 ZATBILL ngempumelelo!",
+    transferredSuccess:
+      "Kutholwe i-ZATBILL yesivivinyo engu-1.00 ngempumelelo.",
     viewOnExplorer: "Buka ukuthengiselana ku-Horizon Testnet",
   },
 } as const;
@@ -113,7 +117,7 @@ export default function KycAllowlist({
   const [idNumber, setIdNumber] = useState<string>("9001015000085");
   const [phone, setPhone] = useState<string>("0820000000");
   const [otp, setOtp] = useState<string>("123456");
-  const [consent, setConsent] = useState<boolean>(true);
+  const [consent, setConsent] = useState<boolean>(false);
 
   // Actions state
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
@@ -192,12 +196,12 @@ export default function KycAllowlist({
         }),
       });
       const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || "Verification failed");
+      if (!res.ok || !data.success || !data.authorized) {
+        throw new Error(data.error || t.unverifiedError);
       }
       setStatus("verified");
       setHasTrustline(true);
-      setVerifySuccess("Account verified and ZATBILL trustline authorized!");
+      setVerifySuccess(t.verifySuccess);
     } catch (err: unknown) {
       setVerifyError(
         err instanceof Error ? err.message : "Verification failed",
@@ -339,7 +343,7 @@ export default function KycAllowlist({
               type="text"
               className="w-full text-sm p-2 rounded border bg-transparent font-mono"
               value={idNumber}
-              onChange={(e) => setIdNumber(e.target.value)}
+              readOnly
               placeholder={t.syntheticIdPlaceholder}
               required
             />
@@ -358,7 +362,7 @@ export default function KycAllowlist({
                 type="text"
                 className="w-full text-sm p-2 rounded border bg-transparent font-mono"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                readOnly
                 placeholder={t.phonePlaceholder}
                 required
               />
@@ -375,7 +379,7 @@ export default function KycAllowlist({
                 type="text"
                 className="w-full text-sm p-2 rounded border bg-transparent font-mono"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value)}
+                readOnly
                 required
               />
             </div>
@@ -390,15 +394,12 @@ export default function KycAllowlist({
               onChange={(e) => setConsent(e.target.checked)}
               required
             />
-            <label
-              htmlFor="popia-consent"
-              className="text-xs opacity-90 leading-tight"
-            >
+            <label htmlFor="popia-consent" className="text-base leading-normal">
               {t.consent}
             </label>
           </div>
 
-          <p className="text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 p-2 rounded">
+          <p className="text-base text-amber-900 bg-amber-50 p-3 rounded">
             {t.popiaNote}
           </p>
 
@@ -450,9 +451,7 @@ export default function KycAllowlist({
 
         {claimError && (
           <div className="mt-3">
-            <ErrorState title="Transfer rejected (op_not_authorized)">
-              {claimError}
-            </ErrorState>
+            <ErrorState title={t.statusUnverified}>{claimError}</ErrorState>
           </div>
         )}
 

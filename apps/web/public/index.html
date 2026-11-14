@@ -41,9 +41,25 @@
           <a class="asset-link" href="/assets">
             MOCK ZATBILL: Testnet demo token, with no real backing.
           </a>
-          <div class="login-placeholder">
-            <button type="button" disabled>Sign in (coming from I-01)</button>
-          </div>
+          <form
+            class="landing-signup"
+            action="/onboarding"
+            method="get"
+            data-onboarding-form
+          >
+            <fieldset>
+              <legend>Sign up or sign in with a sample contact</legend>
+              <label
+                ><input type="radio" name="contact" value="email" checked />
+                Email · member@example.test</label
+              >
+              <label
+                ><input type="radio" name="contact" value="phone" /> Mobile ·
+                +27000000000</label
+              >
+            </fieldset>
+            <button type="submit">Continue</button>
+          </form>
           <details class="advanced-wallet">
             <summary>Advanced</summary>
             <p>

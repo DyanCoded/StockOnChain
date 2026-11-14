@@ -7,7 +7,7 @@ const flags = [
   {
     name: "AUTH_REQUIRED",
     meaning:
-      "A new holder needs issuer approval before the asset can be transferred. The ZATBILL demo leaves unapproved trustlines unable to use the token.",
+      "A new holder needs issuer approval before receiving or transferring the asset. This demo leaves unapproved accounts unable to use the token.",
   },
   {
     name: "AUTH_REVOCABLE",
@@ -17,7 +17,7 @@ const flags = [
   {
     name: "AUTH_CLAWBACK_ENABLED",
     meaning:
-      "The issuer can claw back tokens from enabled trustlines. Clawback burns the tokens; it does not return them to an issuer balance. This flag requires AUTH_REVOCABLE.",
+      "The issuer can remove tokens from approved accounts. This burns the tokens; it does not return them to an issuer balance. This flag requires AUTH_REVOCABLE.",
   },
   {
     name: "AUTH_IMMUTABLE",
@@ -123,7 +123,7 @@ export default function AssetTransparencyPage({
       <section className="asset-section" aria-labelledby="flags-title">
         <h2 id="flags-title">Issuer controls</h2>
         <p className="asset-section-note">
-          Flags are set before ZATBILL trustlines are created. They are
+          Flags are set before ZATBILL accounts are authorized. They are
           account-level controls on the dedicated Testnet issuer.
         </p>
         <dl className="asset-flags">
