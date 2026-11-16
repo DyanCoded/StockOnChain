@@ -46,3 +46,4 @@ __exportStar(require("./format"), exports);
 __exportStar(require("./mock-fixtures"), exports);
 __exportStar(require("./retry"), exports);
 __exportStar(require("./contribute"), exports);
+__exportStar(require("./redeem"), exports);

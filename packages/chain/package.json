@@ -20,6 +20,10 @@
     "./contribute": {
       "types": "./dist/contribute.d.ts",
       "default": "./dist/contribute.js"
+    },
+    "./redeem": {
+      "types": "./dist/redeem.d.ts",
+      "default": "./dist/redeem.js"
     }
   },
   "scripts": {

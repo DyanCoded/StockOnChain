@@ -567,6 +567,12 @@ export default function PotDashboard({
           {locale === "zu" ? "Faka Umnikelo" : "Contribute"}
         </a>
         <a
+          href={locale === "zu" ? "/pot/redeem?lang=zu" : "/pot/redeem"}
+          data-testid="nav-redeem-pot-link"
+        >
+          {locale === "zu" ? "Khipha / Cash-Out" : "Redeem & Cash-Out"}
+        </a>
+        <a
           href={locale === "zu" ? "/pot/create?lang=zu" : "/pot/create"}
           data-testid="nav-create-pot-link"
         >

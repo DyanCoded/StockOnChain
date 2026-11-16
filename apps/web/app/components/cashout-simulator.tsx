@@ -89,15 +89,19 @@ const copy = {
 export default function CashoutSimulator({
   locale,
   account,
+  prefillAmount,
 }: {
   locale: "en" | "zu";
   account?: string | null;
+  prefillAmount?: number;
 }) {
   const text = copy[locale];
   const [rail, setRail] = useState<"instant_bank" | "mobile_money">(
     "instant_bank",
   );
-  const [amount, setAmount] = useState<string>("250");
+  const [amount, setAmount] = useState<string>(
+    prefillAmount ? String(prefillAmount) : "250",
+  );
   const [recipient, setRecipient] = useState<string>("0820000000");
   const [bankName, setBankName] = useState<string>("Capitec (Simulated)");
   const [quote, setQuote] = useState<PayoutQuote | null>(null);
