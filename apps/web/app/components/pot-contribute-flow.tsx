@@ -118,6 +118,7 @@ export default function PotContributeFlow({
   const [isTopUpLoading, setIsTopUpLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [topUpNotice, setTopUpNotice] = useState<string | null>(null);
+  const [errorTitle, setErrorTitle] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorRemedy, setErrorRemedy] = useState<string | null>(null);
   const [receipt, setReceipt] = useState<ContributionReceipt | null>(null);
@@ -127,7 +128,9 @@ export default function PotContributeFlow({
   const handleAmountSelect = (val: number) => {
     setSelectedAmount(val);
     setCustomAmount(String(val));
+    setErrorTitle(null);
     setErrorMessage(null);
+    setErrorRemedy(null);
   };
 
   // Handle Custom Input
@@ -138,14 +141,18 @@ export default function PotContributeFlow({
     if (!isNaN(parsed) && parsed > 0) {
       setSelectedAmount(parsed);
     }
+    setErrorTitle(null);
     setErrorMessage(null);
+    setErrorRemedy(null);
   };
 
   // Handle Instant Faucet Top-Up
   const handleTopUp = async () => {
     setIsTopUpLoading(true);
     setTopUpNotice(null);
+    setErrorTitle(null);
     setErrorMessage(null);
+    setErrorRemedy(null);
     try {
       const res = await executeTopUp(state.userAddress, 100);
       setState((prev) => ({
@@ -176,6 +183,7 @@ export default function PotContributeFlow({
     }
 
     setIsSubmitting(true);
+    setErrorTitle(null);
     setErrorMessage(null);
     setErrorRemedy(null);
 
@@ -187,6 +195,7 @@ export default function PotContributeFlow({
       });
 
       if (!res.success) {
+        setErrorTitle(res.error?.title || "Unable to Complete Contribution");
         setErrorMessage(
           res.error?.userMessage || "Contribution could not be processed.",
         );
@@ -574,7 +583,9 @@ export default function PotContributeFlow({
               style={{ marginBottom: "1rem" }}
               data-testid="contribute-error-message"
             >
-              <ErrorState title="Unable to Complete Contribution">
+              <ErrorState
+                title={errorTitle || "Unable to Complete Contribution"}
+              >
                 <p style={{ margin: 0 }}>{errorMessage}</p>
                 {errorRemedy && (
                   <p

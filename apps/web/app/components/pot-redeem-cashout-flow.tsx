@@ -98,6 +98,7 @@ export default function PotRedeemCashoutFlow({
   );
   const [isClaiming, setIsClaiming] = useState(false);
   const [claimReceipt, setClaimReceipt] = useState<ClaimReceipt | null>(null);
+  const [errorTitle, setErrorTitle] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorRemedy, setErrorRemedy] = useState<string | null>(null);
   const [showCashoutModal, setShowCashoutModal] = useState(false);
@@ -106,6 +107,7 @@ export default function PotRedeemCashoutFlow({
   // Handle Member Claim Submission
   const handleClaim = async () => {
     setIsClaiming(true);
+    setErrorTitle(null);
     setErrorMessage(null);
     setErrorRemedy(null);
 
@@ -116,6 +118,7 @@ export default function PotRedeemCashoutFlow({
       });
 
       if (!res.success) {
+        setErrorTitle(res.error?.title || "Unable to Process Claim");
         setErrorMessage(
           res.error?.userMessage || "Claim could not be processed.",
         );
@@ -429,7 +432,7 @@ export default function PotRedeemCashoutFlow({
             style={{ marginBottom: "1rem" }}
             data-testid="claim-error-message"
           >
-            <ErrorState title="Unable to Process Claim">
+            <ErrorState title={errorTitle || "Unable to Process Claim"}>
               <p style={{ margin: 0 }}>{errorMessage}</p>
               {errorRemedy && (
                 <p

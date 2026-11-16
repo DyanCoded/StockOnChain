@@ -38,8 +38,12 @@ test("one-tap contribute flow enforces verification, caps, top-up, and confirmat
   await submitBtn.click();
 
   await expect(page.getByTestId("contribute-error-message")).toBeVisible();
-  await expect(page.getByText(/Contribution Cap Exceeded/i)).toBeVisible();
-  await expect(page.getByText(/Reduce your contribution/i)).toBeVisible();
+  await expect(
+    page.getByText(/Contribution Cap Exceeded/i).first(),
+  ).toBeVisible();
+  await expect(
+    page.getByText(/Reduce your contribution/i).first(),
+  ).toBeVisible();
 
   // 5. Valid Contribution Submission (R 50,00)
   const quickBtn50 = page.getByTestId("quick-amount-50");
@@ -48,20 +52,22 @@ test("one-tap contribute flow enforces verification, caps, top-up, and confirmat
 
   // 6. Confirmed Receipt & Member Share View
   await expect(page.getByTestId("contribution-receipt")).toBeVisible();
-  await expect(page.getByText(/Contribution Confirmed!/i)).toBeVisible();
-  await expect(page.getByText(/Confirmed on Testnet/i)).toBeVisible();
+  await expect(
+    page.getByText(/Contribution Confirmed!/i).first(),
+  ).toBeVisible();
+  await expect(page.getByText(/Confirmed on Testnet/i).first()).toBeVisible();
   await expect(page.getByText(/R\s?50[,.]00/i).first()).toBeVisible();
 
   // Updated member share percentage displayed
-  await expect(page.getByText(/Updated Member Share/i)).toBeVisible();
-  await expect(page.getByText(/31\.3%/i)).toBeVisible();
+  await expect(page.getByText(/Updated Member Share/i).first()).toBeVisible();
+  await expect(page.getByText(/31\.3%/i).first()).toBeVisible();
 
   // 7. Details Drawer & Block Explorer Link
   const toggleDetailsBtn = page.getByTestId("toggle-details-btn");
   await toggleDetailsBtn.click();
   await expect(page.getByTestId("receipt-details-drawer")).toBeVisible();
-  await expect(page.getByText(/tx_contrib_/i)).toBeVisible();
+  await expect(page.getByText(/tx_contrib_/i).first()).toBeVisible();
   await expect(
-    page.getByText(/Inspect on Stellar\.Expert Explorer/i),
+    page.getByText(/Inspect on Stellar\.Expert Explorer/i).first(),
   ).toBeVisible();
 });
