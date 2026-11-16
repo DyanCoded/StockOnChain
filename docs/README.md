@@ -4,6 +4,7 @@ Comprehensive documentation for the **StockOnChain** platform.
 
 ## Directory Index
 - [**MARKET.md**](./MARKET.md): Market research, total addressable market (TAM), comparative cost/speed matrix, unit economics, and GTM strategy (B-01).
+- [**QA.md**](./QA.md): UX QA, timed-flow usability tests (< 2 min), comprehension interviews, and accessibility audits (Q-01).
 - [**COMPLIANCE.md**](./COMPLIANCE.md): Comprehensive South African regulatory compliance framework (FSCA, FICA, POPIA, SARB) and partner ecosystem map (B-02).
 - [**DECK.md**](./DECK.md): Pitch deck and strategic presentation slides.
 - [**ACCOUNTS.md**](./ACCOUNTS.md): Key management, role definitions, and registered Testnet addresses.

@@ -250,6 +250,7 @@ export default function PotContributeFlow({
         <div
           style={{ marginBottom: "1rem" }}
           data-testid="unverified-guard-box"
+          role="alert"
         >
           <ErrorState title="Verification Required">
             <p style={{ margin: 0 }}>{text.unverifiedNotice}</p>
