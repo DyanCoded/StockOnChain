@@ -1,5 +1,5 @@
 import { EmptyState, TransactionStatus } from "../components/design-system";
-import RiskExplainer from "../components/risk-explainer";
+import ProofOfBackingView from "../components/proof-of-backing";
 
 export const dynamic = "force-dynamic";
 
@@ -29,9 +29,11 @@ const flags = [
 export default function AssetTransparencyPage({
   searchParams,
 }: {
-  searchParams: { lang?: string };
+  searchParams: { lang?: string; demo_deficit?: string };
 }) {
-  const locale = searchParams.lang === "zu" ? "zu" : "en";
+  const locale = searchParams?.lang === "zu" ? "zu" : "en";
+  const isDeficit =
+    searchParams?.demo_deficit === "true" || searchParams?.demo_deficit === "1";
   const issuer = process.env.STELLAR_ZATBILL_ISSUER_PUBLIC_KEY;
   const homeDomain = process.env.STELLAR_HOME_DOMAIN;
 
@@ -47,14 +49,18 @@ export default function AssetTransparencyPage({
         <TransactionStatus label="Testnet mock demo" />
         <nav className="asset-locale" aria-label="Language">
           <a
-            href="/assets"
+            href={isDeficit ? "/assets?demo_deficit=true" : "/assets"}
             lang="en-ZA"
             aria-current={locale === "en" ? "page" : undefined}
           >
             English
           </a>
           <a
-            href="/assets?lang=zu"
+            href={
+              isDeficit
+                ? "/assets?lang=zu&demo_deficit=true"
+                : "/assets?lang=zu"
+            }
             lang="zu-ZA"
             aria-current={locale === "zu" ? "page" : undefined}
           >
@@ -63,32 +69,32 @@ export default function AssetTransparencyPage({
         </nav>
       </header>
 
-      <section className="asset-heading" aria-labelledby="asset-title">
-        <p className="asset-kicker">Asset transparency</p>
-        <h1 id="asset-title">MOCK ZATBILL</h1>
-        <p className="asset-lede">
-          A Testnet-only mock claim used to demonstrate stokvel pot controls. It
-          is not a security, a real T-bill, or backed by reserves.
+      <ProofOfBackingView locale={locale} initialDeficit={isDeficit} />
+
+      <section
+        className="asset-section"
+        aria-labelledby="flags-title"
+        style={{ marginTop: "2rem" }}
+      >
+        <h2 id="flags-title">Issuer controls</h2>
+        <p className="asset-section-note">
+          Flags are set before ZATBILL accounts are authorized. They are
+          account-level controls on the dedicated Testnet issuer.
         </p>
-        <div className="asset-links">
-          <a href="/.well-known/stellar.toml">Stellar asset metadata</a>
-          <a href="/assets/zatbill-attestation.json">
-            Non-attestation disclosure
-          </a>
-          {issuer ? (
-            <a
-              href={`https://stellar.expert/explorer/testnet/account/${issuer}`}
-            >
-              Testnet issuer account
-            </a>
-          ) : null}
-        </div>
+        <dl className="asset-flags">
+          {flags.map((flag) => (
+            <div key={flag.name}>
+              <dt>
+                <code>{flag.name}</code>
+              </dt>
+              <dd>{flag.meaning}</dd>
+            </div>
+          ))}
+        </dl>
       </section>
 
-      <RiskExplainer locale={locale} />
-
       <section className="asset-section" aria-labelledby="value-title">
-        <h2 id="value-title">Demo value</h2>
+        <h2 id="value-title">Demo value & Issuer Network</h2>
         <p>
           Demo materials model one ZATBILL as an illustrative R1.00 face-value
           claim at an example maturity, sold at a discount. No on-chain maturity
@@ -120,25 +126,7 @@ export default function AssetTransparencyPage({
         </dl>
       </section>
 
-      <section className="asset-section" aria-labelledby="flags-title">
-        <h2 id="flags-title">Issuer controls</h2>
-        <p className="asset-section-note">
-          Flags are set before ZATBILL accounts are authorized. They are
-          account-level controls on the dedicated Testnet issuer.
-        </p>
-        <dl className="asset-flags">
-          {flags.map((flag) => (
-            <div key={flag.name}>
-              <dt>
-                <code>{flag.name}</code>
-              </dt>
-              <dd>{flag.meaning}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <footer className="asset-footer">
+      <footer className="asset-footer" style={{ marginTop: "2rem" }}>
         <a href="/">Back to StockOnChain</a>
         <a href="https://github.com/DyanCoded/StockOnChain/blob/main/docs/ASSET.md">
           Full asset risk explainer

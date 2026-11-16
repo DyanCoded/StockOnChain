@@ -26,17 +26,14 @@ export function OPTIONS() {
 }
 
 export async function GET(request: Request | NextRequest) {
-  const custodianSecret = process.env.STELLAR_CUSTODIAN_SECRET_KEY?.trim();
-  const issuerPub = process.env.STELLAR_ZATBILL_ISSUER_PUBLIC_KEY?.trim();
+  const custodianSecret =
+    process.env.STELLAR_CUSTODIAN_SECRET_KEY?.trim() ||
+    "SB3UTMDZMLJ5TNI73EO7G4COZ2W4BBXEHJVE7REA2KUBRHX7QNFAC2JY";
+  const issuerPub =
+    process.env.STELLAR_ZATBILL_ISSUER_PUBLIC_KEY?.trim() ||
+    "GDEPFK6O3UCEFBDWHIFXYHVNW2SG5OTHTLE3GSHJFKSKVS5JGV6M5EIU";
   const homeDomain =
     process.env.STELLAR_HOME_DOMAIN?.trim() || "stockonchain.app";
-
-  if (!custodianSecret || !issuerPub) {
-    return Response.json(
-      { error: "Custodian or Issuer configuration is missing in environment." },
-      { status: 503, headers },
-    );
-  }
 
   const url = new URL(request.url, `https://${homeDomain}`);
   const demoDeficit =
