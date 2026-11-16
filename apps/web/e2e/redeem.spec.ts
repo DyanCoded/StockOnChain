@@ -9,7 +9,7 @@ test("redeem and cash-out flow displays maturity breakdown, blocks early claims,
   await page.goto("/pot/redeem?matured=false");
   await expect(page.getByTestId("pot-redeem-container")).toBeVisible();
   await expect(page.getByTestId("maturity-status-banner")).toBeVisible();
-  await expect(page.getByText(/Locked in T-Bill/i)).toBeVisible();
+  await expect(page.getByText(/Locked in T-Bill/i).first()).toBeVisible();
 
   // Confirm early claim restriction block is rendered
   await expect(page.getByTestId("early-claim-restriction-block")).toBeVisible();
@@ -23,11 +23,14 @@ test("redeem and cash-out flow displays maturity breakdown, blocks early claims,
   // 2. Matured & Settled Pot Claim Flow
   await page.goto("/pot/redeem?matured=true");
   await expect(page.getByTestId("pot-redeem-container")).toBeVisible();
-  await expect(page.getByText(/Matured & Settled/i)).toBeVisible();
+  await expect(page.getByTestId("maturity-status-banner")).toContainText(
+    /Matured & Settled/i,
+  );
+  await expect(page.getByText(/Matured & Settled/i).first()).toBeVisible();
 
   // Check pro-rata breakdown values
   await expect(page.getByTestId("entitlement-breakdown-grid")).toBeVisible();
-  await expect(page.getByText(/R\s?200[,.]00/i)).toBeVisible(); // Principal
+  await expect(page.getByText(/R\s?200[,.]00/i).first()).toBeVisible(); // Principal
   await expect(page.getByText(/\+R\s?4[,.]11/i)).toBeVisible(); // Yield
   await expect(page.getByTestId("total-payout-amount")).toHaveText(
     /R\s?204[,.]11/i,

@@ -22,14 +22,14 @@ test("one-tap contribute flow enforces verification, caps, top-up, and confirmat
   await expect(page.getByTestId("pot-contribute-card")).toBeVisible();
 
   // Check initial balance
-  await expect(page.getByText(/R\s?150[,.]00/i)).toBeVisible();
+  await expect(page.getByText(/R\s?150[,.]00/i).first()).toBeVisible();
 
   // Click Instant Top-Up
   const topUpBtn = page.getByTestId("instant-topup-btn");
   await topUpBtn.click();
   await expect(page.getByTestId("topup-notice")).toBeVisible();
   // Balance should now reflect R 250,00
-  await expect(page.getByText(/R\s?250[,.]00/i)).toBeVisible();
+  await expect(page.getByText(/R\s?250[,.]00/i).first()).toBeVisible();
 
   // 4. Test Over-Cap Input
   const amountInput = page.getByTestId("custom-amount-input");

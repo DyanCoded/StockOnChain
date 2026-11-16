@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 
 export function Button({
   variant = "primary",
@@ -19,13 +19,14 @@ export function Card({
   title,
   children,
   className = "",
-}: {
+  ...props
+}: HTMLAttributes<HTMLElement> & {
   title: string;
   children: ReactNode;
   className?: string;
 }) {
   return (
-    <article className={`system-card ${className}`.trim()}>
+    <article className={`system-card ${className}`.trim()} {...props}>
       <h3>{title}</h3>
       {children}
     </article>
