@@ -25,6 +25,7 @@ export default function PotContributePage({
       style={{ maxWidth: "600px", margin: "2rem auto", padding: "0 1rem" }}
     >
       <PotContributeFlow
+        key={`${potState}-${isVerified}-${searchParams.pot || ""}`}
         locale={locale}
         potName={searchParams.pot || "Family & Friends Stokvel"}
         initialState={{

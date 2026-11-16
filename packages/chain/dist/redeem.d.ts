@@ -41,16 +41,20 @@ export interface ClaimExecutionResult {
     receipt?: ClaimReceipt;
     error?: PotSafeError;
 }
-export declare function getClaimBreakdown(params?: {
+export interface ClaimBreakdownParams {
     userAddress?: string;
     potState?: "Open" | "Invested" | "Matured" | "Settled";
+    potLifecycleState?: "Open" | "Invested" | "Matured" | "Settled";
+    isMatured?: boolean;
     timeRemainingSeconds?: number;
     principalContributed?: number;
+    principalContributedMzar?: number;
     annualizedRate?: number;
     termDays?: number;
     hasClaimed?: boolean;
     sharePercent?: number;
-}): ClaimBreakdown;
+}
+export declare function getClaimBreakdown(params?: ClaimBreakdownParams): ClaimBreakdown;
 /**
  * Executes member claim of principal + yield from settled pot.
  */

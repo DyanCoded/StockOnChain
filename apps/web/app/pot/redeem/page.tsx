@@ -23,6 +23,7 @@ export default function PotRedeemPage({
       style={{ maxWidth: "640px", margin: "2rem auto", padding: "0 1rem" }}
     >
       <PotRedeemCashoutFlow
+        key={`${potState}-${isMaturedParam}-${searchParams.pot || ""}`}
         locale={locale}
         potName={searchParams.pot || "Cape Town Community Pot"}
         initialBreakdown={{

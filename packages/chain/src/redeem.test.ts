@@ -16,6 +16,17 @@ test("redeem - getClaimBreakdown calculates principal, yield, and total payout a
   assert.equal(breakdown.accumulatedYieldMzar, 4.11);
   assert.equal(breakdown.totalPayoutMzar, 204.11);
   assert.match(breakdown.totalPayoutFormatted, /R\s?204,11/);
+
+  // Also verify passing ClaimBreakdown property names directly
+  const breakdownInvested = getClaimBreakdown({
+    potLifecycleState: "Invested",
+    timeRemainingSeconds: 120,
+    principalContributedMzar: 200,
+    hasClaimed: false,
+  });
+  assert.equal(breakdownInvested.potLifecycleState, "Invested");
+  assert.equal(breakdownInvested.isMatured, false);
+  assert.equal(breakdownInvested.timeRemainingSeconds, 120);
 });
 
 test("redeem - surfaces plain-language explanation block when early claim is attempted before maturity", async () => {

@@ -21,6 +21,17 @@ test("contribute - getContributeState calculates remaining cap and state correct
   assert.equal(state.remainingCapMzar, 100);
   assert.equal(state.isWindowOpen, true);
   assert.equal(state.isVerified, true);
+
+  // Also verify passing ContributeState property names directly
+  const stateDirect = getContributeState({
+    potLifecycleState: "Invested",
+    isWindowOpen: false,
+    walletBalanceMzar: 150,
+    memberContributionMzar: 200,
+  });
+  assert.equal(stateDirect.potLifecycleState, "Invested");
+  assert.equal(stateDirect.isWindowOpen, false);
+  assert.equal(stateDirect.walletBalanceMzar, 150);
 });
 
 test("contribute - executeTopUp simulates fast testnet faucet funding", async () => {

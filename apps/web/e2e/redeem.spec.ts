@@ -27,9 +27,11 @@ test("redeem and cash-out flow displays maturity breakdown, blocks early claims,
 
   // Check pro-rata breakdown values
   await expect(page.getByTestId("entitlement-breakdown-grid")).toBeVisible();
-  await expect(page.getByText(/R 200,00/i)).toBeVisible(); // Principal
-  await expect(page.getByText(/\+R 4,11/i)).toBeVisible(); // Yield
-  await expect(page.getByTestId("total-payout-amount")).toHaveText(/R 204,11/i);
+  await expect(page.getByText(/R\s?200[,.]00/i)).toBeVisible(); // Principal
+  await expect(page.getByText(/\+R\s?4[,.]11/i)).toBeVisible(); // Yield
+  await expect(page.getByTestId("total-payout-amount")).toHaveText(
+    /R\s?204[,.]11/i,
+  );
 
   // Execute Member Claim
   const claimBtn = page.getByTestId("execute-claim-btn");

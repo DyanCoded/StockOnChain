@@ -45,20 +45,29 @@ export interface ContributionResult {
     receipt?: ContributionReceipt;
     error?: PotSafeError;
 }
+export interface ContributeStateParams {
+    userAddress?: string;
+    isVerified?: boolean;
+    walletBalance?: number;
+    walletBalanceMzar?: number;
+    contributedSoFar?: number;
+    memberContributionMzar?: number;
+    memberCap?: number;
+    memberCapMzar?: number;
+    remainingCapMzar?: number;
+    potState?: "Open" | "Invested" | "Matured" | "Settled";
+    potLifecycleState?: "Open" | "Invested" | "Matured" | "Settled";
+    isWindowOpen?: boolean;
+    potTarget?: number;
+    potTargetMzar?: number;
+    currentPotTotal?: number;
+    currentPotTotalMzar?: number;
+}
 export declare const DEFAULT_SYNTHETIC_USER_ADDRESS = "GDYQW3VZ3N5N5M2K6DTHW5U2B3J6OQZ7K4Z5X9M8W7Q6P5L4K3J2I1H";
 /**
  * Returns the active contribution state for a given user and pot.
  */
-export declare function getContributeState(params?: {
-    userAddress?: string;
-    isVerified?: boolean;
-    walletBalance?: number;
-    contributedSoFar?: number;
-    memberCap?: number;
-    potState?: "Open" | "Invested" | "Matured" | "Settled";
-    potTarget?: number;
-    currentPotTotal?: number;
-}): ContributeState;
+export declare function getContributeState(params?: ContributeStateParams): ContributeState;
 /**
  * Simulates a frictionless Testnet mZAR faucet top-up.
  */

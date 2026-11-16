@@ -21,13 +21,15 @@ const errors_1 = require("./errors");
 function getClaimBreakdown(params) {
     const userAddress = params?.userAddress ||
         "GDYQW3VZ3N5N5M2K6DTHW5U2B3J6OQZ7K4Z5X9M8W7Q6P5L4K3J2I1H";
-    const potLifecycleState = params?.potState || "Matured";
+    const potLifecycleState = params?.potLifecycleState ?? params?.potState ?? "Matured";
     const timeRemainingSeconds = potLifecycleState === "Matured" || potLifecycleState === "Settled"
-        ? 0
-        : params?.timeRemainingSeconds ?? 120;
-    const isMatured = timeRemainingSeconds <= 0;
+        ? (params?.timeRemainingSeconds ?? 0)
+        : (params?.timeRemainingSeconds ?? 120);
+    const isMatured = params?.isMatured ??
+        ((potLifecycleState === "Matured" || potLifecycleState === "Settled") &&
+            timeRemainingSeconds <= 0);
     const hasClaimed = params?.hasClaimed ?? false;
-    const principalContributedMzar = params?.principalContributed ?? 200;
+    const principalContributedMzar = params?.principalContributedMzar ?? params?.principalContributed ?? 200;
     const annualizedRate = params?.annualizedRate ?? 0.0825;
     const termDays = params?.termDays ?? 91;
     // Simple money-market yield calculation: Principal * (Rate * Days / 365)

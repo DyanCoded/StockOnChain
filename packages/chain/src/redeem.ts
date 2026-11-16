@@ -47,27 +47,39 @@ export interface ClaimExecutionResult {
   error?: PotSafeError;
 }
 
-export function getClaimBreakdown(params?: {
+export interface ClaimBreakdownParams {
   userAddress?: string;
   potState?: "Open" | "Invested" | "Matured" | "Settled";
+  potLifecycleState?: "Open" | "Invested" | "Matured" | "Settled";
+  isMatured?: boolean;
   timeRemainingSeconds?: number;
   principalContributed?: number;
+  principalContributedMzar?: number;
   annualizedRate?: number; // e.g. 0.0825
   termDays?: number; // e.g. 91
   hasClaimed?: boolean;
   sharePercent?: number;
-}): ClaimBreakdown {
+}
+
+export function getClaimBreakdown(
+  params?: ClaimBreakdownParams,
+): ClaimBreakdown {
   const userAddress =
     params?.userAddress ||
     "GDYQW3VZ3N5N5M2K6DTHW5U2B3J6OQZ7K4Z5X9M8W7Q6P5L4K3J2I1H";
-  const potLifecycleState = params?.potState || "Matured";
+  const potLifecycleState =
+    params?.potLifecycleState ?? params?.potState ?? "Matured";
   const timeRemainingSeconds =
     potLifecycleState === "Matured" || potLifecycleState === "Settled"
-      ? 0
-      : params?.timeRemainingSeconds ?? 120;
-  const isMatured = timeRemainingSeconds <= 0;
+      ? (params?.timeRemainingSeconds ?? 0)
+      : (params?.timeRemainingSeconds ?? 120);
+  const isMatured =
+    params?.isMatured ??
+    ((potLifecycleState === "Matured" || potLifecycleState === "Settled") &&
+      timeRemainingSeconds <= 0);
   const hasClaimed = params?.hasClaimed ?? false;
-  const principalContributedMzar = params?.principalContributed ?? 200;
+  const principalContributedMzar =
+    params?.principalContributedMzar ?? params?.principalContributed ?? 200;
   const annualizedRate = params?.annualizedRate ?? 0.0825;
   const termDays = params?.termDays ?? 91;
 

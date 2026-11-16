@@ -29,14 +29,15 @@ exports.DEFAULT_SYNTHETIC_USER_ADDRESS = "GDYQW3VZ3N5N5M2K6DTHW5U2B3J6OQZ7K4Z5X9
 function getContributeState(params) {
     const userAddress = params?.userAddress || exports.DEFAULT_SYNTHETIC_USER_ADDRESS;
     const isVerified = params?.isVerified ?? true;
-    const walletBalanceMzar = params?.walletBalance ?? 100; // default 100 mZAR balance
-    const memberContributionMzar = params?.contributedSoFar ?? 200;
-    const memberCapMzar = params?.memberCap ?? 300;
-    const remainingCapMzar = Math.max(0, memberCapMzar - memberContributionMzar);
-    const potLifecycleState = params?.potState || "Open";
-    const isWindowOpen = potLifecycleState === "Open";
-    const potTargetMzar = params?.potTarget ?? 1000;
-    const currentPotTotalMzar = params?.currentPotTotal ?? 750;
+    const walletBalanceMzar = params?.walletBalanceMzar ?? params?.walletBalance ?? 100; // default 100 mZAR balance
+    const memberContributionMzar = params?.memberContributionMzar ?? params?.contributedSoFar ?? 200;
+    const memberCapMzar = params?.memberCapMzar ?? params?.memberCap ?? 300;
+    const remainingCapMzar = params?.remainingCapMzar ??
+        Math.max(0, memberCapMzar - memberContributionMzar);
+    const potLifecycleState = params?.potLifecycleState ?? params?.potState ?? "Open";
+    const isWindowOpen = params?.isWindowOpen ?? (potLifecycleState === "Open");
+    const potTargetMzar = params?.potTargetMzar ?? params?.potTarget ?? 1000;
+    const currentPotTotalMzar = params?.currentPotTotalMzar ?? params?.currentPotTotal ?? 750;
     return {
         userAddress,
         isVerified,
